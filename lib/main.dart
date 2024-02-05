@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final myPrefs = await SharedPreferences.getInstance();
   final  isFirstUse = myPrefs.getBool(showOnboarding)?? true;
-  runApp(MyApp(isFirstUse: true));
+  runApp(MyApp(isFirstUse: isFirstUse));
 }
 
 class MyApp extends StatelessWidget {
@@ -20,13 +20,13 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: '100PushUPs',
+      title: appName,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: lightBlue),
         useMaterial3: true,
         fontFamily: "SpaceGrotesk",
       ),
-      home: isFirstUse? const OnboardingScreen() : const AppHome(title: "100PushUPs"),
+      home: isFirstUse? const OnboardingScreen() : const AppHome(title: appName),
     );
   }
 }

@@ -1,5 +1,6 @@
 import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
+import "package:one_hundred_push_ups/screens/OnboardingScreenContent.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:smooth_page_indicator/smooth_page_indicator.dart";
@@ -26,18 +27,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           },
           controller: _controller,
           children: [
-            Container(
-              color: Colors.blue,
-            ),
-            Container(
-              color: Colors.yellow,
-            ),
-            Container(
-              color: Colors.red,
-            ),
-            Container(
-              color: Colors.green,
-            ),
+            OnboardingScreenContent(content: "Your partner in\nmastering your fitness\nchallenges"),
+            OnboardingScreenContent(content: "Keep track of\nyour fitness goals"),
+            OnboardingScreenContent(content: "See worldwide\nrankings!"),
+            OnboardingScreenContent(content: "Would you like\nto create an account?"),
           ],
         ),
         Padding(
@@ -111,9 +104,15 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 height: 30,
               ),
               SmoothPageIndicator(
-                  controller: _controller,
-                  count: 4,
-                onDotClicked: (index)=>_controller.animateToPage(index, duration: Duration(microseconds: 500), curve: Curves.easeIn),
+                controller: _controller,
+                count: 4,
+                effect: WormEffect(
+                  dotColor: grey,
+                  activeDotColor: turquoiseBlue
+                ),
+                onDotClicked: (index) => _controller.animateToPage(index,
+                    duration: Duration(microseconds: 500),
+                    curve: Curves.easeIn),
               ),
             ],
           ),

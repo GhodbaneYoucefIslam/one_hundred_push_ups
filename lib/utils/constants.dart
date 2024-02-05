@@ -7,3 +7,4 @@ Color greenBlue = const Color(0xFF6EFACC);
 Color grey = const Color(0xFFB9B9B9);
 
 const String showOnboarding = "showOnboarding";
+const String appName = "100PushUPs";
