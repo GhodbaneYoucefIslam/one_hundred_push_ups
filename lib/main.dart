@@ -8,7 +8,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final myPrefs = await SharedPreferences.getInstance();
   final  isFirstUse = myPrefs.getBool(showOnboarding)?? true;
-  runApp(MyApp(isFirstUse: isFirstUse));
+  runApp(const MyApp(isFirstUse: false/*todo: replace false with actual value before deployment*/));
 }
 
 class MyApp extends StatelessWidget {
