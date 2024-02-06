@@ -30,6 +30,7 @@ class _AppHomeState extends State<AppHome> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         backgroundColor: lightBlue,
         centerTitle: true,
