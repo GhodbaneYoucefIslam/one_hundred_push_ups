@@ -120,14 +120,14 @@ class _HomePageState extends State<HomePage> {
                         _chartKey.currentState!.updateData(updatedChartData);
                       });
                     },
+                    backgroundColor: greenBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(100)),
                     child: const Icon(
                       Icons.add,
                       color: Colors.white,
                       size: 70,
                     ),
-                    backgroundColor: greenBlue,
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(100)),
                   ),
                 )
               ],
@@ -176,7 +176,6 @@ class _HomePageState extends State<HomePage> {
                       );
                     }
                   },
-                  child: const Text("Add reps", style: TextStyle(fontSize: 16, color: Colors.white)),
                   style: ButtonStyle(
                     backgroundColor: MaterialStateProperty.all(greenBlue),
                     shape: MaterialStateProperty.all<RoundedRectangleBorder>(
@@ -184,7 +183,8 @@ class _HomePageState extends State<HomePage> {
                         borderRadius: BorderRadius.circular(10),
                       ),
                     ),
-                  )),
+                  ),
+                  child: const Text("Add reps", style: TextStyle(fontSize: 16, color: Colors.white))),
             ],
           ),
         ),
