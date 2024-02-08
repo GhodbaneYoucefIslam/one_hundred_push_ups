@@ -40,6 +40,7 @@ dependencies:
   flutter_svg: ^2.0.9
   circular_chart_flutter: ^0.0.2
   toastification: ^1.2.0
+  fl_chart: ^0.66.1
 
 dev_dependencies:
   flutter_test:

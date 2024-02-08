@@ -163,6 +163,7 @@ class _HomePageState extends State<HomePage> {
               ),
               ElevatedButton(
                   onPressed: () {
+                    FocusScope.of(context).unfocus();
                     if (myController.text.isNotEmpty && int.parse(myController.text)!=0){
                       Navigator.of(context).pop(myController.text);
                       myController.text="";
