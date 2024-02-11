@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:toastification/toastification.dart";
 import "../widgets/RoundedTextField.dart";
+import "../widgets/LineGraph.dart";
 
 class MyGoalsPage extends StatefulWidget {
   const MyGoalsPage({super.key});
@@ -12,20 +13,39 @@ class MyGoalsPage extends StatefulWidget {
 }
 
 class _MyGoalsPageState extends State<MyGoalsPage> {
-  final myController = TextEditingController();
+  String graphTitle() {
+    switch (currentGraph) {
+      case (0) :
+        return "Daily reps";
+      case (1) :
+        return "% of daily goal";
+      case (2) :
+        return "Reps per set";
+      case (3) :
+        return "Rank";
+      default:
+        return "";
+    }
+  }
+  final myTextController = TextEditingController();
+  int currentGraph = 0;
+  final myPageController = PageController();
   int dailyGoal = 100;
   List<Color> gradientColors = [turquoiseBlue, lightBlue];
+
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: Container(
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Statistics",
+            Text(
+                "Statistics",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
             Container(
               width: MediaQuery.of(context).size.width * 0.9,
@@ -58,21 +78,170 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               decoration: BoxDecoration(
                   color: grey.withOpacity(0.2),
                   borderRadius: BorderRadius.circular(10)),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              child: PageView(
+                  controller: myPageController,
+                  onPageChanged: (index){
+                    setState(() {
+                      currentGraph=index;
+                    });
+                  },
+                  children: [
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Your average is 120 reps per day",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 10, left: 5, right: 30),
+                      child: Container(
+                          width: 300,
+                          height: 250,
+                          child: LineGraph(
+                            minX: 1,
+                            maxX: 7,
+                            minY: 0,
+                            maxY: 200,
+                            dataPoints: [
+                              FlSpot(1, 50),
+                              FlSpot(2, 60),
+                              FlSpot(3, 110),
+                              FlSpot(4, 100),
+                              FlSpot(5, 85),
+                              FlSpot(6, 120),
+                              FlSpot(7, 100),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Your average is 92% per day",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 10, left: 5, right: 30),
+                      child: Container(
+                          width: 300,
+                          height: 250,
+                          child: LineGraph(
+                            minX: 1,
+                            maxX: 7,
+                            minY: 0,
+                            maxY: 150,
+                            dataPoints: [
+                              FlSpot(1, 14),
+                              FlSpot(2, 22),
+                              FlSpot(3, 89),
+                              FlSpot(4, 100),
+                              FlSpot(5, 78),
+                              FlSpot(6, 120),
+                              FlSpot(7, 130),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Your average is 10 reps per set",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 10, left: 5, right: 30),
+                      child: Container(
+                          width: 300,
+                          height: 250,
+                          child: LineGraph(
+                            minX: 1,
+                            maxX: 7,
+                            minY: 0,
+                            maxY: 20,
+                            dataPoints: [
+                              FlSpot(1, 5),
+                              FlSpot(2, 10),
+                              FlSpot(3, 10),
+                              FlSpot(4, 15),
+                              FlSpot(5, 15),
+                              FlSpot(6, 10),
+                              FlSpot(7, 12),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+                Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      "Your average rank is 25",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                          top: 20, bottom: 10, left: 5, right: 30),
+                      child: Container(
+                          width: 300,
+                          height: 250,
+                          child: LineGraph(
+                            minX: 1,
+                            maxX: 7,
+                            minY: 0,
+                            maxY: 30,
+                            dataPoints: [
+                              FlSpot(1, 25),
+                              FlSpot(2, 25),
+                              FlSpot(3, 23),
+                              FlSpot(4, 20),
+                              FlSpot(5,20),
+                              FlSpot(6, 18),
+                              FlSpot(7, 10),
+                            ],
+                          )),
+                    ),
+                  ],
+                ),
+              ]),
+            ),
+            Container(
+              width: MediaQuery.of(context).size.width * 0.7,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
+                  IconButton(
+                      onPressed: () {
+                        myPageController.previousPage(duration: Duration(microseconds: 1000), curve: Curves.easeIn);
+                      },
+                      icon: Icon(
+                          Icons.arrow_circle_left_outlined,
+                        color: currentGraph==0? grey: Colors.black,
+                      )
+                  ),
                   Text(
-                    "Your average is 120 reps per day",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                      graphTitle(),
+                      style: TextStyle(fontSize: 20)
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(
-                        top: 20, bottom: 10, left: 5, right: 30),
-                    child: Container(
-                        width: 300, //MediaQuery.of(context).size.width*0.9,
-                        height: 250,
-                        child: LineChartWidget()),
-                  ),
+                  IconButton(
+                      onPressed: () {
+                        myPageController.nextPage(duration: Duration(microseconds: 1000), curve: Curves.easeIn);
+                      },
+                      icon: Icon(
+                          Icons.arrow_circle_right_outlined,
+                        color: currentGraph==3? grey: Colors.black,
+                      )),
                 ],
               ),
             ),
@@ -151,16 +320,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                       hintTextSize: 10,
                       borderColor: grey,
                       selectedBorderColor: greenBlue,
-                      controller: myController,
+                      controller: myTextController,
                     ),
                   ),
                   ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        if (myController.text.isNotEmpty &&
-                            int.parse(myController.text) != 0) {
-                          Navigator.of(context).pop(myController.text);
-                          myController.text = "";
+                        if (myTextController.text.isNotEmpty &&
+                            int.parse(myTextController.text) != 0) {
+                          Navigator.of(context).pop(myTextController.text);
+                          myTextController.text = "";
                         } else {
                           toastification.show(
                               context: context,
@@ -185,43 +354,4 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               ),
             ),
           ));
-}
-
-class LineChartWidget extends StatelessWidget {
-  //todo: more customization + refactoring
-  const LineChartWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return LineChart(LineChartData(
-      minX: 0,
-      maxX: 6,
-      minY: 0,
-      maxY: 200,
-      lineBarsData: [
-        LineChartBarData(spots: [
-          FlSpot(0, 77),
-          FlSpot(1, 120),
-          FlSpot(2, 100),
-          FlSpot(3, 80),
-          FlSpot(4, 100),
-          FlSpot(5, 95),
-          FlSpot(6, 50),
-        ])
-      ],
-      titlesData: FlTitlesData(
-          topTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
-          bottomTitles: AxisTitles(
-              sideTitles: SideTitles(
-                  showTitles: true,
-                  getTitlesWidget: (value, meta) {
-                    return Text(
-                      "Day ${value.toInt().toString()}",
-                      style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-                    );
-                  }))),
-    ));
-  }
 }
