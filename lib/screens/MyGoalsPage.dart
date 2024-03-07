@@ -1,7 +1,9 @@
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
+import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
+import "../models/GoalProvider.dart";
 import "../widgets/RoundedTextField.dart";
 import "../widgets/LineGraph.dart";
 
@@ -13,6 +15,11 @@ class MyGoalsPage extends StatefulWidget {
 }
 
 class _MyGoalsPageState extends State<MyGoalsPage> {
+  final myTextController = TextEditingController();
+  int currentGraph = 0;
+  final myPageController = PageController();
+  List<Color> gradientColors = [turquoiseBlue, lightBlue];
+
   String graphTitle() {
     switch (currentGraph) {
       case (0) :
@@ -27,12 +34,11 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
         return "";
     }
   }
-  final myTextController = TextEditingController();
-  int currentGraph = 0;
-  final myPageController = PageController();
-  int dailyGoal = 100;
-  List<Color> gradientColors = [turquoiseBlue, lightBlue];
 
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -253,7 +259,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               ),
             ),
             Text(
-              "$dailyGoal Reps",
+              "${context.watch<GoalProvider>().todayGoal!.goalAmount} Reps",
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -262,9 +268,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
             ElevatedButton(
               onPressed: () async {
                 var result = await openDialog();
-                setState(() {
-                  dailyGoal = int.parse(result!);
-                });
+                if(context.mounted) context.read<GoalProvider>().changeGoal(newGoalAmount: int.parse(result!));
               },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),

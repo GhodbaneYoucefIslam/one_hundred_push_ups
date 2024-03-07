@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:one_hundred_push_ups/models/GoalProvider.dart';
 import 'package:one_hundred_push_ups/screens/OnboardingScreen.dart';
+import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/constants.dart';
 import "AppHome.dart";
@@ -18,15 +20,20 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: appName,
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: lightBlue),
-        useMaterial3: true,
-        fontFamily: "SpaceGrotesk",
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (context)=>GoalProvider())
+      ],
+      child: MaterialApp(
+        debugShowCheckedModeBanner: false,
+        title: appName,
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: lightBlue),
+          useMaterial3: true,
+          fontFamily: "SpaceGrotesk",
+        ),
+        home: isFirstUse? const OnboardingScreen() : const AppHome(title: appName),
       ),
-      home: isFirstUse? const OnboardingScreen() : const AppHome(title: appName),
     );
   }
 }
