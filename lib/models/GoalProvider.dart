@@ -2,11 +2,35 @@ import 'package:flutter/cupertino.dart';
 import '../database/LocalDB.dart';
 import '../utils/constants.dart';
 import 'Goal.dart';
+import 'Set.dart';
 
 class GoalProvider extends ChangeNotifier{
   Goal? todayGoal;
   bool goalDifferentFromDb = true;
+  int totalReps = 0;
+  bool setsDifferentFromDb = true;
 
+  //set methods
+  void addSet({required int reps, required int goalId}) async{
+    var db = LocalDB();
+    int id = await db.createSet(set: Set(reps: reps, time: DateTime.now()), goalId: goalId);
+    totalReps += reps;
+    setsDifferentFromDb = true;
+    notifyListeners();
+  }
+  void getGoalSets(int goalId) async{
+    if(setsDifferentFromDb){
+      var db = LocalDB();
+      List<Set> sets = await db.fetchSetsForGoal(goalId);
+      if (sets.isNotEmpty){
+        totalReps = sets.map((set)=> set.reps).reduce((reps1, reps2) => reps1+reps2);
+        notifyListeners();
+      }
+      setsDifferentFromDb = false;
+    }
+  }
+
+  //goal methods
   void changeGoal({required int newGoalAmount}) async{
     var db = LocalDB();
     db.updateGoal(id: todayGoal!.id!, goalAmount: newGoalAmount);
@@ -14,8 +38,8 @@ class GoalProvider extends ChangeNotifier{
     goalDifferentFromDb = true;
     notifyListeners();
   }
-
   Future<void> getOrCreateTodayGoal() async {
+    //first we deal with the daily goal
     if (todayGoal==null || goalDifferentFromDb){
       var db = LocalDB();
       DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
@@ -35,10 +59,12 @@ class GoalProvider extends ChangeNotifier{
         }
         int id = await db.createGoal(goal: todayGoal!);
         todayGoal!.id = id;
-      } else{
       }
       goalDifferentFromDb = false;
     }
+    //then we deal with this goal's sets
+    if (setsDifferentFromDb) {
+      getGoalSets(todayGoal!.id!);
+    }
   }
-
 }

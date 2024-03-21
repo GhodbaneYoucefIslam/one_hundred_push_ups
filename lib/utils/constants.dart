@@ -13,4 +13,4 @@ const String dailyGoalId = "dailyGoalId";
 const String defaultGoalType = "pushUps";
 const String appName = "100PushUPs";
 
-final Goal placeholderGoal =  Goal(type: defaultGoalType, date: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day), goalAmount: 500);
+final Goal placeholderGoal =  Goal(type: defaultGoalType, date: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day), goalAmount: 100);

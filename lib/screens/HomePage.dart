@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'package:circular_chart_flutter/circular_chart_flutter.dart';
 import "package:flutter/material.dart";
-import 'package:one_hundred_push_ups/database/LocalDB.dart';
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
 import 'package:one_hundred_push_ups/widgets/RoundedTextField.dart';
 import 'package:provider/provider.dart';
@@ -18,13 +17,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final myController = TextEditingController();
-  Duration remainingTime = DateTime(DateTime.now().year, DateTime.now().month,
-          DateTime.now().day, 0, 0, 0)
-      .add(const Duration(days: 1))
-      .difference(DateTime.now());
-  //todo: make persistent
-  int totalReps = 10;
-  int goal = 100;
+  late int totalReps;
+  late int goal;
   final GlobalKey<AnimatedCircularChartState> _chartKey =
       GlobalKey<AnimatedCircularChartState>();
 
@@ -43,15 +37,15 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
+  //dealing with timer
+  late ValueNotifier<Duration> remainingTime;
   void startTimer() async {
     Timer timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-      setState(() {
-        remainingTime = DateTime(DateTime.now().year, DateTime.now().month,
+        remainingTime.value = DateTime(DateTime.now().year, DateTime.now().month,
                 DateTime.now().day, 0, 0, 0)
             .add(const Duration(days: 1))
             .difference(DateTime.now());
       });
-    });
   }
 
   String upperText(Goal todayGoal) {
@@ -73,7 +67,13 @@ class _HomePageState extends State<HomePage> {
 
   @override
   void initState() {
-    //startTimer();
+    remainingTime = ValueNotifier<Duration>(DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day, 0, 0, 0)
+        .add(const Duration(days: 1))
+        .difference(DateTime.now()));
+    startTimer();
     super.initState();
   }
 
@@ -91,6 +91,7 @@ class _HomePageState extends State<HomePage> {
               return Text("Error: ${snapshot.error}");
             } else {
               goal = context.watch<GoalProvider>().todayGoal!.goalAmount;
+              totalReps = context.watch<GoalProvider>().totalReps;
               return Container(
                 width: MediaQuery.of(context).size.width,
                 child: Column(
@@ -134,17 +135,20 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    Text(
-                      totalReps <
-                              context
-                                  .watch<GoalProvider>()
-                                  .todayGoal!
-                                  .goalAmount
-                          ? "You have\n ${remainingTime.inHours} hours ${remainingTime.inMinutes - remainingTime.inHours * 60} mins and ${remainingTime.inSeconds - (remainingTime.inMinutes - remainingTime.inHours * 60) * 60 - (remainingTime.inHours) * 3600}\n seconds\n to finish your goal"
-                          : "\nDone for the day!\n\n",
-                      style: const TextStyle(
-                          fontWeight: FontWeight.bold, fontSize: 25),
-                      textAlign: TextAlign.center,
+                    ValueListenableBuilder(
+                      valueListenable: remainingTime,
+                      builder: (context,value,child)=> Text(
+                        totalReps <
+                                context
+                                    .watch<GoalProvider>()
+                                    .todayGoal!
+                                    .goalAmount
+                            ? "You have\n ${value.inHours} hours ${value.inMinutes - value.inHours * 60} mins and ${value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600}\n seconds\n to finish your goal"
+                            : "\nDone for the day!\n\n",
+                        style: const TextStyle(
+                            fontWeight: FontWeight.bold, fontSize: 25),
+                        textAlign: TextAlign.center,
+                      ),
                     ),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
@@ -161,14 +165,10 @@ class _HomePageState extends State<HomePage> {
                           child: FloatingActionButton(
                             elevation: 3,
                             onPressed: () async {
-                              var goals = await LocalDB().fetchAllGoals();
-                              for (var goal in goals) {
-                                print(goal.toString());
-                              }
                               var result = await openDialog();
                               int repsToAdd = int.parse(result!);
+                              Provider.of<GoalProvider>(context, listen: false).addSet(reps: repsToAdd, goalId:Provider.of<GoalProvider>(context, listen: false).todayGoal!.id!);
                               setState(() {
-                                totalReps += repsToAdd;
                                 List<CircularStackEntry> updatedChartData =
                                     <CircularStackEntry>[
                                   CircularStackEntry(

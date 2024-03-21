@@ -59,7 +59,7 @@ class LocalDB{
     );
     return goals.isNotEmpty? Goal.fromMap(goals.first): null;
   }
-  Future<void> deleteAll() async{
+  Future<void> deleteAllGoals() async{
     final db = await DatabaseService().database;
      db.rawQuery(
       "DELETE FROM $goalsTable WHERE id>0",
@@ -83,4 +83,18 @@ class LocalDB{
     );
     return sets.map((map) => Set.fromMap(map)).toList();
   }
+  Future<List<Set>> fetchAllSets() async{
+    final db = await DatabaseService().database;
+    final sets = await db.rawQuery(
+        "SELECT * from $setsTable ");
+    return sets.map((map) => Set.fromMap(map)).toList();
+  }
+  Future<void> deleteAllSets() async{
+    final db = await DatabaseService().database;
+    db.rawQuery(
+      "DELETE FROM $setsTable WHERE id>0",
+    );
+  }
+
+
 }
