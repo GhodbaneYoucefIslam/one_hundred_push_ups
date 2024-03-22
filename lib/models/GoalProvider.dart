@@ -39,6 +39,8 @@ class GoalProvider extends ChangeNotifier{
     notifyListeners();
   }
   Future<void> getOrCreateTodayGoal() async {
+    //await LocalDB().initializeGoals();
+    //await LocalDB().initializeSets();
     //first we deal with the daily goal
     if (todayGoal==null || goalDifferentFromDb){
       var db = LocalDB();

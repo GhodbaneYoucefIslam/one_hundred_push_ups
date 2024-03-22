@@ -7,12 +7,14 @@ class LineGraph extends StatelessWidget {
   double maxX;
   double maxY;
   List<FlSpot> dataPoints;
+  List<String>? dates;
   LineGraph(
       {super.key,
       required this.minX,
       required this.minY,
       required this.maxX,
       required this.maxY,
+      this.dates,
       required this.dataPoints});
 
   @override
@@ -28,12 +30,21 @@ class LineGraph extends StatelessWidget {
         rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
             sideTitles: SideTitles(
+                interval: 1,
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
+                  if (dates!=null){
+                  DateTime date = DateTime.parse(dates![value.toInt()-1]);
                   return Text(
-                    "Day ${value.toInt().toString()}",
+                    "${date.day}/${date.month}",
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
                   );
+                }else{
+                    return Text(
+                      "Day ${value.toInt()+1}",
+                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    );
+                  }
                 })),
       ),
     ));
