@@ -26,7 +26,7 @@ const achievements = [
   },
   {
     "type": "pushups",
-    "score": 120,
+    "score": 1200,
     "day": previousDate,
     "dailyRank": 7,
     "rankChange": null,

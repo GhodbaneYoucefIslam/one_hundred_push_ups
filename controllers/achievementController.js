@@ -10,8 +10,31 @@ const getAchievementsByDateAndType = async (req, res) => {
         const achievements = await prisma.achievement.findMany({
             where: {
                 day: day,
-                type: type
-            }
+                type: type,
+                user: {
+                    ispublic: true // Filter users where ispublic is true
+                }
+            },
+            select : {
+                score: true,
+                day: true,
+                dailyRank: true,
+                rankChange: true,
+                user: {
+                    select:{
+                        id: true,
+                        firstname: true,
+                        lastname: true,
+                        email: true,
+                        hashed_password: false
+                    }
+                }
+            },
+            orderBy: [
+                {
+                    score: "desc"
+                }
+            ]
         });
 
         res.status(200).json(achievements);
@@ -20,6 +43,9 @@ const getAchievementsByDateAndType = async (req, res) => {
         res.status(500).send("error");
     }
 }
+
+
+
 
 const postAchievement = async (req, res) => {
     const { type, score, day, userId } = req.body;
@@ -54,11 +80,35 @@ const postAchievement = async (req, res) => {
 
         res.status(201).json(insertedAchievement);
         console.log("Achievement added successfully: ", insertedAchievement);
+        //update the ranks 
+        await updateAchievementRanks(day,type);
     } catch (error) {
         console.error("Error in postAchievement: ", error);
         res.status(500).json({ error: "An error occurred while adding the achievement" });
     }
 };
 
+const updateAchievementRanks = async (day, type) => {
+    try {
+        // Execute the SQL query to update achievement ranks
+        await prisma.$executeRaw`UPDATE achievement AS a
+        JOIN (
+            SELECT id, RANK() OVER (ORDER BY score DESC) AS new_dailyRank
+            FROM achievement
+            WHERE day = CAST(${day.toString()} AS DATE) AND type = ${type.toString()}
+        ) AS b ON a.id = b.id
+        SET a.dailyRank = b.new_dailyRank;`;
 
-module.exports = { getAchievementsByDateAndType,postAchievement };
+        console.log("Achievement ranks updated successfully.");
+    } catch (error) {
+        console.error("Error updating achievement ranks:", error);
+    }
+};
+
+
+
+
+
+
+
+module.exports = { getAchievementsByDateAndType,postAchievement,updateAchievementRanks };
