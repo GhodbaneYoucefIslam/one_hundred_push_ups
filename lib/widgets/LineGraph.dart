@@ -30,7 +30,7 @@ class LineGraph extends StatelessWidget {
         rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
             sideTitles: SideTitles(
-                interval: 1,
+                interval: 2,//todo: make this parameter dynamic depending on number of days
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
                   if (dates!=null){

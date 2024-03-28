@@ -41,24 +41,30 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
     final db = LocalDB();
     stats = db.fetchDailyRepsStats();
   }
-  
-  int calculateStreak(List<String> dates,List<double> goals,List<double> reps){
+
+  int calculateStreak(
+      List<String> dates, List<double> goals, List<double> reps) {
     List<DateTime> days = dates.map((date) => DateTime.parse(date)).toList();
-    DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
-    int streak =0;
+    DateTime today =
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+    int streak = 0;
     int remainingDays = days.length;
     DateTime current = today;
-    while(remainingDays>=1){
+    while (remainingDays >= 1) {
       DateTime previous = current.subtract(const Duration(days: 1));
       //if previous day is not yesterday there is no streak
-      if(previous.compareTo(days[remainingDays-1])!=0) {break;}
-      else{
+      if (previous.compareTo(days[remainingDays - 1]) != 0) {
+        break;
+      } else {
         //if previous day is yesterday then we check if the goal was completed
-        if (goals[remainingDays-1]<=reps[remainingDays-1]) {streak++;}
-        else{break;}
+        if (goals[remainingDays - 1] <= reps[remainingDays - 1]) {
+          streak++;
+        } else {
+          break;
+        }
       }
-      remainingDays -=1;//move to the previous day
-      current=previous;
+      remainingDays -= 1; //move to the previous day
+      current = previous;
     }
     return streak;
   }
@@ -114,7 +120,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 .toList();
                             List<double> goals = snapshot.data!
                                 .map((map) =>
-                                double.parse(map["goalAmount"].toString()))
+                                    double.parse(map["goalAmount"].toString()))
                                 .toList();
                             return Text(
                               "${calculateStreak(dates, goals, reps)}",
