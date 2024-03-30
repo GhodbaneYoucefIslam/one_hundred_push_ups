@@ -240,7 +240,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "Your average is ${average.toStringAsFixed(2)} reps per day",
+                                  "Your average is ${average.toStringAsFixed(2)}%",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15),
@@ -296,7 +296,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                               children: [
                                 Text(
-                                  "Your average is ${average.toStringAsFixed(2)} reps per day",
+                                  "Your average is ${average.toStringAsFixed(2)} reps per set",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 15),

@@ -2,6 +2,9 @@ import "package:flutter/material.dart";
 import 'package:one_hundred_push_ups/models/Achievement.dart';
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
+import "package:provider/provider.dart";
+import "../models/Goal.dart";
+import "../models/GoalProvider.dart";
 
 class LeaderboardPage extends StatefulWidget {
   //todo: fix alignment
@@ -11,15 +14,16 @@ class LeaderboardPage extends StatefulWidget {
 }
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
-  late Future<List<Achievement>?> data;
-  void getLeaderBoardData() async {
-    data = getTodayAchievements();
-  }
-
-  @override
-  void initState() {
-    getLeaderBoardData();
-    super.initState();
+  late List<Achievement>? data;
+  Future<void> getLeaderBoardData(Goal todayGoal, int totalReps) async {
+    //fist we create or update the achievement for the current user
+    var achievementAdded = await postTodayAchievement(
+        Achievement.fromGoalAndSets(todayGoal, totalReps));
+    if (achievementAdded != null) {
+    } else {
+      print("error adding achievement");
+    }
+    data = await getTodayAchievements();
   }
 
   @override
@@ -48,7 +52,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
             Expanded(
               flex: 5,
               child: FutureBuilder(
-                  future: data,
+                  future: getLeaderBoardData(
+                      context.watch<GoalProvider>().todayGoal!,
+                      context.watch<GoalProvider>().totalReps),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -63,12 +69,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 width: MediaQuery.of(context).size.width * 0.85,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  color:
-                                      (snapshot.data![index].user.isEqualTo(me))
-                                          ? Color(0XFFF7F16E)
-                                          : (index % 2 == 0
-                                              ? turquoiseBlue.withOpacity(0.8)
-                                              : turquoiseBlue.withOpacity(0.3)),
+                                  color: (data![index].user.isEqualTo(me))
+                                      ? Color(0XFFF7F16E)
+                                      : (index % 2 == 0
+                                          ? turquoiseBlue.withOpacity(0.8)
+                                          : turquoiseBlue.withOpacity(0.3)),
                                   borderRadius: BorderRadius.circular(10),
                                 ),
                                 child: Row(
@@ -78,18 +83,16 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     Row(
                                       children: [
                                         Text(
-                                          snapshot.data![index].rank
-                                              .toString()
-                                              .padLeft(
-                                                  snapshot.data!
-                                                      .reduce((cur, next) =>
-                                                          cur.rank > next.rank
-                                                              ? cur
-                                                              : next)
-                                                      .rank
-                                                      .toString()
-                                                      .length,
-                                                  '0'),
+                                          data![index].rank.toString().padLeft(
+                                              data!
+                                                  .reduce((cur, next) =>
+                                                      cur.rank > next.rank
+                                                          ? cur
+                                                          : next)
+                                                  .rank
+                                                  .toString()
+                                                  .length,
+                                              '0'),
                                           style: TextStyle(
                                             fontWeight: FontWeight.bold,
                                             fontSize: 20,
@@ -109,8 +112,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                                   BorderRadius.circular(5)),
                                           child: Center(
                                             child: Text(
-                                              snapshot.data![index].user
-                                                  .initials(),
+                                              data![index].user.initials(),
                                               style: TextStyle(
                                                 fontWeight: FontWeight.bold,
                                                 fontSize: 20,
@@ -121,20 +123,16 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       ],
                                     ),
                                     Text(
-                                      snapshot.data![index].reps
-                                          .toString()
-                                          .padLeft(
-                                              snapshot
-                                                  .data!
-                                                  .reduce((cur,
-                                                          next) =>
-                                                      cur.reps > next.reps
-                                                          ? cur
-                                                          : next)
-                                                  .reps
-                                                  .toString()
-                                                  .length,
-                                              '0'),
+                                      data![index].reps.toString().padLeft(
+                                          data!
+                                              .reduce((cur, next) =>
+                                                  cur.reps > next.reps
+                                                      ? cur
+                                                      : next)
+                                              .reps
+                                              .toString()
+                                              .length,
+                                          '0'),
                                       style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 20,
@@ -143,21 +141,15 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                     Row(
                                       children: [
                                         Icon(
-                                          snapshot.data![index].rankChange == 0
+                                          data![index].rankChange == 0
                                               ? Icons.remove
-                                              : (snapshot.data![index]
-                                                          .rankChange >
-                                                      0
+                                              : (data![index].rankChange > 0
                                                   ? Icons.arrow_circle_up
                                                   : Icons.arrow_circle_down),
                                           size: 20,
-                                          color: (snapshot.data![index]
-                                                      .rankChange ==
-                                                  0)
+                                          color: (data![index].rankChange == 0)
                                               ? grey
-                                              : (snapshot.data![index]
-                                                          .rankChange >
-                                                      0
+                                              : (data![index].rankChange > 0
                                                   ? greenBlue
                                                   : Colors.red),
                                         ),
@@ -165,8 +157,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                           width: 5,
                                         ),
                                         Text(
-                                          snapshot.data![index].rankChange == 0
-                                              ? "".padLeft(snapshot.data!
+                                          data![index].rankChange == 0
+                                              ? "".padLeft(data!
                                                   .reduce((cur, next) =>
                                                       cur.rankChange >
                                                               next.rankChange
@@ -175,11 +167,12 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                                   .rankChange
                                                   .toString()
                                                   .length)
-                                              : snapshot.data![index].rankChange
+                                              : data![index]
+                                                  .rankChange
                                                   .abs()
                                                   .toString()
                                                   .padLeft(
-                                                      snapshot.data!
+                                                      data!
                                                           .reduce((cur, next) =>
                                                               cur.rankChange >
                                                                       next.rankChange
@@ -190,13 +183,10 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                                           .length,
                                                       '0'),
                                           style: TextStyle(
-                                            color: (snapshot.data![index]
-                                                        .rankChange ==
+                                            color: (data![index].rankChange ==
                                                     0)
                                                 ? grey
-                                                : (snapshot.data![index]
-                                                            .rankChange >
-                                                        0
+                                                : (data![index].rankChange > 0
                                                     ? greenBlue
                                                     : Colors.red),
                                             fontWeight: FontWeight.bold,
@@ -215,7 +205,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               height: 11,
                             );
                           },
-                          itemCount: snapshot.data!.length);
+                          itemCount: data!.length);
                     }
                   }),
             )
