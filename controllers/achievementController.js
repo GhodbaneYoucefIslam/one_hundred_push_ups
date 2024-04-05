@@ -134,7 +134,10 @@ const getUserAchievements = async (req,res) =>{
             where:{
                 userId : userId,
                 type : type
-            }
+            },
+            orderBy:[{
+                day: "asc"
+            }]
         })
         res.status(200).json(achievements)
         console.log("request sucessfull")
