@@ -4,12 +4,12 @@ import 'Achievement.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Achievement>?> getTodayAchievements() async{
-  final String day = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,"0")}-${DateTime.now().day}T00:00:00Z";
+  final String day = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,"0")}-${DateTime.now().day.toString().padLeft(2,"0")}T00:00:00Z";
   const String type = defaultGoalType;
   final uri = Uri.parse("$endpoint/achievement/$day/$type");
   final response = await http.get(uri);
   if (response.statusCode == 200){
-    print("200: got responses succesfully");
+    print("200: got responses successfully");
     final List jsonResponse = json.decode(response.body);
     final achievements = jsonResponse.map((e) => Achievement.fromJson(e)).toList();
     return achievements;
@@ -20,7 +20,21 @@ Future<List<Achievement>?> getTodayAchievements() async{
   }
 }
 
-//todo: set up post request endpoint
+Future<List<Map<String,dynamic>>?> getUserAchievements() async{
+  const String type = defaultGoalType;
+  final int userId = me.id!;
+  final uri = Uri.parse("$endpoint/achievement/user/$userId/$type");
+  final response = await http.get(uri);
+  if (response.statusCode == 200){
+    print("200: got rank responses successfully");
+    final List jsonResponse = json.decode(response.body);
+    return jsonResponse.map((e) => {'dailyRank':e['dailyRank'].toString(),'day':e['day'].toString()}).toList();
+  }else{
+    print(response.body.toString());
+    print("error loading user rank achievements");
+    return null;
+  }
+}
 Future<Achievement?> postTodayAchievement(Achievement achievement) async {
   // Construct the URI
   final uri = Uri.parse("$endpoint/achievement");

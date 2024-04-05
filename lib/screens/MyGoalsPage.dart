@@ -1,6 +1,7 @@
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/database/LocalDB.dart";
+import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
@@ -36,10 +37,12 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
     }
   }
 
-  late Future<List<Map<String, dynamic>>> stats;
+  late Future<List<Map<String, dynamic>>> localStats;
+  late Future<List<Map<String, dynamic>>?> rankStats;
   void getStats() async {
     final db = LocalDB();
-    stats = db.fetchDailyRepsStats();
+    localStats = db.fetchDailyRepsStats();
+    rankStats = getUserAchievements();
   }
 
   int calculateStreak(
@@ -102,7 +105,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 15)),
                     FutureBuilder(
-                        future: stats,
+                        future: localStats,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -150,7 +153,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                   },
                   children: [
                     FutureBuilder(
-                        future: stats,
+                        future: localStats,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -208,7 +211,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           }
                         }),
                     FutureBuilder(
-                        future: stats,
+                        future: localStats,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -268,7 +271,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           }
                         }),
                     FutureBuilder(
-                        future: stats,
+                        future: localStats,
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -323,39 +326,54 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                             );
                           }
                         }),
-                    Column(
-                      //todo: make after setting up server
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        Text(
-                          "Your average rank is 25",
-                          style: TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 15),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(
-                              top: 20, bottom: 10, left: 5, right: 30),
-                          child: Container(
-                              width: 300,
-                              height: 250,
-                              child: LineGraph(
-                                minX: 1,
-                                maxX: 7,
-                                minY: 0,
-                                maxY: 30,
-                                dataPoints: [
-                                  FlSpot(1, 25),
-                                  FlSpot(2, 25),
-                                  FlSpot(3, 23),
-                                  FlSpot(4, 20),
-                                  FlSpot(5, 20),
-                                  FlSpot(6, 18),
-                                  FlSpot(7, 10),
-                                ],
-                              )),
-                        ),
-                      ],
-                    ),
+                    FutureBuilder(
+                        future: rankStats,
+                        builder: (context, snapshot) {
+                          if (snapshot.connectionState ==
+                              ConnectionState.waiting) {
+                            return const Center(
+                                child: CircularProgressIndicator());
+                          } else if (snapshot.hasError) {
+                            return Text("Error: ${snapshot.error}");
+                          } else {
+                            final ranks = snapshot.data!.map((map) => double.parse(map["dailyRank"])).toList();
+                            double average = ranks.reduce((rank1, rank2) => rank1+rank2)/ranks.length;
+                            List<String> dates = snapshot.data!
+                                .map((map) => map["day"].toString())
+                                .toList();
+                            List<FlSpot> dataPoints = [];
+                            for (int i = 0; i < ranks.length; i++) {
+                              dataPoints
+                                  .add(FlSpot(i.toDouble() + 1, ranks[i]));
+                            }
+                            return Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                              children: [
+                                Text(
+                                  "Your average rank is ${average.toStringAsFixed(2)}",
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 15),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(
+                                      top: 20, bottom: 10, left: 5, right: 30),
+                                  child: Container(
+                                      width: 300,
+                                      height: 250,
+                                      child: LineGraph(
+                                        minX: 1,
+                                        maxX: dates.length.toDouble(),
+                                        minY: 0,
+                                        maxY: ranks.reduce((rank1, rank2) => rank1> rank2? rank1: rank2)+1,
+                                        dates: dates,
+                                        dataPoints: dataPoints
+                                      )),
+                                ),
+                              ],
+                            );
+                          }
+                        })
                   ]),
             ),
             Container(
