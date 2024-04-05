@@ -6,7 +6,6 @@ const getAchievementsByDateAndType = async (req, res) => {
         const day = req.params.day;
         const type = req.params.type;
         
-        // Use `prisma` instead of `Prisma`
         const achievements = await prisma.achievement.findMany({
             where: {
                 day: day,
@@ -43,8 +42,6 @@ const getAchievementsByDateAndType = async (req, res) => {
         res.status(500).send("error");
     }
 }
-
-
 
 
 const postAchievement = async (req, res) => {
@@ -129,10 +126,26 @@ const updateAchievementRanks = async (day, type) => {
     }
 };
 
+const getUserAchievements = async (req,res) =>{
+    try{
+        const userId = parseInt(req.params.userId)
+        const type = req.params.type
+        const achievements = await prisma.achievement.findMany({
+            where:{
+                userId : userId,
+                type : type
+            }
+        })
+        res.status(200).json(achievements)
+        console.log("request sucessfull")
+    }catch(error){
+        console.log("error getting user achievements:",error)
+        res.status(500).send("error")
+    }
+}
 
 
 
 
 
-
-module.exports = { getAchievementsByDateAndType,postAchievement,updateAchievementRanks };
+module.exports = { getAchievementsByDateAndType,postAchievement,updateAchievementRanks,getUserAchievements };
