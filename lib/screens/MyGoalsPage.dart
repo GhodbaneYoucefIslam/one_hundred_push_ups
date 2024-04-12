@@ -5,6 +5,8 @@ import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
+import "../models/Achievement.dart";
+import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
 import "../widgets/RoundedTextField.dart";
 import "../widgets/LineGraph.dart";
@@ -38,11 +40,22 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
   }
 
   late Future<List<Map<String, dynamic>>> localStats;
-  late Future<List<Map<String, dynamic>>?> rankStats;
+  late List<Map<String, dynamic>>? rankStats;
+
+  Future<void> getRankData(Goal todayGoal, int totalReps) async {
+    //fist we create or update the achievement for the current user to ensure that our stats are up to date
+    var achievementAdded = await postTodayAchievement(
+        Achievement.fromGoalAndSets(todayGoal, totalReps));
+    if (achievementAdded != null) {
+    } else {
+      print("error adding achievement");
+    }
+    rankStats = await getUserAchievements();
+  }
+
   void getStats() async {
     final db = LocalDB();
     localStats = db.fetchDailyRepsStats();
-    rankStats = getUserAchievements();
   }
 
   int calculateStreak(
@@ -327,7 +340,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           }
                         }),
                     FutureBuilder(
-                        future: rankStats,
+                        future: getRankData(
+                            context.watch<GoalProvider>().todayGoal!,
+                            context.watch<GoalProvider>().totalReps),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {
@@ -336,9 +351,13 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            final ranks = snapshot.data!.map((map) => double.parse(map["dailyRank"])).toList();
-                            double average = ranks.reduce((rank1, rank2) => rank1+rank2)/ranks.length;
-                            List<String> dates = snapshot.data!
+                            final ranks = rankStats!
+                                .map((map) => double.parse(map["dailyRank"]))
+                                .toList();
+                            double average =
+                                ranks.reduce((rank1, rank2) => rank1 + rank2) /
+                                    ranks.length;
+                            List<String> dates = rankStats!
                                 .map((map) => map["day"].toString())
                                 .toList();
                             List<FlSpot> dataPoints = [];
@@ -362,13 +381,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                       width: 300,
                                       height: 250,
                                       child: LineGraph(
-                                        minX: 1,
-                                        maxX: dates.length.toDouble(),
-                                        minY: 0,
-                                        maxY: ranks.reduce((rank1, rank2) => rank1> rank2? rank1: rank2)+1,
-                                        dates: dates,
-                                        dataPoints: dataPoints
-                                      )),
+                                          minX: 1,
+                                          maxX: dates.length.toDouble(),
+                                          minY: 0,
+                                          maxY: ranks.reduce((rank1, rank2) =>
+                                                  rank1 > rank2
+                                                      ? rank1
+                                                      : rank2) +
+                                              1,
+                                          dates: dates,
+                                          dataPoints: dataPoints)),
                                 ),
                               ],
                             );

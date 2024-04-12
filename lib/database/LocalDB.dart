@@ -72,7 +72,7 @@ class LocalDB{
     final db = await DatabaseService().database;
     return await db.rawInsert(
       "INSERT INTO $setsTable(reps,time,goalId) VALUES(?,?,?)",
-      [set.reps, set.time.toIso8601String(),goalId],
+      [set.reps, "${set.time.toIso8601String()}Z",goalId],
     );
   }
   Future<List<Set>> fetchSetsForGoal(int goalId) async{

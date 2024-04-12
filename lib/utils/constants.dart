@@ -1,7 +1,5 @@
 import 'dart:ui';
-
 import 'package:one_hundred_push_ups/models/Goal.dart';
-
 import '../models/User.dart';
 
 Color darkBlue = const Color(0xFF233565);

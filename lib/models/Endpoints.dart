@@ -1,10 +1,11 @@
 import 'dart:convert';
 import 'package:one_hundred_push_ups/utils/constants.dart';
+import 'package:one_hundred_push_ups/utils/methods.dart';
 import 'Achievement.dart';
 import 'package:http/http.dart' as http;
 
 Future<List<Achievement>?> getTodayAchievements() async{
-  final String day = "${DateTime.now().year}-${DateTime.now().month.toString().padLeft(2,"0")}-${DateTime.now().day.toString().padLeft(2,"0")}T00:00:00Z";
+  final String day = toPrismaCompatibleIsoStringForDate(DateTime.now());
   const String type = defaultGoalType;
   final uri = Uri.parse("$endpoint/achievement/$day/$type");
   final response = await http.get(uri);

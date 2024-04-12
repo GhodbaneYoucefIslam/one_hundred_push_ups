@@ -1,5 +1,6 @@
 import 'package:one_hundred_push_ups/models/User.dart';
 import "package:one_hundred_push_ups/utils/constants.dart";
+import 'package:one_hundred_push_ups/utils/methods.dart';
 import 'Goal.dart';
 
 class Achievement {
@@ -30,7 +31,7 @@ class Achievement {
     };
   }
   factory Achievement.fromGoalAndSets(Goal goal,int sets) {
-    final String day = "${goal.date.year}-${goal.date.month.toString().padLeft(2,"0")}-${goal.date.day.toString().padLeft(2,"0")}T00:00:00Z";
+    final String day = toPrismaCompatibleIsoStringForDate(goal.date);
     return Achievement(
       goal.type,
       0,
