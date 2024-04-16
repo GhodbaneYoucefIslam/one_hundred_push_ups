@@ -3,6 +3,7 @@ import 'package:one_hundred_push_ups/models/Achievement.dart';
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:provider/provider.dart";
+import "package:toastification/toastification.dart";
 import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
 
@@ -59,7 +60,21 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
                     } else if (snapshot.hasError) {
-                      return Text("Error: ${snapshot.error}");
+                      WidgetsBinding.instance.addPostFrameCallback((_) {
+                        toastification.show(
+                          context: context,
+                          title: const Text("Error connecting to server"),
+                          autoCloseDuration: const Duration(seconds: 2),
+                          style: ToastificationStyle.simple,
+                          alignment: const Alignment(0, 0.75));
+                      });
+                      return const Center(
+                        child: Text(
+                          "Leaderboard not available",
+                          style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          fontSize: 20),),
+                      );
                     } else {
                       return ListView.separated(
                           shrinkWrap: true,

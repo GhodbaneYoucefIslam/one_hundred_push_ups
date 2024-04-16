@@ -175,52 +175,64 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            List<double> reps = snapshot.data!
-                                .map((map) =>
-                                    double.parse(map["SUM(reps)"].toString()))
-                                .toList();
-                            List<String> dates = snapshot.data!
-                                .map((map) => map["date"].toString())
-                                .toList();
-                            double average = snapshot.data!
-                                    .map((map) =>
-                                        int.parse(map["SUM(reps)"].toString()))
-                                    .toList()
-                                    .reduce((reps1, reps2) => reps1 + reps2) /
-                                snapshot.data!.length;
-                            List<FlSpot> dataPoints = [];
-                            for (int i = 0; i < reps.length; i++) {
-                              dataPoints.add(FlSpot(i.toDouble() + 1, reps[i]));
-                            }
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "Your average is ${average.toStringAsFixed(2)} reps per day",
+                            try{
+                              List<double> reps = snapshot.data!
+                                  .map((map) =>
+                                  double.parse(map["SUM(reps)"].toString()))
+                                  .toList();
+                              List<String> dates = snapshot.data!
+                                  .map((map) => map["date"].toString())
+                                  .toList();
+                              double average = snapshot.data!
+                                  .map((map) =>
+                                  int.parse(map["SUM(reps)"].toString()))
+                                  .toList()
+                                  .reduce((reps1, reps2) => reps1 + reps2) /
+                                  snapshot.data!.length;
+                              List<FlSpot> dataPoints = [];
+                              for (int i = 0; i < reps.length; i++) {
+                                dataPoints.add(FlSpot(i.toDouble() + 1, reps[i]));
+                              }
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Your average is ${average.toStringAsFixed(2)} reps per day",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 20, bottom: 10, left: 5, right: 30),
+                                    child: Container(
+                                        width: 300,
+                                        height: 250,
+                                        child: LineGraph(
+                                            minX: 1,
+                                            maxX: dates.length.toDouble(),
+                                            minY: 0,
+                                            maxY: reps.reduce((reps1, reps2) =>
+                                            reps1 > reps2
+                                                ? reps1
+                                                : reps2) +
+                                                10,
+                                            dates: dates,
+                                            dataPoints: dataPoints)),
+                                  ),
+                                ],
+                              );
+                            }catch(e){
+                              print("an error occurred during the building of the widget: ${e.toString()}");
+                              return Center(
+                                child:Text(
+                                  "No available stats yet",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15),
+                                      fontSize: 25),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, bottom: 10, left: 5, right: 30),
-                                  child: Container(
-                                      width: 300,
-                                      height: 250,
-                                      child: LineGraph(
-                                          minX: 1,
-                                          maxX: dates.length.toDouble(),
-                                          minY: 0,
-                                          maxY: reps.reduce((reps1, reps2) =>
-                                                  reps1 > reps2
-                                                      ? reps1
-                                                      : reps2) +
-                                              10,
-                                          dates: dates,
-                                          dataPoints: dataPoints)),
-                                ),
-                              ],
-                            );
+                              );
+                            }
                           }
                         }),
                     FutureBuilder(
@@ -233,54 +245,66 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            List<double> goals = snapshot.data!
-                                .map((map) =>
-                                    double.parse(map["goalAmount"].toString()))
-                                .toList();
-                            List<double> reps = snapshot.data!
-                                .map((map) =>
-                                    double.parse(map["SUM(reps)"].toString()))
-                                .toList();
-                            List<String> dates = snapshot.data!
-                                .map((map) => map["date"].toString())
-                                .toList();
-                            double average = 0;
-                            List<FlSpot> dataPoints = [];
-                            for (int i = 0; i < reps.length; i++) {
-                              double per = (reps[i] / goals[i]) * 100;
-                              average += per;
-                              dataPoints.add(FlSpot(i.toDouble() + 1, (per)));
-                            }
-                            average /= goals.length;
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "Your average is ${average.toStringAsFixed(2)}%",
+                            try{
+                              List<double> goals = snapshot.data!
+                                  .map((map) =>
+                                  double.parse(map["goalAmount"].toString()))
+                                  .toList();
+                              List<double> reps = snapshot.data!
+                                  .map((map) =>
+                                  double.parse(map["SUM(reps)"].toString()))
+                                  .toList();
+                              List<String> dates = snapshot.data!
+                                  .map((map) => map["date"].toString())
+                                  .toList();
+                              double average = 0;
+                              List<FlSpot> dataPoints = [];
+                              for (int i = 0; i < reps.length; i++) {
+                                double per = (reps[i] / goals[i]) * 100;
+                                average += per;
+                                dataPoints.add(FlSpot(i.toDouble() + 1, (per)));
+                              }
+                              average /= goals.length;
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Your average is ${average.toStringAsFixed(2)}%",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 20, bottom: 10, left: 5, right: 30),
+                                    child: Container(
+                                        width: 300,
+                                        height: 250,
+                                        child: LineGraph(
+                                            minX: 1,
+                                            maxX: dates.length.toDouble(),
+                                            minY: 0,
+                                            maxY: reps.reduce((reps1, reps2) =>
+                                            reps1 > reps2
+                                                ? reps1
+                                                : reps2) +
+                                                10,
+                                            dates: dates,
+                                            dataPoints: dataPoints)),
+                                  ),
+                                ],
+                              );
+                            }catch(e){
+                              print("an error occurred during the building of the widget: ${e.toString()}");
+                              return Center(
+                                child:Text(
+                                  "No available stats yet",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15),
+                                      fontSize: 25),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, bottom: 10, left: 5, right: 30),
-                                  child: Container(
-                                      width: 300,
-                                      height: 250,
-                                      child: LineGraph(
-                                          minX: 1,
-                                          maxX: dates.length.toDouble(),
-                                          minY: 0,
-                                          maxY: reps.reduce((reps1, reps2) =>
-                                                  reps1 > reps2
-                                                      ? reps1
-                                                      : reps2) +
-                                              10,
-                                          dates: dates,
-                                          dataPoints: dataPoints)),
-                                ),
-                              ],
-                            );
+                              );
+                            }
                           }
                         }),
                     FutureBuilder(
@@ -293,50 +317,62 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            List<double> avgReps = snapshot.data!
-                                .map((map) =>
-                                    double.parse(map["AVG(reps)"].toString()))
-                                .toList();
-                            List<String> dates = snapshot.data!
-                                .map((map) => map["date"].toString())
-                                .toList();
-                            double average =
-                                avgReps.reduce((avg1, avg2) => avg1 + avg2) /
-                                    avgReps.length;
-                            List<FlSpot> dataPoints = [];
-                            for (int i = 0; i < avgReps.length; i++) {
-                              dataPoints
-                                  .add(FlSpot(i.toDouble() + 1, avgReps[i]));
-                            }
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "Your average is ${average.toStringAsFixed(2)} reps per set",
+                            try{
+                              List<double> avgReps = snapshot.data!
+                                  .map((map) =>
+                                  double.parse(map["AVG(reps)"].toString()))
+                                  .toList();
+                              List<String> dates = snapshot.data!
+                                  .map((map) => map["date"].toString())
+                                  .toList();
+                              double average =
+                                  avgReps.reduce((avg1, avg2) => avg1 + avg2) /
+                                      avgReps.length;
+                              List<FlSpot> dataPoints = [];
+                              for (int i = 0; i < avgReps.length; i++) {
+                                dataPoints
+                                    .add(FlSpot(i.toDouble() + 1, avgReps[i]));
+                              }
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Your average is ${average.toStringAsFixed(2)} reps per set",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 20, bottom: 10, left: 5, right: 30),
+                                    child: Container(
+                                        width: 300,
+                                        height: 250,
+                                        child: LineGraph(
+                                            minX: 1,
+                                            maxX: dates.length.toDouble(),
+                                            minY: 0,
+                                            maxY: avgReps.reduce((reps1, reps2) =>
+                                            reps1 > reps2
+                                                ? reps1
+                                                : reps2) +
+                                                10,
+                                            dates: dates,
+                                            dataPoints: dataPoints)),
+                                  ),
+                                ],
+                              );
+                            }catch(e){
+                              print("an error occurred during the building of the widget: ${e.toString()}");
+                              return Center(
+                                child:Text(
+                                  "No available stats yet",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
-                                      fontSize: 15),
+                                      fontSize: 25),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, bottom: 10, left: 5, right: 30),
-                                  child: Container(
-                                      width: 300,
-                                      height: 250,
-                                      child: LineGraph(
-                                          minX: 1,
-                                          maxX: dates.length.toDouble(),
-                                          minY: 0,
-                                          maxY: avgReps.reduce((reps1, reps2) =>
-                                                  reps1 > reps2
-                                                      ? reps1
-                                                      : reps2) +
-                                              10,
-                                          dates: dates,
-                                          dataPoints: dataPoints)),
-                                ),
-                              ],
-                            );
+                              );
+                            }
                           }
                         }),
                     FutureBuilder(
@@ -349,7 +385,21 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                             return const Center(
                                 child: CircularProgressIndicator());
                           } else if (snapshot.hasError) {
-                            return Text("Error: ${snapshot.error}");
+                            WidgetsBinding.instance.addPostFrameCallback((_) {
+                              toastification.show(
+                                  context: context,
+                                  title: const Text("Error connecting to server"),
+                                  autoCloseDuration: const Duration(seconds: 2),
+                                  style: ToastificationStyle.simple,
+                                  alignment: const Alignment(0, 0.75));
+                            });
+                            return const Center(
+                              child: Text(
+                                "Rank stats not available",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    fontSize: 20),),
+                            );
                           } else {
                             final ranks = rankStats!
                                 .map((map) => double.parse(map["dailyRank"]))
