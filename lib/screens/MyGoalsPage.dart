@@ -175,26 +175,28 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            try{
+                            try {
                               List<double> reps = snapshot.data!
                                   .map((map) =>
-                                  double.parse(map["SUM(reps)"].toString()))
+                                      double.parse(map["SUM(reps)"].toString()))
                                   .toList();
                               List<String> dates = snapshot.data!
                                   .map((map) => map["date"].toString())
                                   .toList();
                               double average = snapshot.data!
-                                  .map((map) =>
-                                  int.parse(map["SUM(reps)"].toString()))
-                                  .toList()
-                                  .reduce((reps1, reps2) => reps1 + reps2) /
+                                      .map((map) => int.parse(
+                                          map["SUM(reps)"].toString()))
+                                      .toList()
+                                      .reduce((reps1, reps2) => reps1 + reps2) /
                                   snapshot.data!.length;
                               List<FlSpot> dataPoints = [];
                               for (int i = 0; i < reps.length; i++) {
-                                dataPoints.add(FlSpot(i.toDouble() + 1, reps[i]));
+                                dataPoints
+                                    .add(FlSpot(i.toDouble() + 1, reps[i]));
                               }
                               return Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     "Your average is ${average.toStringAsFixed(2)} reps per day",
@@ -204,7 +206,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 20, bottom: 10, left: 5, right: 30),
+                                        top: 20,
+                                        bottom: 10,
+                                        left: 5,
+                                        right: 30),
                                     child: Container(
                                         width: 300,
                                         height: 250,
@@ -213,19 +218,20 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                             maxX: dates.length.toDouble(),
                                             minY: 0,
                                             maxY: reps.reduce((reps1, reps2) =>
-                                            reps1 > reps2
-                                                ? reps1
-                                                : reps2) +
+                                                    reps1 > reps2
+                                                        ? reps1
+                                                        : reps2) +
                                                 10,
                                             dates: dates,
                                             dataPoints: dataPoints)),
                                   ),
                                 ],
                               );
-                            }catch(e){
-                              print("an error occurred during the building of the widget: ${e.toString()}");
+                            } catch (e) {
+                              print(
+                                  "an error occurred during the building of the widget: ${e.toString()}");
                               return Center(
-                                child:Text(
+                                child: Text(
                                   "No available stats yet",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -245,14 +251,14 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            try{
+                            try {
                               List<double> goals = snapshot.data!
-                                  .map((map) =>
-                                  double.parse(map["goalAmount"].toString()))
+                                  .map((map) => double.parse(
+                                      map["goalAmount"].toString()))
                                   .toList();
                               List<double> reps = snapshot.data!
                                   .map((map) =>
-                                  double.parse(map["SUM(reps)"].toString()))
+                                      double.parse(map["SUM(reps)"].toString()))
                                   .toList();
                               List<String> dates = snapshot.data!
                                   .map((map) => map["date"].toString())
@@ -266,7 +272,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               }
                               average /= goals.length;
                               return Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     "Your average is ${average.toStringAsFixed(2)}%",
@@ -276,7 +283,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 20, bottom: 10, left: 5, right: 30),
+                                        top: 20,
+                                        bottom: 10,
+                                        left: 5,
+                                        right: 30),
                                     child: Container(
                                         width: 300,
                                         height: 250,
@@ -285,19 +295,20 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                             maxX: dates.length.toDouble(),
                                             minY: 0,
                                             maxY: reps.reduce((reps1, reps2) =>
-                                            reps1 > reps2
-                                                ? reps1
-                                                : reps2) +
+                                                    reps1 > reps2
+                                                        ? reps1
+                                                        : reps2) +
                                                 10,
                                             dates: dates,
                                             dataPoints: dataPoints)),
                                   ),
                                 ],
                               );
-                            }catch(e){
-                              print("an error occurred during the building of the widget: ${e.toString()}");
+                            } catch (e) {
+                              print(
+                                  "an error occurred during the building of the widget: ${e.toString()}");
                               return Center(
-                                child:Text(
+                                child: Text(
                                   "No available stats yet",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -317,10 +328,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            try{
+                            try {
                               List<double> avgReps = snapshot.data!
                                   .map((map) =>
-                                  double.parse(map["AVG(reps)"].toString()))
+                                      double.parse(map["AVG(reps)"].toString()))
                                   .toList();
                               List<String> dates = snapshot.data!
                                   .map((map) => map["date"].toString())
@@ -334,7 +345,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                     .add(FlSpot(i.toDouble() + 1, avgReps[i]));
                               }
                               return Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
                                     "Your average is ${average.toStringAsFixed(2)} reps per set",
@@ -344,7 +356,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   ),
                                   Padding(
                                     padding: const EdgeInsets.only(
-                                        top: 20, bottom: 10, left: 5, right: 30),
+                                        top: 20,
+                                        bottom: 10,
+                                        left: 5,
+                                        right: 30),
                                     child: Container(
                                         width: 300,
                                         height: 250,
@@ -352,20 +367,22 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                             minX: 1,
                                             maxX: dates.length.toDouble(),
                                             minY: 0,
-                                            maxY: avgReps.reduce((reps1, reps2) =>
-                                            reps1 > reps2
-                                                ? reps1
-                                                : reps2) +
+                                            maxY: avgReps.reduce(
+                                                    (reps1, reps2) =>
+                                                        reps1 > reps2
+                                                            ? reps1
+                                                            : reps2) +
                                                 10,
                                             dates: dates,
                                             dataPoints: dataPoints)),
                                   ),
                                 ],
                               );
-                            }catch(e){
-                              print("an error occurred during the building of the widget: ${e.toString()}");
+                            } catch (e) {
+                              print(
+                                  "an error occurred during the building of the widget: ${e.toString()}");
                               return Center(
-                                child:Text(
+                                child: Text(
                                   "No available stats yet",
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
@@ -388,7 +405,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                             WidgetsBinding.instance.addPostFrameCallback((_) {
                               toastification.show(
                                   context: context,
-                                  title: const Text("Error connecting to server"),
+                                  title:
+                                      const Text("Error connecting to server"),
                                   autoCloseDuration: const Duration(seconds: 2),
                                   style: ToastificationStyle.simple,
                                   alignment: const Alignment(0, 0.75));
@@ -398,7 +416,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 "Rank stats not available",
                                 style: TextStyle(
                                     fontWeight: FontWeight.normal,
-                                    fontSize: 20),),
+                                    fontSize: 20),
+                              ),
                             );
                           } else {
                             final ranks = rankStats!

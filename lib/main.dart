@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
+import 'package:one_hundred_push_ups/screens/LoginPage.dart';
 import 'package:one_hundred_push_ups/screens/OnboardingScreen.dart';
+import 'package:one_hundred_push_ups/screens/SignUpPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'utils/constants.dart';

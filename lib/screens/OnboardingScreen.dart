@@ -1,6 +1,7 @@
 import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/screens/OnboardingScreenContent.dart";
+import "package:one_hundred_push_ups/screens/SignUpPage.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:smooth_page_indicator/smooth_page_indicator.dart";
@@ -79,7 +80,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  AppHome(title: "100PushUPs"),
+                                  SignUpPage(),
                             ));
                       }
                     },
