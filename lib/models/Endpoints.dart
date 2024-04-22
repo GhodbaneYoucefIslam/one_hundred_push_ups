@@ -10,13 +10,11 @@ Future<List<Achievement>?> getTodayAchievements() async{
   final uri = Uri.parse("$endpoint/achievement/$day/$type");
   final response = await http.get(uri);
   if (response.statusCode == 200){
-    print("200: got responses successfully");
     final List jsonResponse = json.decode(response.body);
     final achievements = jsonResponse.map((e) => Achievement.fromJson(e)).toList();
     return achievements;
   }else{
     print(response.body.toString());
-    print("error loading achievements");
     return null;
   }
 }
@@ -27,12 +25,10 @@ Future<List<Map<String,dynamic>>?> getUserAchievements() async{
   final uri = Uri.parse("$endpoint/achievement/user/$userId/$type");
   final response = await http.get(uri);
   if (response.statusCode == 200){
-    print("200: got rank responses successfully");
     final List jsonResponse = json.decode(response.body);
     return jsonResponse.map((e) => {'dailyRank':e['dailyRank'].toString(),'day':e['day'].toString()}).toList();
   }else{
     print(response.body.toString());
-    print("error loading user rank achievements");
     return null;
   }
 }
@@ -63,4 +59,79 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
 
     return null;
   }
+}
+Future<bool?> isEmailPreviouslyUsed(String email) async{
+  final uri = Uri.parse("$endpoint/user/verifyEmail");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({"email":email}),
+    );
+
+    if (response.statusCode == 200){
+      print("post successful!");
+      print(response.body);
+      return true;
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return false;
+    }
+  } catch (error) {
+    print("Error verifying email: $error");
+  }
+  return null;
+}
+Future<String?> sendOTPCode(String email, String fName,String lName) async{
+  final uri = Uri.parse("$endpoint/user/otp/send");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email":email,
+        "fName": fName,
+        "lName": lName
+      }),
+    );
+
+    if (response.statusCode == 200){
+      print("post successful!");
+      print(response.body);
+      final res = json.decode(response.body);
+      return res['data'];
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return "Error";
+    }
+  } catch (error) {
+    print("Error receiving: $error");
+  }
+  return null;
+}
+Future<bool?> verifyOTPCode(String email, String hash,String otp) async{
+  final uri = Uri.parse("$endpoint/user/otp/verify");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email":email,
+        "hash": hash,
+        "otp": otp
+      }),
+    );
+
+    if (response.statusCode == 200){
+      print("post successful!");
+      print(response.body);
+      return true;
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return false;
+    }
+  } catch (error) {
+    print("Error receiving: $error");
+  }
+  return null;
 }

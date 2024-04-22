@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
+import "package:one_hundred_push_ups/screens/CodeConfirmationPage.dart";
 import "package:one_hundred_push_ups/screens/LoginPage.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
+import "package:one_hundred_push_ups/models/Endpoints.dart";
 
 import "../utils/constants.dart";
 
@@ -17,6 +19,21 @@ class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
   bool accept = false;
   late String fName, lName, email, password, confirmedPassword;
+  String? validateEmail(String? value) {
+    if (value == null || value.isEmpty) return 'Email cannot be empty';
+    const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+        r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+        r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+        r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+        r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+        r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+        r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
+    final regex = RegExp(pattern);
+    bool invalid = (value.isNotEmpty && !regex.hasMatch(value));
+    return invalid
+        ? 'Enter a valid email address'
+        : null;
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -99,12 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
-                  validator: (value){
-                    if (value == null || value.isEmpty) {
-                      return 'Email cannot be empty';
-                    }
-                    return null;
-                  },
+                  validator: (value) => validateEmail(value),
                   onSaved: (value){
                     email = value!;
                   },
@@ -214,13 +226,6 @@ class _SignUpPageState extends State<SignUpPage> {
                           if(accept){
                             if (password==confirmedPassword){
                               signUp(fName, lName, email, password);
-                              const snackBar = SnackBar(
-                                content: Text(
-                                  'Signed up successfully!',
-                                ),
-                              );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                              Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> AppHome(title: appName)));
                             }else{
                               const snackBar = SnackBar(
                                 content: Text(
@@ -338,7 +343,28 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-  void signUp(String fName, String lName, String email, String password){
-    //todo : implement sign up
+  void signUp(String fName, String lName, String email, String password) async{
+    //see if email available
+    bool? availableEmail = await isEmailPreviouslyUsed(email);
+    if (availableEmail==true){
+      //take user to confirmation screen
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPage(email: email, fName: fName, lName: lName, password: password)));
+    }else if(availableEmail== false){
+      const snackBar = SnackBar(
+        content: Text(
+          'This email address is already used, please provide a different one',
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }else{
+      const snackBar = SnackBar(
+        content: Text(
+          'Cannot connect to server, please try again',
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+
+
   }
 }
