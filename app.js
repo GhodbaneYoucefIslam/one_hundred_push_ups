@@ -1,15 +1,15 @@
 const express = require('express')
 const userRoute = require("./routes/userRoute")
 const achievementRoute = require("./routes/achievementRoute")
-const bodyParser = require("body-parser");
+const bodyParser = require("body-parser")
 const port = 3000
 const app = express()
-app.use(bodyParser.json())
+app.use(express.json())
 app.listen(port, ()=>{
     console.log("server listening on port ", port)
 })
 
-app.get('/',(req,res)=>{
+app.get('/',async (req,res)=>{
     res.send("Hello world!")
 })
 
