@@ -3,6 +3,7 @@ import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/database/LocalDB.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
+import "package:one_hundred_push_ups/utils/methods.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
 import "../models/Achievement.dart";
@@ -68,6 +69,15 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
     DateTime current = today;
     while (remainingDays >= 1) {
       DateTime previous = current.subtract(const Duration(days: 1));
+      //first we check if any sets were made today
+      if (today.compareTo(days[remainingDays - 1]) == 0) {
+        //we ignore today and if its goal is completed we count it, we move on either way
+        days.removeAt(remainingDays - 1);
+        if (goals[remainingDays - 1] <= reps[remainingDays - 1]) {
+          streak++;
+        }
+        remainingDays--;
+      }
       //if previous day is not yesterday there is no streak
       if (previous.compareTo(days[remainingDays - 1]) != 0) {
         break;

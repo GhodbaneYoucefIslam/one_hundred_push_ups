@@ -50,12 +50,12 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
       return Achievement.fromJson(jsonData);
     } else {
       // Print for debugging
-      print("post failed! ${response.statusCode}");
-      print(response.body);
+      //print("post failed! ${response.statusCode}");
+      //print(response.body);
       return null;
     }
   } catch (error) {
-    print("Error posting achievement: $error");
+    //print("Error posting achievement: $error");
 
     return null;
   }

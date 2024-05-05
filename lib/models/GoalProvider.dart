@@ -39,10 +39,10 @@ class GoalProvider extends ChangeNotifier{
     notifyListeners();
   }
   Future<void> getOrCreateTodayGoal() async {
-    //await LocalDB().initializeGoals();
-    //await LocalDB().initializeSets();
     //first we deal with the daily goal
     if (todayGoal==null || goalDifferentFromDb){
+      //await LocalDB().initializeGoals();
+      //await LocalDB().initializeSets();
       var db = LocalDB();
       DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
       todayGoal = (await db.fetchGoalByDate(today));
