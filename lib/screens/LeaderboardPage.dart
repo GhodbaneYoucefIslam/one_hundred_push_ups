@@ -16,6 +16,7 @@ class LeaderboardPage extends StatefulWidget {
 
 class _LeaderboardPageState extends State<LeaderboardPage> {
   late List<Achievement>? data;
+  late int numberOfEntries;
   Future<void> getLeaderBoardData(Goal todayGoal, int totalReps) async {
     //fist we create or update the achievement for the current user
     var achievementAdded = await postTodayAchievement(
@@ -76,6 +77,26 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           fontSize: 20),),
                       );
                     } else {
+                      try{
+                        numberOfEntries = data!.length;
+                      }catch(e){
+                        print("error : ${e.toString()}");
+                        WidgetsBinding.instance.addPostFrameCallback((_) {
+                          toastification.show(
+                              context: context,
+                              title: const Text("Error connecting to server"),
+                              autoCloseDuration: const Duration(seconds: 2),
+                              style: ToastificationStyle.simple,
+                              alignment: const Alignment(0, 0.75));
+                        });
+                        return const Center(
+                          child: Text(
+                            "Leaderboard not available",
+                            style: TextStyle(
+                                fontWeight: FontWeight.normal,
+                                fontSize: 20),),
+                        );
+                      }
                       return ListView.separated(
                           shrinkWrap: true,
                           itemBuilder: (context, index) {
@@ -220,7 +241,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                               height: 11,
                             );
                           },
-                          itemCount: data!.length);
+                          itemCount: numberOfEntries);
                     }
                   }),
             )

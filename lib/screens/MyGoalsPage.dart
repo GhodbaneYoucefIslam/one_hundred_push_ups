@@ -3,7 +3,6 @@ import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/database/LocalDB.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
-import "package:one_hundred_push_ups/utils/methods.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
 import "../models/Achievement.dart";
@@ -24,6 +23,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
   int currentGraph = 0;
   final myPageController = PageController();
   List<Color> gradientColors = [turquoiseBlue, lightBlue];
+  int streak = 0;
 
   String graphTitle() {
     switch (currentGraph) {
@@ -95,6 +95,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
     return streak;
   }
 
+
+
   @override
   void initState() {
     getStats();
@@ -148,8 +150,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 .map((map) =>
                                     double.parse(map["goalAmount"].toString()))
                                 .toList();
+                            streak = calculateStreak(dates, goals, reps);
                             return Text(
-                              "${calculateStreak(dates, goals, reps)}",
+                              "$streak",
                               style: TextStyle(
                                   fontWeight: FontWeight.bold,
                                   fontSize: 25,
@@ -185,7 +188,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
+                            print("!!!!!!!!snapshot finished loading!!!!!!!!!");
                             try {
+                              if (snapshot.data == null) print("rank stats are null");
                               List<double> reps = snapshot.data!
                                   .map((map) =>
                                       double.parse(map["SUM(reps)"].toString()))
@@ -430,49 +435,69 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               ),
                             );
                           } else {
-                            final ranks = rankStats!
-                                .map((map) => double.parse(map["dailyRank"]))
-                                .toList();
-                            double average =
-                                ranks.reduce((rank1, rank2) => rank1 + rank2) /
-                                    ranks.length;
-                            List<String> dates = rankStats!
-                                .map((map) => map["day"].toString())
-                                .toList();
-                            List<FlSpot> dataPoints = [];
-                            for (int i = 0; i < ranks.length; i++) {
-                              dataPoints
-                                  .add(FlSpot(i.toDouble() + 1, ranks[i]));
-                            }
-                            return Column(
-                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              children: [
-                                Text(
-                                  "Your average rank is ${average.toStringAsFixed(2)}",
+                            try{
+                              final ranks = rankStats!
+                                  .map((map) => double.parse(map["dailyRank"]))
+                                  .toList();
+                              double average =
+                                  ranks.reduce((rank1, rank2) => rank1 + rank2) /
+                                      ranks.length;
+                              List<String> dates = rankStats!
+                                  .map((map) => map["day"].toString())
+                                  .toList();
+                              List<FlSpot> dataPoints = [];
+                              for (int i = 0; i < ranks.length; i++) {
+                                dataPoints
+                                    .add(FlSpot(i.toDouble() + 1, ranks[i]));
+                              }
+                              return Column(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: [
+                                  Text(
+                                    "Your average rank is ${average.toStringAsFixed(2)}",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 15),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.only(
+                                        top: 20, bottom: 10, left: 5, right: 30),
+                                    child: Container(
+                                        width: 300,
+                                        height: 250,
+                                        child: LineGraph(
+                                            minX: 1,
+                                            maxX: dates.length.toDouble(),
+                                            minY: 0,
+                                            maxY: ranks.reduce((rank1, rank2) =>
+                                            rank1 > rank2
+                                                ? rank1
+                                                : rank2) +
+                                                1,
+                                            dates: dates,
+                                            dataPoints: dataPoints)),
+                                  ),
+                                ],
+                              );
+                            }catch(e){
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                toastification.show(
+                                    context: context,
+                                    title:
+                                    const Text("Error connecting to server"),
+                                    autoCloseDuration: const Duration(seconds: 2),
+                                    style: ToastificationStyle.simple,
+                                    alignment: const Alignment(0, 0.75));
+                              });
+                              return const Center(
+                                child: Text(
+                                  "Rank stats not available",
                                   style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 15),
+                                      fontWeight: FontWeight.normal,
+                                      fontSize: 20),
                                 ),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                      top: 20, bottom: 10, left: 5, right: 30),
-                                  child: Container(
-                                      width: 300,
-                                      height: 250,
-                                      child: LineGraph(
-                                          minX: 1,
-                                          maxX: dates.length.toDouble(),
-                                          minY: 0,
-                                          maxY: ranks.reduce((rank1, rank2) =>
-                                                  rank1 > rank2
-                                                      ? rank1
-                                                      : rank2) +
-                                              1,
-                                          dates: dates,
-                                          dataPoints: dataPoints)),
-                                ),
-                              ],
-                            );
+                              );
+                            }
                           }
                         })
                   ]),
@@ -523,10 +548,12 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
             ElevatedButton(
               onPressed: () async {
                 var result = await openDialog();
-                if (context.mounted)
-                  context
-                      .read<GoalProvider>()
-                      .changeGoal(newGoalAmount: int.parse(result!));
+                if (context.mounted) {
+                  context.read<GoalProvider>().changeGoal(newGoalAmount: int.parse(result!));
+                  setState(() {
+                    getStats();
+                  });
+                }
               },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
