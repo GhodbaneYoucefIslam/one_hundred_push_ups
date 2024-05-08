@@ -8,6 +8,8 @@ import "package:toastification/toastification.dart";
 import "../models/Achievement.dart";
 import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
+import "../models/User.dart";
+import "../models/UserProvider.dart";
 import "../widgets/RoundedTextField.dart";
 import "../widgets/LineGraph.dart";
 
@@ -43,15 +45,15 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
   late Future<List<Map<String, dynamic>>> localStats;
   late List<Map<String, dynamic>>? rankStats;
 
-  Future<void> getRankData(Goal todayGoal, int totalReps) async {
+  Future<void> getRankData(Goal todayGoal, int totalReps, User user) async {
     //fist we create or update the achievement for the current user to ensure that our stats are up to date
     var achievementAdded = await postTodayAchievement(
-        Achievement.fromGoalAndSets(todayGoal, totalReps));
+        Achievement.fromGoalAndSets(todayGoal, totalReps, user));
     if (achievementAdded != null) {
     } else {
       print("error adding achievement");
     }
-    rankStats = await getUserAchievements();
+    rankStats = await getUserAchievements(user.id!);
   }
 
   void getStats() async {
@@ -77,6 +79,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
           streak++;
         }
         remainingDays--;
+        //if there is only today we don't check yesterday
+        if(remainingDays == 0) break;
       }
       //if previous day is not yesterday there is no streak
       if (previous.compareTo(days[remainingDays - 1]) != 0) {
@@ -89,7 +93,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
           break;
         }
       }
-      remainingDays -= 1; //move to the previous day
+      remainingDays --; //move to the previous day
       current = previous;
     }
     return streak;
@@ -141,16 +145,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else {
                             List<double> reps = snapshot.data!
                                 .map((map) =>
-                                    double.parse(map["SUM(reps)"].toString()))
+                                double.parse(map["SUM(reps)"].toString()))
                                 .toList();
                             List<String> dates = snapshot.data!
                                 .map((map) => map["date"].toString())
                                 .toList();
                             List<double> goals = snapshot.data!
                                 .map((map) =>
-                                    double.parse(map["goalAmount"].toString()))
+                                double.parse(map["goalAmount"].toString()))
                                 .toList();
-                            streak = calculateStreak(dates, goals, reps);
+                              streak = calculateStreak(dates, goals, reps);
                             return Text(
                               "$streak",
                               style: TextStyle(
@@ -188,7 +192,6 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else if (snapshot.hasError) {
                             return Text("Error: ${snapshot.error}");
                           } else {
-                            print("!!!!!!!!snapshot finished loading!!!!!!!!!");
                             try {
                               if (snapshot.data == null) print("rank stats are null");
                               List<double> reps = snapshot.data!
@@ -410,7 +413,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                     FutureBuilder(
                         future: getRankData(
                             context.watch<GoalProvider>().todayGoal!,
-                            context.watch<GoalProvider>().totalReps),
+                            context.watch<GoalProvider>().totalReps,
+                            context.watch<UserProvider>().currentUser!),
                         builder: (context, snapshot) {
                           if (snapshot.connectionState ==
                               ConnectionState.waiting) {

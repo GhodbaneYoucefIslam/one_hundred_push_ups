@@ -30,12 +30,12 @@ class Achievement {
       'userId': user.id
     };
   }
-  factory Achievement.fromGoalAndSets(Goal goal,int sets) {
+  factory Achievement.fromGoalAndSets(Goal goal,int sets, User user) {
     final String day = toPrismaCompatibleIsoStringForDate(goal.date);
     return Achievement(
       goal.type,
       0,
-      me,
+      user,
       sets,
       0,
       day);

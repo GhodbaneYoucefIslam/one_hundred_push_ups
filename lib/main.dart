@@ -5,6 +5,7 @@ import 'package:one_hundred_push_ups/screens/OnboardingScreen.dart';
 import 'package:one_hundred_push_ups/screens/SignUpPage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'models/UserProvider.dart';
 import 'utils/constants.dart';
 import "AppHome.dart";
 
@@ -24,7 +25,8 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=>GoalProvider())
+        ChangeNotifierProvider(create: (context)=>GoalProvider()),
+        ChangeNotifierProvider(create: (context)=>UserProvider())
       ],
       child: MaterialApp(
         debugShowCheckedModeBanner: false,
@@ -34,7 +36,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: "SpaceGrotesk",
         ),
-        home: isFirstUse? const OnboardingScreen() : const AppHome(title: appName),
+        home: /*isFirstUse? const OnboardingScreen() : const AppHome(title: appName)*/ SignUpPage(),
       ),
     );
   }

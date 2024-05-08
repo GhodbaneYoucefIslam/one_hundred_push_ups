@@ -1,11 +1,13 @@
 import "package:flutter/material.dart";
 import 'package:one_hundred_push_ups/models/Achievement.dart';
 import "package:one_hundred_push_ups/models/Endpoints.dart";
+import "package:one_hundred_push_ups/models/UserProvider.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
 import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
+import "../models/User.dart";
 
 class LeaderboardPage extends StatefulWidget {
   //todo: fix alignment
@@ -17,10 +19,10 @@ class LeaderboardPage extends StatefulWidget {
 class _LeaderboardPageState extends State<LeaderboardPage> {
   late List<Achievement>? data;
   late int numberOfEntries;
-  Future<void> getLeaderBoardData(Goal todayGoal, int totalReps) async {
+  Future<void> getLeaderBoardData(Goal todayGoal, int totalReps, User user) async {
     //fist we create or update the achievement for the current user
     var achievementAdded = await postTodayAchievement(
-        Achievement.fromGoalAndSets(todayGoal, totalReps));
+        Achievement.fromGoalAndSets(todayGoal, totalReps, user));
     if (achievementAdded != null) {
     } else {
       print("error adding achievement");
@@ -56,7 +58,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               child: FutureBuilder(
                   future: getLeaderBoardData(
                       context.watch<GoalProvider>().todayGoal!,
-                      context.watch<GoalProvider>().totalReps),
+                      context.watch<GoalProvider>().totalReps,
+                      context.watch<UserProvider>().currentUser!),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.waiting) {
                       return const Center(child: CircularProgressIndicator());
@@ -105,7 +108,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                 width: MediaQuery.of(context).size.width * 0.85,
                                 height: 50,
                                 decoration: BoxDecoration(
-                                  color: (data![index].user.isEqualTo(me))
+                                  color: (data![index].user.isEqualTo(context.watch<UserProvider>().currentUser!))//todo: handle null check
                                       ? Color(0XFFF7F16E)
                                       : (index % 2 == 0
                                           ? turquoiseBlue.withOpacity(0.8)

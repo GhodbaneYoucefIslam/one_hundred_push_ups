@@ -3,7 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:one_hundred_push_ups/models/Endpoints.dart';
 import 'package:one_hundred_push_ups/utils/constants.dart';
+import 'package:provider/provider.dart';
 import 'package:toastification/toastification.dart';
+import '../AppHome.dart';
+import '../models/User.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../models/UserProvider.dart';
 
 class CodeConfirmationPage extends StatefulWidget {
   final String email, fName, lName, password;
@@ -26,14 +32,16 @@ class _CodeConfirmationPageState extends State<CodeConfirmationPage> {
     Timer timer = Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!remainingTime.value.isNegative) {
         remainingTime.value = expiryTime.difference(DateTime.now());
+      } else {
+        timer.cancel();
       }
     });
   }
 
   @override
   void initState() {
-    remainingTime = ValueNotifier<Duration>(const Duration(minutes: 5));
-    startTimer(DateTime.now().add(const Duration(minutes: 5)));
+    remainingTime = ValueNotifier<Duration>(const Duration(minutes: 1));
+    startTimer(DateTime.now().add(const Duration(minutes: 1)));
     super.initState();
   }
 
@@ -264,46 +272,94 @@ class _CodeConfirmationPageState extends State<CodeConfirmationPage> {
                           children: [
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.35,
-                              child: ElevatedButton(
-                                  onPressed: () {},
-                                  style: ButtonStyle(
-                                    backgroundColor:
-                                        MaterialStateProperty.all(grey),
-                                    shape: MaterialStateProperty.all<
-                                        RoundedRectangleBorder>(
-                                      RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                    ),
-                                  ),
-                                  child: Text("Resend",
-                                      style: TextStyle(
-                                          fontSize: 16, color: Colors.white))),
+                              child: ValueListenableBuilder(
+                                  valueListenable: remainingTime,
+                                  builder: (context, value, child) =>
+                                      ElevatedButton(
+                                          onPressed: () {
+                                            if(value.isNegative){
+                                              remainingTime =
+                                                  ValueNotifier<Duration>(
+                                                      const Duration(minutes: 1));
+                                              setState(() {
+                                                startTimer(DateTime.now().add(
+                                                    const Duration(minutes: 1)));
+                                              });
+                                            }
+                                          },
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(value.isNegative? turquoiseBlue: grey),
+                                            shape: MaterialStateProperty.all<
+                                                RoundedRectangleBorder>(
+                                              RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                          child: Text("Resend",
+                                              style: TextStyle(
+                                                  fontSize: 16,
+                                                  color: Colors.white)))),
                             ),
                             SizedBox(
                               width: MediaQuery.of(context).size.width * 0.35,
                               child: ElevatedButton(
-                                  onPressed: () async{
+                                  onPressed: () async {
                                     if (formKey.currentState!.validate()) {
                                       formKey.currentState!.save();
-                                      String otp = digit1 + digit2 + digit3 + digit4;
+                                      String otp =
+                                          digit1 + digit2 + digit3 + digit4;
                                       String hash = snapshot.data!;
-                                      print("hash is : "+snapshot.data.toString());
-                                      bool? correct = await verifyOTPCode(widget.email, hash, otp);
-                                      if(correct == true){
-                                        const snackBar = SnackBar(
-                                          content: Text(
-                                            'Correct otp code!',
-                                          ),
-                                        );
-                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                      }else if(correct == false){
+                                      print("hash is : " +
+                                          snapshot.data.toString());
+                                      bool? correct = await verifyOTPCode(
+                                          widget.email, hash, otp);
+                                      if (correct == true) {
+                                        User? newUser = await postNewUser(
+                                            widget.email,
+                                            widget.fName,
+                                            widget.lName,
+                                            widget.password);
+                                        if (newUser != null) {
+                                          final snackBar = SnackBar(
+                                            content: Text(
+                                              'Registration of ${newUser.lastname} ${newUser.firstname} successful with id:${newUser.id}!',
+                                            ),
+                                          );
+                                          ScaffoldMessenger.of(context)
+                                              .showSnackBar(snackBar);
+                                          final myPrefs =
+                                              await SharedPreferences
+                                                  .getInstance();
+                                          //Keeping hold of new user for subsequent uses of the app
+                                          myPrefs.setInt(userId, newUser.id!);
+                                          myPrefs.setString(
+                                              userEmail, newUser.email);
+                                          myPrefs.setString(
+                                              userFname, newUser.firstname);
+                                          myPrefs.setString(
+                                              userLname, newUser.lastname);
+                                          myPrefs.setBool(userIsLoggedIn, true);
+                                          Provider.of<UserProvider>(context,
+                                                  listen: false)
+                                              .initUserFromPrefs();
+                                          Navigator.pushReplacement(
+                                              context,
+                                              MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      const AppHome(
+                                                          title: appName)));
+                                        }
+                                      } else if (correct == false) {
                                         const snackBar = SnackBar(
                                           content: Text(
                                             'Incorrect otp code!',
                                           ),
                                         );
-                                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                        ScaffoldMessenger.of(context)
+                                            .showSnackBar(snackBar);
                                       }
                                     }
                                   },

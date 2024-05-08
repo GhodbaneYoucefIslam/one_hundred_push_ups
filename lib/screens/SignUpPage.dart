@@ -130,6 +130,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   validator: (value){
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
+                    }else if(value.toString().length<4){
+                      return 'Password cannot contain less than 4 characters';
                     }
                     return null;
                   },

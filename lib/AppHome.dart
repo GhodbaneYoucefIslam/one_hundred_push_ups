@@ -5,6 +5,8 @@ import 'package:one_hundred_push_ups/screens/MyGoalsPage.dart';
 import 'package:one_hundred_push_ups/screens/SettingsPage.dart';
 import 'package:one_hundred_push_ups/widgets/SideMenu.dart';
 import 'package:one_hundred_push_ups/widgets/SideMenuItem.dart';
+import 'package:provider/provider.dart';
+import 'models/UserProvider.dart';
 import 'utils/constants.dart';
 import 'package:one_hundred_push_ups/utils/MenuEntry.dart';
 
@@ -44,11 +46,11 @@ class _AppHomeState extends State<AppHome> {
                   color: Colors.white, fontWeight: FontWeight.bold)),
         ),
         drawer: SideMenu(
-          accountEmail: "",
-          accountName: "Ghodbane Youcef Islam",
-          avatar: const Text(
-            "IG",
-            style: TextStyle(fontSize: 20),
+          accountEmail: context.watch<UserProvider>().currentUser != null? context.watch<UserProvider>().currentUser!.email: "",
+          accountName: context.watch<UserProvider>().currentUser != null? "${context.watch<UserProvider>().currentUser!.lastname} ${context.watch<UserProvider>().currentUser!.firstname}" : "Not logged in",
+          avatar: Text(
+            context.watch<UserProvider>().currentUser != null? context.watch<UserProvider>().currentUser!.initials(): "NLI",
+            style: const TextStyle(fontSize: 20),
           ),
           menuEntries: [
             SideMenuItem(

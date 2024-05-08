@@ -15,4 +15,9 @@ class User {
   String initials() {
     return (lastname[0] + firstname[0]).toUpperCase();
   }
+
+  @override
+  String toString(){
+    return "User($id,$firstname,$lastname,$email)";
+  }
 }

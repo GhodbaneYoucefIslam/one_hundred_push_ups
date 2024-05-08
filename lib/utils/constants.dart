@@ -12,7 +12,11 @@ const String showOnboarding = "showOnboarding";
 const String dailyGoalId = "dailyGoalId";
 const String defaultGoalType = "pushUps";
 const String appName = "100PushUPs";
+const String userFname = "userFname";
+const String userLname = "userLname";
+const String userEmail = "userEmail";
+const String userId = "userId";
+const String userIsLoggedIn = "userIsLoggedIn";
 
 final Goal placeholderGoal =  Goal(type: defaultGoalType, date: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day), goalAmount: 100);
-final User me = User(3,"me","me","me@me.com");//todo: replace with actual current user
-const String endpoint = "https://one-hundred-push-ups-backend.onrender.com";
+const String endpoint = "https://jyghodbane.alwaysdata.net";

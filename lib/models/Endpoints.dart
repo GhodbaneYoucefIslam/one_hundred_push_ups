@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:one_hundred_push_ups/models/User.dart';
 import 'package:one_hundred_push_ups/utils/constants.dart';
 import 'package:one_hundred_push_ups/utils/methods.dart';
 import 'Achievement.dart';
@@ -19,9 +20,8 @@ Future<List<Achievement>?> getTodayAchievements() async{
   }
 }
 
-Future<List<Map<String,dynamic>>?> getUserAchievements() async{
+Future<List<Map<String,dynamic>>?> getUserAchievements(int userId) async{
   const String type = defaultGoalType;
-  final int userId = me.id!;
   final uri = Uri.parse("$endpoint/achievement/user/$userId/$type");
   final response = await http.get(uri);
   if (response.statusCode == 200){
@@ -69,7 +69,7 @@ Future<bool?> isEmailPreviouslyUsed(String email) async{
       body: json.encode({"email":email}),
     );
 
-    if (response.statusCode == 200){
+    if (response.statusCode == 401){
       print("post successful!");
       print(response.body);
       return true;
@@ -132,6 +132,33 @@ Future<bool?> verifyOTPCode(String email, String hash,String otp) async{
     }
   } catch (error) {
     print("Error receiving: $error");
+  }
+  return null;
+}
+
+Future<User?> postNewUser(String email, String fName, String lName, String password) async{
+  final uri = Uri.parse("$endpoint/user/create");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email":email,
+        "fName":fName,
+        "lName":lName,
+        "password":password
+      }),
+    );
+    if (response.statusCode == 201){
+      print("added user successfully");
+      final jsonData = json.decode(response.body);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return null;
+    }
+  } catch (error) {
+    print("Error adding user: $error");
   }
   return null;
 }
