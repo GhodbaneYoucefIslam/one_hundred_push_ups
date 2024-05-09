@@ -90,119 +90,123 @@ class _HomePageState extends State<HomePage> {
             } else if (snapshot.hasError) {
               return Text("Error: ${snapshot.error}");
             } else {
-              goal = context.watch<GoalProvider>().todayGoal!.goalAmount;
-              totalReps = context.watch<GoalProvider>().totalReps;
-              return Container(
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Column(
-                      children: [
-                        Text(
-                            upperText(context.watch<GoalProvider>().todayGoal!),
-                            style: const TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 30)),
-                        const SizedBox(
-                          height: 20,
-                        ),
-                        AnimatedCircularChart(
-                          size: const Size(280, 280),
-                          initialChartData: <CircularStackEntry>[
-                            CircularStackEntry(
-                              <CircularSegmentEntry>[
-                                CircularSegmentEntry(
-                                    totalReps.toDouble(), turquoiseBlue,
-                                    rankKey: '% of daily goal'),
-                                CircularSegmentEntry(
-                                    (goal - totalReps).toDouble(),
-                                    Colors.white10,
-                                    rankKey: 'remaining %'),
-                              ],
-                              rankKey: 'Daily Progress',
-                            ),
-                          ],
-                          key: _chartKey,
-                          chartType: CircularChartType.Radial,
-                          holeLabel: "${totalReps * 100 ~/ goal}%",
-                          labelStyle: const TextStyle(
-                            fontSize: 50,
-                            fontWeight: FontWeight.bold,
-                            color: Colors.black,
-                            fontFamily: "SpaceGrotesk",
+              try{
+                goal = context.watch<GoalProvider>().todayGoal!.goalAmount;
+                totalReps = context.watch<GoalProvider>().totalReps;
+                return Container(
+                  width: MediaQuery.of(context).size.width,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceAround,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: <Widget>[
+                      Column(
+                        children: [
+                          Text(
+                              upperText(context.watch<GoalProvider>().todayGoal!),
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 30)),
+                          const SizedBox(
+                            height: 20,
                           ),
-                        ),
-                      ],
-                    ),
-                    ValueListenableBuilder(
-                      valueListenable: remainingTime,
-                      builder: (context,value,child)=> Text(
-                        totalReps <
-                                context
-                                    .watch<GoalProvider>()
-                                    .todayGoal!
-                                    .goalAmount
-                            ? "You have\n ${value.inHours} hours ${value.inMinutes - value.inHours * 60} mins and ${value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600}\n seconds\n to finish your goal"
-                            : "\nDone for the day!\n\n",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 25),
-                        textAlign: TextAlign.center,
+                          AnimatedCircularChart(
+                            size: const Size(280, 280),
+                            initialChartData: <CircularStackEntry>[
+                              CircularStackEntry(
+                                <CircularSegmentEntry>[
+                                  CircularSegmentEntry(
+                                      totalReps.toDouble(), turquoiseBlue,
+                                      rankKey: '% of daily goal'),
+                                  CircularSegmentEntry(
+                                      (goal - totalReps).toDouble(),
+                                      Colors.white10,
+                                      rankKey: 'remaining %'),
+                                ],
+                                rankKey: 'Daily Progress',
+                              ),
+                            ],
+                            key: _chartKey,
+                            chartType: CircularChartType.Radial,
+                            holeLabel: "${totalReps * 100 ~/ goal}%",
+                            labelStyle: const TextStyle(
+                              fontSize: 50,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                              fontFamily: "SpaceGrotesk",
+                            ),
+                          ),
+                        ],
                       ),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Text("Add set",
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold, fontSize: 30)),
-                        const SizedBox(
-                          width: 20,
+                      ValueListenableBuilder(
+                        valueListenable: remainingTime,
+                        builder: (context,value,child)=> Text(
+                          totalReps <
+                              context
+                                  .watch<GoalProvider>()
+                                  .todayGoal!
+                                  .goalAmount
+                              ? "You have\n ${value.inHours} hours ${value.inMinutes - value.inHours * 60} mins and ${value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600}\n seconds\n to finish your goal"
+                              : "\nDone for the day!\n\n",
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 25),
+                          textAlign: TextAlign.center,
                         ),
-                        Container(
-                          width: 80,
-                          height: 80,
-                          child: FloatingActionButton(
-                            elevation: 3,
-                            onPressed: () async {
-                              var result = await openDialog();
-                              int repsToAdd = int.parse(result!);
-                              Provider.of<GoalProvider>(context, listen: false).addSet(reps: repsToAdd, goalId:Provider.of<GoalProvider>(context, listen: false).todayGoal!.id!);
-                              setState(() {
-                                List<CircularStackEntry> updatedChartData =
-                                    <CircularStackEntry>[
-                                  CircularStackEntry(
-                                    <CircularSegmentEntry>[
-                                      CircularSegmentEntry(
-                                          totalReps.toDouble(), turquoiseBlue,
-                                          rankKey: '% of daily goal'),
-                                      CircularSegmentEntry(
-                                          (goal - totalReps).toDouble(),
-                                          Colors.white10,
-                                          rankKey: 'remaining %'),
-                                    ],
-                                    rankKey: 'Daily Progress',
-                                  ),
-                                ];
-                                _chartKey.currentState!
-                                    .updateData(updatedChartData);
-                              });
-                            },
-                            backgroundColor: greenBlue,
-                            shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(100)),
-                            child: const Icon(
-                              Icons.add,
-                              color: Colors.white,
-                              size: 70,
-                            ),
+                      ),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          const Text("Add set",
+                              style: TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 30)),
+                          const SizedBox(
+                            width: 20,
                           ),
-                        )
-                      ],
-                    )
-                  ],
-                ),
-              );
+                          Container(
+                            width: 80,
+                            height: 80,
+                            child: FloatingActionButton(
+                              elevation: 3,
+                              onPressed: () async {
+                                var result = await openDialog();
+                                int repsToAdd = int.parse(result!);
+                                Provider.of<GoalProvider>(context, listen: false).addSet(reps: repsToAdd, goalId:Provider.of<GoalProvider>(context, listen: false).todayGoal!.id!);
+                                setState(() {
+                                  List<CircularStackEntry> updatedChartData =
+                                  <CircularStackEntry>[
+                                    CircularStackEntry(
+                                      <CircularSegmentEntry>[
+                                        CircularSegmentEntry(
+                                            totalReps.toDouble(), turquoiseBlue,
+                                            rankKey: '% of daily goal'),
+                                        CircularSegmentEntry(
+                                            (goal - totalReps).toDouble(),
+                                            Colors.white10,
+                                            rankKey: 'remaining %'),
+                                      ],
+                                      rankKey: 'Daily Progress',
+                                    ),
+                                  ];
+                                  _chartKey.currentState!
+                                      .updateData(updatedChartData);
+                                });
+                              },
+                              backgroundColor: greenBlue,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(100)),
+                              child: const Icon(
+                                Icons.add,
+                                color: Colors.white,
+                                size: 70,
+                              ),
+                            ),
+                          )
+                        ],
+                      )
+                    ],
+                  ),
+                );
+              }catch(e){
+                return const Center(child: CircularProgressIndicator());
+              }
             }
           },
         ));

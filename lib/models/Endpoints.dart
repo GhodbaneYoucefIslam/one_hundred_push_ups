@@ -33,6 +33,7 @@ Future<List<Map<String,dynamic>>?> getUserAchievements(int userId) async{
   }
 }
 Future<Achievement?> postTodayAchievement(Achievement achievement) async {
+  //todo: maybe there is a problem here posting the achievement of the same user twice check later
   // Construct the URI
   final uri = Uri.parse("$endpoint/achievement");
   try {

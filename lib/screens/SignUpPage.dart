@@ -2,7 +2,6 @@ import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/screens/CodeConfirmationPage.dart";
-import "package:one_hundred_push_ups/screens/LoginPage.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 
@@ -288,6 +287,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 GestureDetector(
                   onTap: () {
                     //todo : implement sign up with google
+                    //Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const AppHome(title: appName)));
                   },
                   child: Container(
                     width: 350,
@@ -325,7 +325,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> const AppHome(title: appName)));
                       },
                       child: Text(
                         'Login',

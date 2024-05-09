@@ -45,15 +45,17 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
   late Future<List<Map<String, dynamic>>> localStats;
   late List<Map<String, dynamic>>? rankStats;
 
-  Future<void> getRankData(Goal todayGoal, int totalReps, User user) async {
+  Future<void> getRankData(Goal? todayGoal, int totalReps, User? user) async {
     //fist we create or update the achievement for the current user to ensure that our stats are up to date
-    var achievementAdded = await postTodayAchievement(
-        Achievement.fromGoalAndSets(todayGoal, totalReps, user));
-    if (achievementAdded != null) {
-    } else {
-      print("error adding achievement");
+    if (user != null && todayGoal != null) {
+      var achievementAdded = await postTodayAchievement(
+          Achievement.fromGoalAndSets(todayGoal, totalReps, user));
+      if (achievementAdded != null) {
+      } else {
+        print("error adding achievement");
+      }
+      rankStats = await getUserAchievements(user.id!);
     }
-    rankStats = await getUserAchievements(user.id!);
   }
 
   void getStats() async {
@@ -80,7 +82,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
         }
         remainingDays--;
         //if there is only today we don't check yesterday
-        if(remainingDays == 0) break;
+        if (remainingDays == 0) break;
       }
       //if previous day is not yesterday there is no streak
       if (previous.compareTo(days[remainingDays - 1]) != 0) {
@@ -93,13 +95,11 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
           break;
         }
       }
-      remainingDays --; //move to the previous day
+      remainingDays--; //move to the previous day
       current = previous;
     }
     return streak;
   }
-
-
 
   @override
   void initState() {
@@ -145,16 +145,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           } else {
                             List<double> reps = snapshot.data!
                                 .map((map) =>
-                                double.parse(map["SUM(reps)"].toString()))
+                                    double.parse(map["SUM(reps)"].toString()))
                                 .toList();
                             List<String> dates = snapshot.data!
                                 .map((map) => map["date"].toString())
                                 .toList();
                             List<double> goals = snapshot.data!
                                 .map((map) =>
-                                double.parse(map["goalAmount"].toString()))
+                                    double.parse(map["goalAmount"].toString()))
                                 .toList();
-                              streak = calculateStreak(dates, goals, reps);
+                            streak = calculateStreak(dates, goals, reps);
                             return Text(
                               "$streak",
                               style: TextStyle(
@@ -193,7 +193,6 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                             return Text("Error: ${snapshot.error}");
                           } else {
                             try {
-                              if (snapshot.data == null) print("rank stats are null");
                               List<double> reps = snapshot.data!
                                   .map((map) =>
                                       double.parse(map["SUM(reps)"].toString()))
@@ -412,84 +411,33 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                         }),
                     FutureBuilder(
                         future: getRankData(
-                            context.watch<GoalProvider>().todayGoal!,
+                            context.watch<GoalProvider>().todayGoal,
                             context.watch<GoalProvider>().totalReps,
-                            context.watch<UserProvider>().currentUser!),
+                            context.watch<UserProvider>().currentUser),
                         builder: (context, snapshot) {
-                          if (snapshot.connectionState ==
-                              ConnectionState.waiting) {
-                            return const Center(
-                                child: CircularProgressIndicator());
-                          } else if (snapshot.hasError) {
-                            WidgetsBinding.instance.addPostFrameCallback((_) {
-                              toastification.show(
-                                  context: context,
-                                  title:
-                                      const Text("Error connecting to server"),
-                                  autoCloseDuration: const Duration(seconds: 2),
-                                  style: ToastificationStyle.simple,
-                                  alignment: const Alignment(0, 0.75));
-                            });
+                          if (context.watch<UserProvider>().currentUser ==
+                              null) {
                             return const Center(
                               child: Text(
-                                "Rank stats not available",
+                                "Please login to access rank stats!",
+                                textAlign: TextAlign.center,
                                 style: TextStyle(
-                                    fontWeight: FontWeight.normal,
-                                    fontSize: 20),
+                                    fontWeight: FontWeight.bold, fontSize: 25),
                               ),
                             );
                           } else {
-                            try{
-                              final ranks = rankStats!
-                                  .map((map) => double.parse(map["dailyRank"]))
-                                  .toList();
-                              double average =
-                                  ranks.reduce((rank1, rank2) => rank1 + rank2) /
-                                      ranks.length;
-                              List<String> dates = rankStats!
-                                  .map((map) => map["day"].toString())
-                                  .toList();
-                              List<FlSpot> dataPoints = [];
-                              for (int i = 0; i < ranks.length; i++) {
-                                dataPoints
-                                    .add(FlSpot(i.toDouble() + 1, ranks[i]));
-                              }
-                              return Column(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Text(
-                                    "Your average rank is ${average.toStringAsFixed(2)}",
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 15),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.only(
-                                        top: 20, bottom: 10, left: 5, right: 30),
-                                    child: Container(
-                                        width: 300,
-                                        height: 250,
-                                        child: LineGraph(
-                                            minX: 1,
-                                            maxX: dates.length.toDouble(),
-                                            minY: 0,
-                                            maxY: ranks.reduce((rank1, rank2) =>
-                                            rank1 > rank2
-                                                ? rank1
-                                                : rank2) +
-                                                1,
-                                            dates: dates,
-                                            dataPoints: dataPoints)),
-                                  ),
-                                ],
-                              );
-                            }catch(e){
+                            if (snapshot.connectionState ==
+                                ConnectionState.waiting) {
+                              return const Center(
+                                  child: CircularProgressIndicator());
+                            } else if (snapshot.hasError) {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 toastification.show(
                                     context: context,
-                                    title:
-                                    const Text("Error connecting to server"),
-                                    autoCloseDuration: const Duration(seconds: 2),
+                                    title: const Text(
+                                        "Error connecting to server"),
+                                    autoCloseDuration:
+                                        const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
                                     alignment: const Alignment(0, 0.75));
                               });
@@ -501,6 +449,78 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                       fontSize: 20),
                                 ),
                               );
+                            } else {
+                              try {
+                                final ranks = rankStats!
+                                    .map(
+                                        (map) => double.parse(map["dailyRank"]))
+                                    .toList();
+                                double average = ranks.reduce(
+                                        (rank1, rank2) => rank1 + rank2) /
+                                    ranks.length;
+                                List<String> dates = rankStats!
+                                    .map((map) => map["day"].toString())
+                                    .toList();
+                                List<FlSpot> dataPoints = [];
+                                for (int i = 0; i < ranks.length; i++) {
+                                  dataPoints
+                                      .add(FlSpot(i.toDouble() + 1, ranks[i]));
+                                }
+                                return Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  children: [
+                                    Text(
+                                      "Your average rank is ${average.toStringAsFixed(2)}",
+                                      style: TextStyle(
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 15),
+                                    ),
+                                    Padding(
+                                      padding: const EdgeInsets.only(
+                                          top: 20,
+                                          bottom: 10,
+                                          left: 5,
+                                          right: 30),
+                                      child: Container(
+                                          width: 300,
+                                          height: 250,
+                                          child: LineGraph(
+                                              minX: 1,
+                                              maxX: dates.length.toDouble(),
+                                              minY: 0,
+                                              maxY: ranks.reduce(
+                                                      (rank1, rank2) =>
+                                                          rank1 > rank2
+                                                              ? rank1
+                                                              : rank2) +
+                                                  1,
+                                              dates: dates,
+                                              dataPoints: dataPoints)),
+                                    ),
+                                  ],
+                                );
+                              } catch (e) {
+                                WidgetsBinding.instance
+                                    .addPostFrameCallback((_) {
+                                  toastification.show(
+                                      context: context,
+                                      title: const Text(
+                                          "Error connecting to server"),
+                                      autoCloseDuration:
+                                          const Duration(seconds: 2),
+                                      style: ToastificationStyle.simple,
+                                      alignment: const Alignment(0, 0.75));
+                                });
+                                return const Center(
+                                  child: Text(
+                                    "Rank stats not available",
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.normal,
+                                        fontSize: 20),
+                                  ),
+                                );
+                              }
                             }
                           }
                         })
@@ -543,7 +563,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               ),
             ),
             Text(
-              "${context.watch<GoalProvider>().todayGoal!.goalAmount} Reps",
+              "${context.watch<GoalProvider>().todayGoal== null? "100":context.watch<GoalProvider>().todayGoal!.goalAmount } Reps",
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -553,7 +573,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               onPressed: () async {
                 var result = await openDialog();
                 if (context.mounted) {
-                  context.read<GoalProvider>().changeGoal(newGoalAmount: int.parse(result!));
+                  context
+                      .read<GoalProvider>()
+                      .changeGoal(newGoalAmount: int.parse(result!));
                   setState(() {
                     getStats();
                   });

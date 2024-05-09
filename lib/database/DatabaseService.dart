@@ -17,6 +17,11 @@ class DatabaseService{
     return join(path, name);
   }
 
+  Future<void> dropDB() async{
+    final String path = await fullPath;
+    databaseFactory.deleteDatabase(path);
+  }
+
   Future<Database> _initialize() async{
     final String path = await fullPath;
     Database db = await openDatabase(

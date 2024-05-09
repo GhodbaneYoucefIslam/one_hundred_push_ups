@@ -18,7 +18,7 @@ class UserProvider extends ChangeNotifier {
       notifyListeners();
     }
   }
-  void setUser({required User user}){
+  void setUser({required User? user}){
     currentUser= user;
     notifyListeners();
   }

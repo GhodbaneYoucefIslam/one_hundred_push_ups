@@ -69,4 +69,11 @@ class GoalProvider extends ChangeNotifier{
       getGoalSets(todayGoal!.id!);
     }
   }
+  void nullifyGoal(){
+    todayGoal = null;
+    goalDifferentFromDb = true;
+    totalReps =0;
+    setsDifferentFromDb=true;
+    notifyListeners();
+  }
 }
