@@ -8,5 +8,6 @@ router.post("/otp/send",otpController.otpSignUpSend)
 router.post("/otp/verify",otpController.otpSignUpVerify)
 router.post("/create",userController.postNewUser)
 router.post("/verifyEmail",userController.verifyExistingEmail)
+router.post("/login",userController.login)
 
 module.exports = router

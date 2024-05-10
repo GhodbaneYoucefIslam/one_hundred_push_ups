@@ -1,4 +1,5 @@
 const nodemailer = require("nodemailer");
+const { env } = require("process");
 
 const sendEmail = async (email,subject,body,callback) => {
     // Create a Nodemailer transporter
@@ -8,7 +9,7 @@ const sendEmail = async (email,subject,body,callback) => {
         secure: true, // Use SSL
         auth: {
             user: "ghislamyoucef.dev@gmail.com",
-            pass: "quxr gddm fjnr unub"
+            pass: env("SECRET")
         }
     });
 

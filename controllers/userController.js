@@ -65,10 +65,32 @@ const verifyExistingEmail= async(req,res)=>{
             error: "This email is already used"
         })
     }else{
-        return res.status(200).json({
+        return res.status(401).json({
             message: "This email can be used"
         })
     }
 }
 
-module.exports = {getAllUsers,postNewUser,verifyExistingEmail}
+const login = async(req,res)=>{
+    const {email,password} = req.body
+    const user = await prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    })
+    const passwordCorrect = user === null? false : await bcrypt.compare(password,user.hashed_password)
+    if(!(user && passwordCorrect)){
+        res.status(401).json({
+            error: "Invalid credentials"
+        })
+    }else{
+        res.status(200).json({
+           id: user.id,
+           firstname: user.firstname,
+           lastname: user.lastname,
+           email: user.email,
+           ispublic: user.ispublic 
+        })
+    }
+}
+module.exports = {getAllUsers,postNewUser,verifyExistingEmail,login}
