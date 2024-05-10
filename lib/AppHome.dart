@@ -63,7 +63,6 @@ class _AppHomeState extends State<AppHome> {
 
   @override
   Widget build(BuildContext context) {
-    //logIn(context);
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(

@@ -36,7 +36,7 @@ class MyApp extends StatelessWidget {
           useMaterial3: true,
           fontFamily: "SpaceGrotesk",
         ),
-        home: /*isFirstUse? const OnboardingScreen() : const AppHome(title: appName)*/ SignUpPage(),
+        home: /*isFirstUse? const OnboardingScreen() : const AppHome(title: appName)*/ LoginPage(),
       ),
     );
   }

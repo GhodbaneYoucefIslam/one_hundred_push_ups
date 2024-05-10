@@ -1,10 +1,17 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
+import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/screens/SignUpPage.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
+import "package:provider/provider.dart";
+import "package:shared_preferences/shared_preferences.dart";
 
+import "../models/User.dart";
+import "../models/UserProvider.dart";
 import "../utils/constants.dart";
+import "../utils/methods.dart";
+import "../widgets/LoadingIndicatorDialog.dart";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -42,8 +49,8 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
                         Text(
                           "Welcome to  ",
-                          style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                         Text(
                           appName,
@@ -67,29 +74,24 @@ class _LoginPageState extends State<LoginPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
-                  validator: (value){
-                    if (value == null || value.isEmpty) {
-                      return 'Email cannot be empty';
-                    }
-                    return null;
-                  },
-                  onSaved: (value){
+                  validator: (value) => validateEmail(value),
+                  onSaved: (value) {
                     email = value!;
                   },
                 ),
-                RoundedTextFormField(
+                RoundedTextFormField(//todo: hide password
                   hintText: "Enter Your password",
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
                     }
                     return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {
                     password = value!;
                   },
                 ),
@@ -138,19 +140,56 @@ class _LoginPageState extends State<LoginPage> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: ElevatedButton(
-                      onPressed: () {
+                      onPressed: () async {
                         FocusScope.of(context).unfocus();
-                        if(formKey.currentState!.validate()){
+                        if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
-                          if(login(email, password, rememberMe)){
-                            Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> AppHome(title: appName)));
-                          }else{
+                          LoadingIndicatorDialog()
+                              .show(context, text: "Verifying credentials");
+                          User? user =
+                              await loginWithEmailAndPassword(email, password);
+                          LoadingIndicatorDialog().dismiss();
+                          if (user != null) {
+                            if (user.id != -1) {
+                              final snackBar = SnackBar(
+                                content: Text(
+                                  'Login of ${user.lastname} ${user.firstname} successful with id:${user.id}!',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              final myPrefs =
+                                  await SharedPreferences.getInstance();
+                              //Keeping hold of new user for subsequent uses of the app
+                              myPrefs.setInt(userId, user.id!);
+                              myPrefs.setString(userEmail, user.email);
+                              myPrefs.setString(userFname, user.firstname);
+                              myPrefs.setString(userLname, user.lastname);
+                              myPrefs.setBool(userIsLoggedIn, true);
+                              Provider.of<UserProvider>(context, listen: false)
+                                  .initUserFromPrefs();
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AppHome(title: appName)));
+                            } else {
+                              const snackBar = SnackBar(
+                                content: Text(
+                                  'Invalid credentials!',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
+                          } else {
                             const snackBar = SnackBar(
                               content: Text(
-                                'Invalid credentials',
+                                'Error connecting to server, please try again later',
                               ),
                             );
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
                           }
                         }
                       },
@@ -233,7 +272,10 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> SignUpPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SignUpPage()));
                       },
                       child: Text(
                         'Sign up',
@@ -253,8 +295,6 @@ class _LoginPageState extends State<LoginPage> {
       ),
     );
   }
-  bool login(String email, String password, bool rememberMe){
-    //todo : implement login
-    return email == "me@me.com" && password == "1234";
-  }
+
+  Future<bool?> login(String email, String password) async {}
 }

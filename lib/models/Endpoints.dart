@@ -163,3 +163,31 @@ Future<User?> postNewUser(String email, String fName, String lName, String passw
   }
   return null;
 }
+
+Future<User?> loginWithEmailAndPassword(String email, String password) async{
+  final uri = Uri.parse("$endpoint/user/login");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email": email,
+        "password": password
+      }),
+    );
+
+    if (response.statusCode == 200){
+      print("login successful");
+      final jsonData = json.decode(response.body);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+    } else if (response.statusCode == 401){
+      print(response.body);
+      return User(-1,"","","");
+    }else{
+      return null;
+    }
+  } catch (error) {
+    print("Error logging in: $error");
+  }
+  return null;
+}
