@@ -20,6 +20,7 @@ class _SignUpPageState extends State<SignUpPage> {
   final formKey = GlobalKey<FormState>();
   bool accept = false;
   late String fName, lName, email, password, confirmedPassword;
+  bool passwordVisible = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,6 +114,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
+                  obscureText: !passwordVisible,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        passwordVisible? Icons.visibility_off: Icons.visibility
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        passwordVisible = ! passwordVisible;
+                      });
+                    },
+                  ),
                   validator: (value){
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
@@ -131,6 +143,17 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
+                  obscureText: !passwordVisible,
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                        passwordVisible? Icons.visibility_off: Icons.visibility
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        passwordVisible = ! passwordVisible;
+                      });
+                    },
+                  ),
                   validator: (value){
                     if (value == null || value.isEmpty) {
                       return 'Confirmed password cannot be empty';

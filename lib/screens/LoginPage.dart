@@ -22,7 +22,7 @@ class LoginPage extends StatefulWidget {
 
 class _LoginPageState extends State<LoginPage> {
   final formKey = GlobalKey<FormState>();
-  bool rememberMe = false;
+  bool passwordVisible = false;
   late String email, password;
   @override
   Widget build(BuildContext context) {
@@ -85,6 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
+                  obscureText: !passwordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
                       return 'Password cannot be empty';
@@ -94,35 +95,20 @@ class _LoginPageState extends State<LoginPage> {
                   onSaved: (value) {
                     password = value!;
                   },
+                  suffixIcon: IconButton(
+                    icon: Icon(
+                      passwordVisible? Icons.visibility_off: Icons.visibility
+                    ),
+                    onPressed: () {
+                      setState(() {
+                        passwordVisible = ! passwordVisible;
+                      });
+                    },
+                  ),
                 ),
                 Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    Row(
-                      children: [
-                        Checkbox(
-                          checkColor: Colors.white,
-                          activeColor: greenBlue,
-                          value: rememberMe,
-                          onChanged: (value) {
-                            setState(() {
-                              rememberMe = value!;
-                            });
-                          },
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          side: MaterialStateBorderSide.resolveWith(
-                            (states) => const BorderSide(
-                                width: 1.0, color: Color(0xFFB9B9B9)),
-                          ),
-                        ),
-                        Text(
-                          "Remember me",
-                          style: TextStyle(fontSize: 17, color: grey),
-                        ),
-                      ],
-                    ),
                     GestureDetector(
                       onTap: () {
                         //todo : implement forgot password
@@ -288,6 +274,25 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                   ],
                 ),
+                GestureDetector(
+                  onTap: () async {
+                    bool? result = await openDialog();
+                    if(result == true){
+                      Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                              const AppHome(title: appName)));
+                    }
+                  },
+                  child: Text(
+                    'Continue without an account',
+                    style: TextStyle(
+                      fontSize: 15,
+                      color: grey,
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -296,5 +301,65 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<bool?> login(String email, String password) async {}
+  Future<bool?> openDialog() => showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Text(
+                "Proceed without an account?\n"
+                    "You won't have access to all of 100PushUps's features",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                textAlign: TextAlign.center,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all(greenBlue),
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text("No",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.white))),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all(turquoiseBlue),
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text("Yes",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.white))),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ));
 }
