@@ -2,16 +2,18 @@ import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
+import "package:one_hundred_push_ups/screens/CodeConfirmationPageForForgotPassword.dart";
 import "package:one_hundred_push_ups/screens/SignUpPage.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
-
+import "package:toastification/toastification.dart";
 import "../models/User.dart";
 import "../models/UserProvider.dart";
 import "../utils/constants.dart";
 import "../utils/methods.dart";
 import "../widgets/LoadingIndicatorDialog.dart";
+import "../widgets/RoundedTextField.dart";
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -21,6 +23,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  final myController = TextEditingController();
   final formKey = GlobalKey<FormState>();
   bool passwordVisible = false;
   late String email, password;
@@ -79,7 +82,7 @@ class _LoginPageState extends State<LoginPage> {
                     email = value!;
                   },
                 ),
-                RoundedTextFormField(//todo: hide password
+                RoundedTextFormField(
                   hintText: "Enter Your password",
                   hintTextSize: 17,
                   borderColor: grey,
@@ -110,8 +113,10 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
-                      onTap: () {
-                        //todo : implement forgot password
+                      onTap: () async{
+                        var result = await openDialogForForgetPassword();
+                        String emailForForgotPassword = result!;
+                        resetPassword(emailForForgotPassword);
                       },
                       child: Text(
                         'Forgot password ?',
@@ -276,7 +281,7 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    bool? result = await openDialog();
+                    bool? result = await openDialogForProceedingWithoutAccount();
                     if(result == true){
                       Navigator.pushReplacement(
                           context,
@@ -301,7 +306,92 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  Future<bool?> openDialog() => showDialog(
+  void resetPassword(String email) async{
+    //see if email is associated to an account
+    LoadingIndicatorDialog().show(context, text: "Verifying email");
+    bool? emailDoesntExists = await isEmailNotPreviouslyUsed(email);
+    LoadingIndicatorDialog().dismiss();
+    if (emailDoesntExists==false){
+      //take user to confirmation screen
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPageForForgotPassword(email: email, codeExpiresIn: const Duration(minutes: 5))));
+    }else if(emailDoesntExists == true){
+      const snackBar = SnackBar(
+        content: Text(
+          'No account found for this email address, please confirm your email',
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }else{
+      const snackBar = SnackBar(
+        content: Text(
+          'Cannot connect to server, please try again',
+        ),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+    }
+  }
+
+  Future<String?> openDialogForForgetPassword() => showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Text(
+                "Please provide your email address",
+                textAlign: TextAlign.center,
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+              ),
+              SizedBox(
+                width: 220,
+                child: RoundedTextField(
+                  hintText: "Enter your email",
+                  hintTextSize: 10,
+                  borderColor: grey,
+                  selectedBorderColor: greenBlue,
+                  controller: myController,
+                  borderRadius: 10,
+                ),
+              ),
+              ElevatedButton(
+                  onPressed: () {
+                    FocusScope.of(context).unfocus();
+                    String? validationResult = validateEmail(myController.text);
+                    if (validationResult == null) {
+                      Navigator.of(context).pop(myController.text);
+                      myController.text = "";
+                    } else {
+                      toastification.show(
+                          context: context,
+                          title: Text(validationResult),
+                          autoCloseDuration: const Duration(seconds: 2),
+                          style: ToastificationStyle.simple,
+                          alignment: const Alignment(0, 0.75));
+                    }
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(greenBlue),
+                    shape:
+                    MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
+                    ),
+                  ),
+                  child: const Text("Confirm",
+                      style: TextStyle(fontSize: 16, color: Colors.white))),
+            ],
+          ),
+        ),
+      ));
+
+  Future<bool?> openDialogForProceedingWithoutAccount() => showDialog(
       context: context,
       builder: (context) => Dialog(
         child: Container(

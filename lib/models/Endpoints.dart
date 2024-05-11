@@ -61,7 +61,7 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
     return null;
   }
 }
-Future<bool?> isEmailPreviouslyUsed(String email) async{
+Future<bool?> isEmailNotPreviouslyUsed(String email) async{
   final uri = Uri.parse("$endpoint/user/verifyEmail");
   try {
     final response = await http.post(
@@ -83,8 +83,9 @@ Future<bool?> isEmailPreviouslyUsed(String email) async{
   }
   return null;
 }
-Future<String?> sendOTPCode(String email, String fName,String lName) async{
-  final uri = Uri.parse("$endpoint/user/otp/send");
+
+Future<String?> sendOTPCodeForSignUp(String email, String fName,String lName) async{
+  final uri = Uri.parse("$endpoint/user/otp/send/signUp");
   try {
     final response = await http.post(
       uri,
@@ -110,6 +111,36 @@ Future<String?> sendOTPCode(String email, String fName,String lName) async{
   }
   return null;
 }
+
+Future<String?> sendOTPCodeForForgotPassword(String email) async{
+  final uri = Uri.parse("$endpoint/user/otp/send/forgotPassword");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email":email,
+      }),
+    );
+
+    if (response.statusCode == 200){
+      print("post successful!");
+      print(response.body);
+      final res = json.decode(response.body);
+      return res['data'];
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return "Error";
+    } else if (response.statusCode == 401){
+      print(response.body);
+      return "Email doesn't exists";
+    }
+  } catch (error) {
+    print("Error receiving: $error");
+  }
+  return null;
+}
+
 Future<bool?> verifyOTPCode(String email, String hash,String otp) async{
   final uri = Uri.parse("$endpoint/user/otp/verify");
   try {
@@ -152,6 +183,31 @@ Future<User?> postNewUser(String email, String fName, String lName, String passw
     );
     if (response.statusCode == 201){
       print("added user successfully");
+      final jsonData = json.decode(response.body);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return null;
+    }
+  } catch (error) {
+    print("Error adding user: $error");
+  }
+  return null;
+}
+
+Future<User?> changeUserPassword(String email,String password) async{
+  final uri = Uri.parse("$endpoint/user/changePassword");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email":email,
+        "password":password
+      }),
+    );
+    if (response.statusCode == 201){
+      print("password changed successfully");
       final jsonData = json.decode(response.body);
       return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
     } else if (response.statusCode==400) {

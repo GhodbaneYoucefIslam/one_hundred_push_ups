@@ -1,13 +1,14 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
-import "package:one_hundred_push_ups/screens/CodeConfirmationPage.dart";
 import "package:one_hundred_push_ups/screens/LoginPage.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 
 import "../utils/constants.dart";
 import "../utils/methods.dart";
+import "../widgets/LoadingIndicatorDialog.dart";
+import "CodeConfirmationPageForSignUp.dart";
 
 class SignUpPage extends StatefulWidget {
   const SignUpPage({super.key});
@@ -357,10 +358,12 @@ class _SignUpPageState extends State<SignUpPage> {
   }
   void signUp(String fName, String lName, String email, String password) async{
     //see if email available
-    bool? availableEmail = await isEmailPreviouslyUsed(email);
+    LoadingIndicatorDialog().show(context, text: "Verifying email");
+    bool? availableEmail = await isEmailNotPreviouslyUsed(email);
+    LoadingIndicatorDialog().dismiss();
     if (availableEmail==true){
       //take user to confirmation screen
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPage(email: email, fName: fName, lName: lName, password: password)));
+      Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPageForSignUp(email: email, fName: fName, lName: lName, password: password, codeExpiresIn: const Duration(minutes: 5),)));
     }else if(availableEmail== false){
       const snackBar = SnackBar(
         content: Text(
@@ -376,7 +379,5 @@ class _SignUpPageState extends State<SignUpPage> {
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }
-
-
   }
 }

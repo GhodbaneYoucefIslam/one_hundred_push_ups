@@ -144,7 +144,7 @@ class _HomePageState extends State<HomePage> {
                                   .watch<GoalProvider>()
                                   .todayGoal!
                                   .goalAmount
-                              ? "You have\n ${value.inHours} hours ${value.inMinutes - value.inHours * 60} mins and ${value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600}\n seconds\n to finish your goal"
+                              ? "You have\n ${value.inHours} hours ${value.inMinutes - value.inHours * 60} mins and ${(value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600).toString().padLeft(2,"0")}\n seconds\n to finish your goal"
                               : "\nDone for the day!\n\n",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25),
