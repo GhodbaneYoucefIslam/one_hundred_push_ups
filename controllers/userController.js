@@ -50,6 +50,42 @@ const postNewUser = async(req,res)=>{
     res.status(201).json(createdUser)
 }
 
+const changeUserPassword = async(req,res)=>{
+    const {email,password} = req.body
+
+    //Necessary verifications
+    const user = await prisma.user.findUnique({
+        where: {
+            email: email
+        }
+    })
+
+    if (!user){
+        return res.status(400).json({
+            error: "No user found for this email"
+        })
+    }else if(password.length < 4){
+        return res.status(400).json({
+            error : "password can't be less than 4 characters"
+        })
+    }
+
+    //changing the password
+    const saltRounds = 10
+    const hashedPassword = await bcrypt.hash(password,saltRounds)
+
+    const updatedUser = await prisma.user.update({
+        where: {
+            email: email
+        },
+        data: {
+            hashed_password: hashedPassword
+        }
+    })
+
+    res.status(201).json(updatedUser)
+}
+
 const verifyExistingEmail= async(req,res)=>{
     const {email} = req.body
 
@@ -93,4 +129,4 @@ const login = async(req,res)=>{
         })
     }
 }
-module.exports = {getAllUsers,postNewUser,verifyExistingEmail,login}
+module.exports = {getAllUsers,postNewUser,verifyExistingEmail,login,changeUserPassword}
