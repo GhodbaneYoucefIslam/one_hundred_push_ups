@@ -8,6 +8,7 @@ import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:toastification/toastification.dart";
+import "../models/GoogleSignInApi.dart";
 import "../models/User.dart";
 import "../models/UserProvider.dart";
 import "../utils/constants.dart";
@@ -224,8 +225,78 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 GestureDetector(
-                  onTap: () {
-                    //todo : implement sign in with google
+                  onTap: () async{
+                    String lName, fName;
+                    final user = await GoogleSignInApi.login();
+                    if (user != null){
+                      String fullName = user.displayName.toString();
+                      email =  user.email;
+                      List<String> names = fullName.split(" ");
+                      lName = names[names.length-1];
+                      if (names.length >= 2){
+                        names.remove(lName);
+                        fName = names.join(" ");
+                      }else{
+                        fName= "";
+                      }
+                      print("user: ${fName} $lName $email");
+                      LoadingIndicatorDialog().show(context, text: "Logging in");
+                      final loggedInUser = await loginOrSignUpWithGoogle(email, fName, lName);
+                      LoadingIndicatorDialog().dismiss();
+                      if(loggedInUser != null){
+                        if (loggedInUser.id!= -1){
+                          final snackBar = SnackBar(
+                            content: Text(
+                              'Registration of ${loggedInUser.lastname} ${loggedInUser.firstname} successful with id:${loggedInUser.id}!',
+                            ),
+                          );
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(snackBar);
+                          final myPrefs =
+                          await SharedPreferences
+                              .getInstance();
+                          //Keeping hold of new user for subsequent uses of the app
+                          myPrefs.setInt(userId, loggedInUser.id!);
+                          myPrefs.setString(
+                              userEmail, loggedInUser.email);
+                          myPrefs.setString(
+                              userFname, loggedInUser.firstname);
+                          myPrefs.setString(
+                              userLname, loggedInUser.lastname);
+                          myPrefs.setBool(userIsLoggedIn, true);
+                          Provider.of<UserProvider>(context,
+                              listen: false)
+                              .initUserFromPrefs();
+                          Navigator.pushReplacement(
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) =>
+                                  const AppHome(
+                                      title: appName)));
+                        }else{
+                          const snackBar = SnackBar(
+                            content: Text(
+                              'This user is not connected through google, please use email and password to login',
+                            ),
+                          );
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                        }
+                      }else{
+                        const snackBar = SnackBar(
+                          content: Text(
+                            'Error connecting to server, please try again',
+                          ),
+                        );
+                        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                      }
+                    }else{
+                      const snackBar = SnackBar(
+                        content: Text(
+                          'Google authentication failed please try again',
+                        ),
+                      );
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
                   },
                   child: Container(
                     width: 350,
@@ -241,7 +312,7 @@ class _LoginPageState extends State<LoginPage> {
                           size: 40,
                         ),
                         Text(
-                          'Login with google',
+                          'Continue with google',
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black,

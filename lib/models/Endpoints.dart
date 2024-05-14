@@ -32,6 +32,7 @@ Future<List<Map<String,dynamic>>?> getUserAchievements(int userId) async{
     return null;
   }
 }
+
 Future<Achievement?> postTodayAchievement(Achievement achievement) async {
   //todo: maybe there is a problem here posting the achievement of the same user twice check later
   // Construct the URI
@@ -61,6 +62,7 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
     return null;
   }
 }
+
 Future<bool?> isEmailNotPreviouslyUsed(String email) async{
   final uri = Uri.parse("$endpoint/user/verifyEmail");
   try {
@@ -244,6 +246,30 @@ Future<User?> loginWithEmailAndPassword(String email, String password) async{
     }
   } catch (error) {
     print("Error logging in: $error");
+  }
+  return null;
+}
+
+Future<User?> loginOrSignUpWithGoogle(String email, String fName, String lName) async{
+  final uri = Uri.parse("$endpoint/user/create/google");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "email":email,
+        "fName":fName,
+        "lName":lName,
+      }),
+    );
+    if (response.statusCode == 200 || response.statusCode == 201){
+      final jsonData = json.decode(response.body);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+    }else if (response.statusCode==400) {
+      return User(-1, "", "", "");
+    }
+  } catch (error) {
+    print("Error adding user: $error");
   }
   return null;
 }
