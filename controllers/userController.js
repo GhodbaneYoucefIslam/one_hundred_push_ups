@@ -50,6 +50,63 @@ const postNewUser = async(req,res)=>{
     res.status(201).json(createdUser)
 }
 
+const postNewUserGoogle = async (req, res) => {
+    const { email, fName, lName } = req.body;
+
+    // Necessary verifications
+    const existingGoogleUser = await prisma.user.findUnique({
+        where: {
+            email: email,
+        }
+    });
+
+    console.log(existingGoogleUser);
+
+    if (existingGoogleUser) {
+        if (existingGoogleUser.hashed_password !== 'google') {
+            res.status(400).json({
+                message: "This user is not connected through Google. Please use email and password to login."
+            });
+        } else {
+            // Check if the name has been changed, if so, update it accordingly
+            if (existingGoogleUser.firstname !== fName || existingGoogleUser.lastname !== lName) {
+                const updatedGoogleUser = await prisma.user.update({
+                    where: {
+                        email: existingGoogleUser.email
+                    },
+                    data: {
+                        firstname: fName,
+                        lastname: lName
+                    }
+                });
+
+                res.status(201).json(updatedGoogleUser);
+                console.log("Login successful with update to name");
+            } else {
+                res.status(200).json(existingGoogleUser);
+                console.log("Logged in successfully without update");
+            }
+        }
+    } else {
+        // Creating the new user
+        const newUser = {
+            firstname: fName,
+            lastname: lName,
+            email: email,
+            ispublic: true,
+            hashed_password: 'google'
+        };
+
+        const createdUser = await prisma.user.create({
+            data: newUser
+        });
+
+        res.status(201).json(createdUser);
+        console.log("Created new user with Google.");
+    }
+};
+
+
 const changeUserPassword = async(req,res)=>{
     const {email,password} = req.body
 
@@ -129,4 +186,4 @@ const login = async(req,res)=>{
         })
     }
 }
-module.exports = {getAllUsers,postNewUser,verifyExistingEmail,login,changeUserPassword}
+module.exports = {getAllUsers,postNewUser, postNewUserGoogle,verifyExistingEmail,login,changeUserPassword}
