@@ -4,6 +4,7 @@ import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/models/UserProvider.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:provider/provider.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:toastification/toastification.dart";
 import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
@@ -16,11 +17,12 @@ class LeaderboardPage extends StatefulWidget {
   State<LeaderboardPage> createState() => _LeaderboardPageState();
 }
 
+
 class _LeaderboardPageState extends State<LeaderboardPage> {
   late List<Achievement>? data;
   late int numberOfEntries;
   Future<void> getLeaderBoardData(
-      Goal? todayGoal, int totalReps, User? user) async {
+      Goal? todayGoal, int totalReps, User? user, BuildContext context) async {
     //fist we create or update the achievement for the current user
     if (user != null && todayGoal!= null) {
       var achievementAdded = await postTodayAchievement(
@@ -33,6 +35,7 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
       data = await getTodayAchievements();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -63,7 +66,8 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                   future: getLeaderBoardData(
                       context.watch<GoalProvider>().todayGoal,
                       context.watch<GoalProvider>().totalReps,
-                      context.watch<UserProvider>().currentUser),
+                      context.watch<UserProvider>().currentUser,
+                      context),
                   builder: (context, snapshot) {
                     if (context.watch<UserProvider>().currentUser == null) {
                       return const Center(
@@ -123,9 +127,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                                       MediaQuery.of(context).size.width * 0.85,
                                   height: 50,
                                   decoration: BoxDecoration(
-                                    color: (data![index].user.isEqualTo(context
+                                    color: (data![index].user.email==context
                                             .watch<UserProvider>()
-                                            .currentUser!)) //todo: handle null check
+                                            .currentUser!.email)
                                         ? Color(0XFFF7F16E)
                                         : (index % 2 == 0
                                             ? turquoiseBlue.withOpacity(0.8)

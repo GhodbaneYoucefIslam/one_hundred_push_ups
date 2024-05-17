@@ -3,9 +3,9 @@ import 'package:one_hundred_push_ups/database/DatabaseService.dart';
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
 import 'package:one_hundred_push_ups/screens/HomePage.dart';
 import 'package:one_hundred_push_ups/screens/LeaderboardPage.dart';
+import 'package:one_hundred_push_ups/screens/LoginPage.dart';
 import 'package:one_hundred_push_ups/screens/MyGoalsPage.dart';
 import 'package:one_hundred_push_ups/screens/SettingsPage.dart';
-import 'package:one_hundred_push_ups/screens/SignUpPage.dart';
 import 'package:one_hundred_push_ups/widgets/SideMenu.dart';
 import 'package:one_hundred_push_ups/widgets/SideMenuItem.dart';
 import 'package:provider/provider.dart';
@@ -208,10 +208,18 @@ class _AppHomeState extends State<AppHome> {
                                   builder: (context) =>
                                       AppHome(title: appName)));
                         }
+                      }else {
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    LoginPage()));
                       }
                     },
-                    icon: const Icon(Icons.logout, size: 20),
-                    label: const Text("Logout", style: TextStyle(fontSize: 16)),
+                    icon:  Icon(isLoggedIn? Icons.logout: Icons.login, size: 20),
+                    label: Text(
+                        isLoggedIn? "Logout": "Login",
+                        style: const TextStyle(fontSize: 16)),
                     style: ButtonStyle(
                       fixedSize: MaterialStateProperty.all(
                         const Size(
@@ -221,7 +229,7 @@ class _AppHomeState extends State<AppHome> {
                       ),
                       foregroundColor: MaterialStateProperty.all(Colors.black),
                       backgroundColor: MaterialStateProperty.all(
-                          isLoggedIn ? greenBlue : grey.withOpacity(0.2)),
+                          isLoggedIn ? greenBlue : turquoiseBlue.withOpacity(0.7)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),

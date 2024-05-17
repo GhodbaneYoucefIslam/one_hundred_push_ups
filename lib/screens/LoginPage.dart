@@ -247,7 +247,7 @@ class _LoginPageState extends State<LoginPage> {
                         if (loggedInUser.id!= -1){
                           final snackBar = SnackBar(
                             content: Text(
-                              'Registration of ${loggedInUser.lastname} ${loggedInUser.firstname} successful with id:${loggedInUser.id}!',
+                              'Authentication of ${loggedInUser.lastname} ${loggedInUser.firstname} successful with id:${loggedInUser.id}!',
                             ),
                           );
                           ScaffoldMessenger.of(context)
