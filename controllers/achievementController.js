@@ -1,5 +1,5 @@
 const { PrismaClient } = require("@prisma/client");
-const prisma = new PrismaClient(); // Fix variable name
+const prisma = new PrismaClient();
 
 const getAchievementsByDateAndType = async (req, res) => {
     try {
@@ -101,6 +101,8 @@ const postAchievement = async (req, res) => {
         if (achievementUpdated || insertedAchievement) {
             await updateAchievementRanks(day, type);
             console.log("Achievement ranks updated successfully.");
+            await updateAchievementRankChange(day, type);
+            console.log("updated rank changes successfully")
         }
     } catch (error) {
         console.error("Error in postAchievement:", error);
@@ -146,6 +148,85 @@ const getUserAchievements = async (req,res) =>{
         res.status(500).send("error")
     }
 }
+
+const updateAchievementRankChange = async (day, type) => {
+    try {
+        // Get today's achievements
+        const todayAchievements = await prisma.achievement.findMany({
+            where: {
+                day: day,
+                type: type,
+                user: {
+                    ispublic: true // Filter users where ispublic is true
+                }
+            },
+            select: {
+                id: true,
+                score: true,
+                day: true,
+                dailyRank: true,
+                rankChange: true,
+                user: {
+                    select: {
+                        id: true,
+                        firstname: true,
+                        lastname: true,
+                        email: true
+                    }
+                }
+            },
+            orderBy: [
+                {
+                    score: "desc"
+                }
+            ]
+        });
+
+        // Update rank change for each user
+        await Promise.all(todayAchievements.map(async (achievement) => {
+            try {
+                // Get the previous achievements for the user
+                const previousAchievements = await prisma.achievement.findMany({
+                    where: {
+                        userId: achievement.user.id,
+                        type: type,
+                        day: { lt: day }
+                    },
+                    orderBy: [{
+                        day: "desc"
+                    }],
+                    take: 1 // Only get the most recent previous achievement
+                });
+
+                if (previousAchievements.length > 0) {
+                    const previousUserAchievement = previousAchievements[0];
+                    const rankChange = previousUserAchievement.dailyRank - achievement.dailyRank;
+                    
+                    // Only update if rankChange has actually changed
+                    if (rankChange !== achievement.rankChange) {
+                        const updatedAchievement = await prisma.achievement.update({
+                            where: {
+                                id: achievement.id
+                            },
+                            data: {
+                                rankChange: rankChange
+                            }
+                        });
+
+                        console.log("Updated achievement rank change successfully", updatedAchievement);
+                    }
+                }
+            } catch (innerError) {
+                console.log(`Error updating rank change for achievement ID ${achievement.id}`, innerError);
+            }
+        }));
+    } catch (error) {
+        console.log("Error in updateRankChanges", error);
+    }
+};
+
+
+module.exports = { updateAchievementRankChange };
 
 
 
