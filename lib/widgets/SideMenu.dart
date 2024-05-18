@@ -19,14 +19,14 @@ class SideMenu extends StatelessWidget {
               style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20),
+                  fontSize: 18),
             ),
             accountEmail: Text(
               accountEmail,
               style: const TextStyle(
                   color: Colors.black,
                   fontWeight: FontWeight.bold,
-                  fontSize: 20),
+                  fontSize: 12),
             ),
             currentAccountPicture: CircleAvatar(
               child: ClipOval(

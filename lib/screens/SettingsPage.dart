@@ -12,25 +12,40 @@ class SettingsPage extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 50),
-            child: Text(
-                "Settings",
+            child: Text("Settings",
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: SettingsMenuItem(text: "Personal", icon: Icons.person),
+            child: SettingsMenuItem(
+              text: "Personal",
+              icon: Icons.person,
+              onTap: () {},
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: SettingsMenuItem(text: "Languages", icon: Icons.language),
+            child: SettingsMenuItem(
+              text: "Preferences",
+              icon: Icons.tune,
+              onTap: () {},
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: SettingsMenuItem(text: "Notifications", icon: Icons.notifications_active),
+            child: SettingsMenuItem(
+              text: "Data center",
+              icon: Icons.dataset_linked,
+              onTap: () {},
+            ),
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 20),
-            child: SettingsMenuItem(text: "About App", icon: Icons.info),
+            child: SettingsMenuItem(
+              text: "About App",
+              icon: Icons.info,
+              onTap: () {},
+            ),
           ),
         ],
       ),
