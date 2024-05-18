@@ -16,6 +16,7 @@ class SettingsMenuItem extends StatelessWidget {
       borderRadius: BorderRadius.circular(20),
       child: InkWell(
         onTap: onTap,
+        borderRadius:BorderRadius.circular(20),
         child: Padding(
           padding: const EdgeInsets.symmetric(vertical: 10),
           child: Container(

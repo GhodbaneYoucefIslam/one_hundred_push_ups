@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+import "package:one_hundred_push_ups/screens/AboutAppPage.dart";
 import "package:one_hundred_push_ups/widgets/SettingsMenuItem.dart";
 
 class SettingsPage extends StatelessWidget {
@@ -44,7 +45,9 @@ class SettingsPage extends StatelessWidget {
             child: SettingsMenuItem(
               text: "About App",
               icon: Icons.info,
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 0)));
+              },
             ),
           ),
         ],

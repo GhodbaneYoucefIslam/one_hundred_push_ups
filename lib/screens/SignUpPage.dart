@@ -2,6 +2,7 @@ import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/models/GoogleSignInApi.dart";
+import "package:one_hundred_push_ups/screens/AboutAppPage.dart";
 import "package:one_hundred_push_ups/screens/LoginPage.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
@@ -197,7 +198,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        //todo : load page that contains terms and conditions
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 1)));
                       },
                       child: Text(
                         'terms ',
@@ -218,7 +219,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     ),
                     GestureDetector(
                       onTap: (){
-                        //todo : load page that contains terms and conditions
+                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 1)));
                       },
                       child: Text(
                         'conditions ',
