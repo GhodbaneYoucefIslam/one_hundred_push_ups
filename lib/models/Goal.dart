@@ -19,6 +19,14 @@ class Goal{
     );
   }
 
+  Map<String,dynamic> toMap(){
+    return {'id': id,
+      'type': type,
+      'date': date.toIso8601String(),
+      'goalAmount': goalAmount
+    };
+}
+
   @override
   String toString() {
     return "Goal($id,$type,$date,$goalAmount)";

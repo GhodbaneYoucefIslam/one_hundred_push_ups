@@ -2,6 +2,10 @@ String toPrismaCompatibleIsoStringForDate(DateTime date){
   return "${date.year}-${date.month.toString().padLeft(2,"0")}-${date.day.toString().padLeft(2,"0")}T00:00:00Z";
 }
 
+String toDisplayableDate(DateTime date){
+  return "${date.year}-${date.month.toString().padLeft(2,"0")}-${date.day.toString().padLeft(2,"0")}";
+}
+
 String? validateEmail(String? value) {
   if (value == null || value.isEmpty) return 'Email cannot be empty';
   const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"

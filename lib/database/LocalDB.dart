@@ -5,8 +5,6 @@ import 'package:one_hundred_push_ups/models/Goal.dart';
 import 'package:one_hundred_push_ups/models/Set.dart';
 
 class LocalDB{
-  final String goalsTable = "goal";
-  final String setsTable = "sets";
 
   Future<void> createTables(Database db) async{
     await db.execute(
@@ -30,6 +28,8 @@ class LocalDB{
     final goals = await db.rawQuery(
         "SELECT * from $goalsTable order by id"
     );
+    print("in localdb, contents of db are: ${goals.toString()}");
+    print("there are ${goals.length} goals from db");
     return goals.map((map) => Goal.fromMap(map)).toList();
   }
   Future<int> updateGoal({required int id,required int goalAmount}) async{

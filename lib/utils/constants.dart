@@ -17,5 +17,8 @@ const String userEmail = "userEmail";
 const String userId = "userId";
 const String userIsLoggedIn = "userIsLoggedIn";
 
+const String goalsTable = "goal";
+const String setsTable = "sets";
+
 final Goal placeholderGoal =  Goal(type: defaultGoalType, date: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day), goalAmount: 100);
 const String endpoint = "https://jyghodbane.alwaysdata.net";

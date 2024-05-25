@@ -19,6 +19,15 @@ class Set{
     );
   }
 
+  Map<String, dynamic> toMap(){
+    return {
+      "id": id,
+      "reps": reps,
+      "time": time,
+      "goalId": goalId
+    };
+  }
+
   @override
   String toString() {
     return "Set($id,$reps,$time,$goalId)";

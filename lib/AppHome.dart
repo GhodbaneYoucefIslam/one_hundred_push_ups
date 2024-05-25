@@ -45,14 +45,6 @@ class _AppHomeState extends State<AppHome> {
     Provider.of<UserProvider>(context, listen: false).setUser(user: null);
   }
 
-  void logIn(BuildContext context) async {
-    final myPrefs = await SharedPreferences.getInstance();
-    myPrefs.setInt(userId, 1);
-    myPrefs.setString(userEmail, "me@me.com");
-    myPrefs.setString(userFname, "me");
-    myPrefs.setString(userLname, "myself&i");
-    myPrefs.setBool(userIsLoggedIn, true);
-  }
 
   @override
   void initState() {

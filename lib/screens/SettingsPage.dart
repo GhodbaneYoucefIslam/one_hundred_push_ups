@@ -1,5 +1,11 @@
+import "dart:convert";
+
 import "package:flutter/material.dart";
+import "package:one_hundred_push_ups/database/LocalDB.dart";
+import "package:one_hundred_push_ups/models/Goal.dart";
+import "package:one_hundred_push_ups/models/StorageHelper.dart";
 import "package:one_hundred_push_ups/screens/AboutAppPage.dart";
+import "package:one_hundred_push_ups/screens/DataCenterPage.dart";
 import "package:one_hundred_push_ups/widgets/SettingsMenuItem.dart";
 
 class SettingsPage extends StatelessWidget {
@@ -21,7 +27,17 @@ class SettingsPage extends StatelessWidget {
             child: SettingsMenuItem(
               text: "Personal",
               icon: Icons.person,
-              onTap: () {},
+              onTap: () async {
+                StorageHelper.readStringFromFile("Goals.txt").then((value) {
+                  print("File contents: $value");
+                  List<dynamic> jsonValue = jsonDecode(value);
+                  List<Goal> goals = jsonValue.map((map) => Goal.fromMap(Map<String, dynamic>.from(map))).toList();
+                  print("There are ${goals.length} goals from file");
+                  for(Goal goal in goals){
+                    print(goal.toString());
+                  }
+                });
+              },
             ),
           ),
           Padding(
@@ -29,7 +45,9 @@ class SettingsPage extends StatelessWidget {
             child: SettingsMenuItem(
               text: "Preferences",
               icon: Icons.tune,
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).push(MaterialPageRoute(builder: (context)=>DataCenterPage()));
+              },
             ),
           ),
           Padding(
@@ -37,7 +55,15 @@ class SettingsPage extends StatelessWidget {
             child: SettingsMenuItem(
               text: "Data center",
               icon: Icons.dataset_linked,
-              onTap: () {},
+              onTap: () async {
+                var db = LocalDB();
+                List<Goal> goalsInDB = await db.fetchAllGoals();
+                List<Map<String, dynamic>> goalsMapList = goalsInDB.map((goal) => goal.toMap()).toList();
+                String jsonContents = jsonEncode(goalsMapList);
+                StorageHelper.writeStringToFile("Goals.txt", jsonContents).then((value) {
+                  print("File created");
+                });
+              },
             ),
           ),
           Padding(

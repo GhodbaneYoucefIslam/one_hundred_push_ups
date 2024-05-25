@@ -12,6 +12,7 @@ class RoundedTextField extends StatelessWidget {
   int? minLines;
   int? maxLines;
   TextInputType? textInputType;
+  String? value;
   RoundedTextField({
     Key? key,
     required this.hintText,
@@ -24,7 +25,7 @@ class RoundedTextField extends StatelessWidget {
     this.controller,
     this.minLines,
     this.maxLines,
-    this.textInputType
+    this.textInputType,
   }) : super(key: key);
 
   @override
