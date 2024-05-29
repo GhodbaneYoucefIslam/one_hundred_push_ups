@@ -20,5 +20,19 @@ const String userIsLoggedIn = "userIsLoggedIn";
 const String goalsTable = "goal";
 const String setsTable = "sets";
 
-final Goal placeholderGoal =  Goal(type: defaultGoalType, date: DateTime(DateTime.now().year,DateTime.now().month,DateTime.now().day), goalAmount: 100);
+const String goalsTableOption = "Goals";
+const String setsTableOption = "Sets";
+const String rankTableOption = "Rank";
+const String jsonFormatOption = "JSON";
+const String csvFormatOption = "CSV";
+const String localStorageSaveOption = "Local storage";
+const String emailSaveOption = "Send to email";
+const String allTimeDateOption = "All time";
+const String customRangeDateOption = "Custom range";
+
+final Goal placeholderGoal = Goal(
+    type: defaultGoalType,
+    date:
+        DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
+    goalAmount: 100);
 const String endpoint = "https://jyghodbane.alwaysdata.net";

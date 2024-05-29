@@ -1,4 +1,6 @@
-class Goal{
+import 'Mappable.dart';
+
+class Goal extends Mappable{
   int? id;
   String type;
   int goalAmount;
@@ -19,8 +21,10 @@ class Goal{
     );
   }
 
+  @override
   Map<String,dynamic> toMap(){
-    return {'id': id,
+    return {
+      'id': id,
       'type': type,
       'date': date.toIso8601String(),
       'goalAmount': goalAmount

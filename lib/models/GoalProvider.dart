@@ -4,26 +4,29 @@ import '../utils/constants.dart';
 import 'Goal.dart';
 import 'Set.dart';
 
-class GoalProvider extends ChangeNotifier{
+class GoalProvider extends ChangeNotifier {
   Goal? todayGoal;
   bool goalDifferentFromDb = true;
   int totalReps = 0;
   bool setsDifferentFromDb = true;
 
   //set methods
-  void addSet({required int reps, required int goalId}) async{
+  void addSet({required int reps, required int goalId}) async {
     var db = LocalDB();
-    int id = await db.createSet(set: Set(reps: reps, time: DateTime.now()), goalId: goalId);
+    int id = await db.createSet(
+        set: Set(reps: reps, time: DateTime.now()), goalId: goalId);
     totalReps += reps;
     setsDifferentFromDb = true;
     notifyListeners();
   }
-  void getGoalSets(int goalId) async{
-    if(setsDifferentFromDb){
+
+  void getGoalSets(int goalId) async {
+    if (setsDifferentFromDb) {
       var db = LocalDB();
       List<Set> sets = await db.fetchSetsForGoal(goalId);
-      if (sets.isNotEmpty){
-        totalReps = sets.map((set)=> set.reps).reduce((reps1, reps2) => reps1+reps2);
+      if (sets.isNotEmpty) {
+        totalReps =
+            sets.map((set) => set.reps).reduce((reps1, reps2) => reps1 + reps2);
         notifyListeners();
       }
       setsDifferentFromDb = false;
@@ -31,20 +34,22 @@ class GoalProvider extends ChangeNotifier{
   }
 
   //goal methods
-  void changeGoal({required int newGoalAmount}) async{
+  void changeGoal({required int newGoalAmount}) async {
     var db = LocalDB();
     db.updateGoal(id: todayGoal!.id!, goalAmount: newGoalAmount);
     todayGoal!.goalAmount = newGoalAmount;
     goalDifferentFromDb = true;
     notifyListeners();
   }
+
   Future<void> getOrCreateTodayGoal() async {
     //first we deal with the daily goal
-    if (todayGoal==null || goalDifferentFromDb){
+    if (todayGoal == null || goalDifferentFromDb) {
       //await LocalDB().initializeGoals();
       //await LocalDB().initializeSets();
       var db = LocalDB();
-      DateTime today = DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day);
+      DateTime today = DateTime(
+          DateTime.now().year, DateTime.now().month, DateTime.now().day);
       todayGoal = (await db.fetchGoalByDate(today));
       if (todayGoal == null) {
         //creating today's goal
@@ -52,7 +57,8 @@ class GoalProvider extends ChangeNotifier{
         var previousGoals = await db.fetchAllGoals();
         if (previousGoals.isNotEmpty) {
           Goal previousGoal = previousGoals.last;
-          todayGoal = Goal(type: previousGoal.type,
+          todayGoal = Goal(
+              type: previousGoal.type,
               date: today,
               goalAmount: previousGoal.goalAmount);
         } else {
@@ -69,11 +75,12 @@ class GoalProvider extends ChangeNotifier{
       getGoalSets(todayGoal!.id!);
     }
   }
-  void nullifyGoal(){
+
+  void nullifyGoal() {
     todayGoal = null;
     goalDifferentFromDb = true;
-    totalReps =0;
-    setsDifferentFromDb=true;
+    totalReps = 0;
+    setsDifferentFromDb = true;
     notifyListeners();
   }
 }

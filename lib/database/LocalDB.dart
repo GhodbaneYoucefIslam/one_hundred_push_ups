@@ -65,6 +65,15 @@ class LocalDB{
       "DELETE FROM $goalsTable WHERE id>0",
     );
   }
+  Future<List<DateTime>?> fetchAvailableDates() async{
+    final db = await DatabaseService().database;
+    final dates = await db.rawQuery(
+        "SELECT distinct date from $goalsTable"
+    );
+    final list = dates.map((map) => DateTime.parse(map['date'].toString())).toList();
+    list.sort((date1,date2)=> date1.compareTo(date2));
+    return list;
+  }
 
 
   //set methods

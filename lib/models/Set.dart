@@ -1,4 +1,6 @@
-class Set{
+import 'package:one_hundred_push_ups/models/Mappable.dart';
+
+class Set extends Mappable{
   int? id;
   int reps;
   DateTime time;
@@ -19,11 +21,12 @@ class Set{
     );
   }
 
+  @override
   Map<String, dynamic> toMap(){
     return {
       "id": id,
       "reps": reps,
-      "time": time,
+      "time": time.toIso8601String(),
       "goalId": goalId
     };
   }

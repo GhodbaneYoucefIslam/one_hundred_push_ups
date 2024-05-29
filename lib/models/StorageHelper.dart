@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:path_provider/path_provider.dart';
 import 'dart:io';
 
@@ -13,8 +15,14 @@ class StorageHelper {
     return File("$localPath/$fileName");
   }
 
-  static Future<File> writeStringToFile(String fileName, String content) async {
+  static Future<File> writeStringToFile(String fileName, String content, BuildContext context) async {
     final file = await _getLocalFile(fileName);
+    final snackBar = SnackBar(
+      content: Text(
+        'Data exported to ${file.path}',
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);//todo: refactor later
     return file.writeAsString(content, mode: FileMode.write); // Explicitly specifying FileMode.write
   }
 
