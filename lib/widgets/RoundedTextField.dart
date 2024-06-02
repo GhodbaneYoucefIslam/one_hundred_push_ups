@@ -13,12 +13,15 @@ class RoundedTextField extends StatelessWidget {
   int? maxLines;
   TextInputType? textInputType;
   String? value;
+  bool? readOnly;
+  void Function()? onTap;
   RoundedTextField({
     Key? key,
     required this.hintText,
     required this.hintTextSize,
     required this.borderColor,
     required this.selectedBorderColor,
+    this.readOnly,
     this.trailingIcon,
     this.prefixIcon,
     this.borderRadius,
@@ -26,12 +29,15 @@ class RoundedTextField extends StatelessWidget {
     this.minLines,
     this.maxLines,
     this.textInputType,
+    this.onTap,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return TextField(
       keyboardType: textInputType,
+      readOnly: readOnly == null ? false : readOnly!,
+      onTap: onTap,
       decoration: InputDecoration(
         hintText: hintText,
         hintStyle: TextStyle(

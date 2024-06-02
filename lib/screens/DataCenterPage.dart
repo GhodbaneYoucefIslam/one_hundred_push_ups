@@ -1,10 +1,16 @@
+import "dart:convert";
+import "dart:io";
+import "package:csv/csv.dart";
+import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/models/CSVDataExporter.dart";
 import "package:one_hundred_push_ups/widgets/CustomDropDownMenu.dart";
+import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
 import "../database/LocalDB.dart";
 import "../models/DataExporter.dart";
 import "../models/Goal.dart";
+import "../models/GoalProvider.dart";
 import "../models/JSONDataExporter.dart";
 import '../models/Set.dart';
 import "../models/Mappable.dart";
@@ -23,7 +29,8 @@ class DataCenterPage extends StatefulWidget {
 class _DataCenterPageState extends State<DataCenterPage> {
   int currentPage = 0; // export 0 and import 1
   final myPageController = PageController();
-  final myTextController = TextEditingController();
+  final myExportTextController = TextEditingController();
+  final myImportTextControllers = [TextEditingController(),TextEditingController()];
   final List<String> tableList = [
     goalsTableOption,
     setsTableOption,
@@ -38,6 +45,13 @@ class _DataCenterPageState extends State<DataCenterPage> {
   DateTimeRange? dateRange;
   String? selectedTable, selectedFormat, selectedSendOption, selectedDate;
   String fileName = "Enter the name you would like";
+
+  String? goalsFilePath, setsFilePath;
+
+  bool validateFileName(){
+    if (fileName.endsWith(".${selectedFormat!.toLowerCase()}")) return true;
+    return false;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -98,8 +112,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedTable = value;
-                                    myTextController.value = TextEditingValue(
-                                        text: "$selectedTable.txt");
+                                    if (selectedTable != null && selectedFormat != null){
+                                      myExportTextController.text = "${selectedTable!}.${selectedFormat!.toLowerCase()}";
+                                    }
                                   });
                                 },
                               )
@@ -129,6 +144,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedFormat = value;
+                                    if (selectedTable != null && selectedFormat != null){
+                                      myExportTextController.text = "${selectedTable!}.${selectedFormat!.toLowerCase()}";
+                                    }
                                   });
                                 },
                               ),
@@ -215,7 +233,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                   hintTextSize: 10,
                                   borderColor: grey,
                                   selectedBorderColor: greenBlue,
-                                  controller: myTextController,
+                                  controller: myExportTextController,
                                 ),
                               ),
                             ],
@@ -234,8 +252,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         ),
                         ElevatedButton(
                             onPressed: () {
-                              //LocalDB().deleteAllSets();
-                              fileName = myTextController.text;
+                              fileName = myExportTextController.text;
                               if (selectedTable == null ||
                                   selectedSendOption == null ||
                                   selectedFormat == null ||
@@ -252,8 +269,19 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                     style: ToastificationStyle.simple,
                                     alignment: const Alignment(0, 0.75));
                               } else {
-                                exportData(selectedTable!, selectedDate!,
-                                    dateRange, selectedFormat!, fileName);
+                                if (validateFileName()){
+                                  exportData(selectedTable!, selectedDate!,
+                                      dateRange, selectedFormat!, fileName);
+                                }else{
+                                  toastification.show(
+                                      context: context,
+                                      title: const Text(
+                                          "File format and extension don't match"),
+                                      autoCloseDuration:
+                                      const Duration(seconds: 2),
+                                      style: ToastificationStyle.simple,
+                                      alignment: const Alignment(0, 0.75));
+                                }
                               }
                             },
                             style: ButtonStyle(
@@ -273,16 +301,124 @@ class _DataCenterPageState extends State<DataCenterPage> {
                       ],
                     ),
                     Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
-                        Row(
-                          children: [
-                            Text(
-                              "Table",
-                              style: TextStyle(
-                                  fontSize: 20, fontWeight: FontWeight.bold),
-                            ),
-                          ],
+                        Text(
+                          'Please provide the data files for both\n the goals and sets tables in JSON or CSV formats',
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Colors.black
+                          ),
+                          textAlign: TextAlign.center,
                         ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.85,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                "Goals data file",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: RoundedTextField(
+                                  hintText: "Choose file",
+                                  hintTextSize: 10,
+                                  borderColor: grey,
+                                  selectedBorderColor: greenBlue,
+                                  controller: myImportTextControllers.first,
+                                  readOnly: true,
+                                  onTap: () async {
+                                    final result = await FilePicker.platform.pickFiles(allowMultiple: false,type: FileType.custom, allowedExtensions: ["csv", "json"]);
+                                    if (result == null) return;
+                                    final file = result.files.first;
+                                    myImportTextControllers.first.text = file.name;
+                                    goalsFilePath = file.path;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          width: MediaQuery.of(context).size.width * 0.85,
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            children: [
+                              Text(
+                                "Sets data file ",
+                                style: TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold),
+                              ),
+                              SizedBox(
+                                width: MediaQuery.of(context).size.width * 0.4,
+                                child: RoundedTextField(
+                                  hintText: "Choose file",
+                                  hintTextSize: 10,
+                                  borderColor: grey,
+                                  selectedBorderColor: greenBlue,
+                                  controller: myImportTextControllers.last,
+                                  readOnly: true,
+                                  onTap: () async {
+                                    final result = await FilePicker.platform.pickFiles(allowMultiple: false,type: FileType.custom, allowedExtensions: ["csv", "json"]);
+                                    if (result == null) return;
+                                    final file = result.files.first;
+                                    myImportTextControllers.last.text = file.name;
+                                    setsFilePath = file.path;
+                                  },
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        ElevatedButton(
+                            onPressed: () async{
+                              if (goalsFilePath !=null && setsFilePath != null){
+                                var ok = await openDialog();
+                                if (ok == true){
+                                  List<Goal> goals = await importGoals(goalsFilePath!);
+                                  List<Set> sets = await importSets(setsFilePath!);
+                                  final db = LocalDB();
+                                  db.deleteAllSets();
+                                  db.deleteAllGoals();
+                                  db.importGoalsList(goals: goals);
+                                  db.importSetsList(sets: sets);
+                                  Provider.of<GoalProvider>(context, listen: false).nullifyGoal();
+                                  const snackBar = SnackBar(
+                                    content: Text(
+                                      'Data imported successfully',
+                                    ),
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  //todo: handle UI changes after end of import
+                                }
+                              }else{
+                                toastification.show(
+                                    context: context,
+                                    title: const Text(
+                                        "Please select 2 appropriate files"),
+                                    autoCloseDuration:
+                                    const Duration(seconds: 2),
+                                    style: ToastificationStyle.simple,
+                                    alignment: const Alignment(0, 0.75));
+                              }
+                            },
+                            style: ButtonStyle(
+                              backgroundColor: MaterialStateProperty.all(
+                                  turquoiseBlue.withOpacity(0.7)),
+                              shape: MaterialStateProperty.all<
+                                  RoundedRectangleBorder>(
+                                RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5),
+                                ),
+                              ),
+                            ),
+                            child: Text("Confirm",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                    fontSize: 15, color: Colors.white))),
                       ],
                     ),
                   ],
@@ -471,5 +607,135 @@ class _DataCenterPageState extends State<DataCenterPage> {
           break;
         }
     }
+  }
+
+  Future<bool?> openDialog() => showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        child: Container(
+          height: MediaQuery.of(context).size.height * 0.3,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(20),
+            color: Colors.white,
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              const Text(
+                "Are you sure you want to continue ?\n All of your current In-App data will be deleted",
+                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                textAlign: TextAlign.center,
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(false);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all(greenBlue),
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text("No",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.white))),
+                  ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop(true);
+                      },
+                      style: ButtonStyle(
+                        backgroundColor:
+                        MaterialStateProperty.all(turquoiseBlue),
+                        shape: MaterialStateProperty.all<
+                            RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text("Yes",
+                          style: TextStyle(
+                              fontSize: 16, color: Colors.white))),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ));
+
+  Future<List<Goal>> importGoals(String path) async {
+    List<Goal> goals = [];
+    String extension = path.split(".").last;
+    print("extension: $extension");
+    switch (extension){
+      case "json": {
+        String value = await StorageHelper.readStringFromFile(path);
+        print("goals file contents : $value");
+        List<dynamic> jsonValue = jsonDecode(value);
+        goals = jsonValue.map((map) => Goal.fromMap(Map<String, dynamic>.from(map))).toList();
+        return goals;
+      }
+      case "csv": {
+        List<Map<String,dynamic>> maps = [];
+        final source = File(path).openRead();
+        final lines = await source.transform(utf8.decoder).transform(CsvToListConverter(eol: '\n')).toList();
+        //first we extract they keys
+        final keys = lines.first;
+        lines.remove(lines.first);
+        //we create a map for each line
+        for (List<dynamic> line in lines){
+          Map<String, dynamic> map = {};
+          for (int i =0; i<keys.length; i++){
+            map[keys[i].toString()] = line[i];
+          }
+          maps.add(map);
+        }
+        //we convert the map to a list of goals
+        goals = maps.map((map) => Goal.fromMap(map)).toList();
+        return goals;
+      }
+    }
+    return [];
+  }
+  Future<List<Set>> importSets(String path) async {
+    List<Set> sets = [];
+    String extension = path.split(".").last;
+    print("extension: $extension");
+    switch (extension){
+      case "json": {
+        String value = await StorageHelper.readStringFromFile(path);
+        print("sets file contents : $value");
+        List<dynamic> jsonValue = jsonDecode(value);
+        sets = jsonValue.map((map) => Set.fromMap(Map<String, dynamic>.from(map))).toList();
+        return sets;
+      }
+      case "csv": {
+        List<Map<String,dynamic>> maps = [];
+        final source = File(path).openRead();
+        final lines = await source.transform(utf8.decoder).transform(CsvToListConverter(eol: '\n')).toList();
+        //first we extract they keys
+        final keys = lines.first;
+        lines.remove(lines.first);
+        //we create a map for each line
+        for (List<dynamic> line in lines){
+          Map<String, dynamic> map = {};
+          for (int i =0; i<keys.length; i++){
+            map[keys[i].toString()] = line[i];
+          }
+          maps.add(map);
+        }
+        //we convert the map to a list of goals
+        sets = maps.map((map) => Set.fromMap(map)).toList();
+        return sets;
+      }
+    }
+    return [];
   }
 }

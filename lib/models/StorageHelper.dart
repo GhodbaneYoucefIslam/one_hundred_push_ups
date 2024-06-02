@@ -26,9 +26,9 @@ class StorageHelper {
     return file.writeAsString(content, mode: FileMode.write); // Explicitly specifying FileMode.write
   }
 
-  static Future<String> readStringFromFile(String fileName) async {
+  static Future<String> readStringFromFile(String filePath) async {
     try {
-      final file = await _getLocalFile(fileName);
+      final file = File(filePath);
       return file.readAsString();
     } catch (e) {
       print("Error reading file: $e");

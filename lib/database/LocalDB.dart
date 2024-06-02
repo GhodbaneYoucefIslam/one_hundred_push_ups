@@ -74,7 +74,12 @@ class LocalDB{
     list.sort((date1,date2)=> date1.compareTo(date2));
     return list;
   }
-
+  Future<void> importGoalsList({required List<Goal> goals}) async{
+    final db = await DatabaseService().database;
+    for (Goal goal in goals){
+      await db.insert(goalsTable, goal.toMap());
+    }
+  }
 
   //set methods
   Future<int> createSet({required Set set, required int goalId}) async {
@@ -103,6 +108,12 @@ class LocalDB{
     db.rawQuery(
       "DELETE FROM $setsTable WHERE id>0",
     );
+  }
+  Future<void> importSetsList({required List<Set> sets}) async{
+    final db = await DatabaseService().database;
+    for (Set set in sets){
+      await db.insert(setsTable, set.toMap());
+    }
   }
 
   //methods for displaying statistics
