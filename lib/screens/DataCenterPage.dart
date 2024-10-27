@@ -4,10 +4,12 @@ import "package:csv/csv.dart";
 import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
 import "package:one_hundred_push_ups/models/CSVDataExporter.dart";
+import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/widgets/CustomDropDownMenu.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
 import "../database/LocalDB.dart";
+import "../models/Achievement.dart";
 import "../models/DataExporter.dart";
 import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
@@ -15,7 +17,9 @@ import "../models/JSONDataExporter.dart";
 import '../models/Set.dart';
 import "../models/Mappable.dart";
 import "../models/StorageHelper.dart";
+import "../models/UserProvider.dart";
 import "../utils/constants.dart";
+import "../widgets/LoadingIndicatorDialog.dart";
 import "../widgets/RoundedTextField.dart";
 import "../utils/methods.dart";
 
@@ -374,25 +378,38 @@ class _DataCenterPageState extends State<DataCenterPage> {
                           ),
                         ),
                         ElevatedButton(
-                            onPressed: () async{
+                            onPressed: () async {
                               if (goalsFilePath !=null && setsFilePath != null){
                                 var ok = await openDialog();
                                 if (ok == true){
-                                  List<Goal> goals = await importGoals(goalsFilePath!);
-                                  List<Set> sets = await importSets(setsFilePath!);
-                                  final db = LocalDB();
-                                  db.deleteAllSets();
-                                  db.deleteAllGoals();
-                                  db.importGoalsList(goals: goals);
-                                  db.importSetsList(sets: sets);
-                                  Provider.of<GoalProvider>(context, listen: false).nullifyGoal();
-                                  const snackBar = SnackBar(
-                                    content: Text(
-                                      'Data imported successfully',
-                                    ),
-                                  );
-                                  ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                                  //todo: handle UI changes after end of import
+                                  try{
+                                    List<Goal> goals = await importGoals(goalsFilePath!);
+                                    List<Set> sets = await importSets(setsFilePath!);
+                                    final db = LocalDB();
+                                    db.deleteAllSets();
+                                    db.deleteAllGoals();
+                                    db.importGoalsList(goals: goals);
+                                    db.importSetsList(sets: sets);
+                                    Provider.of<GoalProvider>(context, listen: false).nullifyGoal();
+                                    const snackBar = SnackBar(
+                                      content: Text(
+                                        'Data imported successfully',
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    myImportTextControllers.first.text = "";
+                                    myImportTextControllers.last.text = "";
+                                    goalsFilePath = null;
+                                    setsFilePath = null;
+                                  }catch(e){
+                                    //todo: content validation? FK dependencies
+                                    const snackBar = SnackBar(
+                                      content: Text(
+                                        'Import failed, please make sure file contents are formatted correctly',
+                                      ),
+                                    );
+                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                  }
                                 }
                               }else{
                                 toastification.show(
@@ -562,7 +579,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
             for (Set set in dbContentsList) {
               if (set.time.compareTo(rangeStart) >= 0 &&
                   set.time.compareTo(
-                          rangeEnd /*todo: fix comparison to include whole day*/) <=
+                          rangeEnd.add(const Duration(days: 1))) <
                       0) {
                 dataList.add(set);
               }
@@ -572,7 +589,34 @@ class _DataCenterPageState extends State<DataCenterPage> {
         }
       case rankTableOption:
         {
-          //todo: connect with backend
+          if (Provider.of<UserProvider>(context, listen: false).currentUser == null){
+            const snackBar = SnackBar(
+              content: Text(
+                "Login first to access your rank data",
+              ),
+            );
+            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+          }else{
+            try{
+              LoadingIndicatorDialog().show(context, text: "Retrieving data");
+              List<Map<String,dynamic>>? intermediateList = await getUserAchievements(Provider.of<UserProvider>(context, listen: false).currentUser!.id!);
+              LoadingIndicatorDialog().dismiss();
+              List<Mappable> dataList = intermediateList!.map((e) => Achievement.fromMap(e)).toList();
+              return dataList;
+            }catch(e){
+              print(e.toString());
+              WidgetsBinding.instance.addPostFrameCallback((_) {
+                toastification.show(
+                    context: context,
+                    title: const Text(
+                        "Error connecting to server"),
+                    autoCloseDuration:
+                    const Duration(seconds: 2),
+                    style: ToastificationStyle.simple,
+                    alignment: const Alignment(0, 0.75));
+              });
+            }
+          }
           return [];
         }
     }
@@ -583,27 +627,32 @@ class _DataCenterPageState extends State<DataCenterPage> {
       String format, String fileName) async {
     List<Mappable> dataList = await getTableData(table, dateOption, dateRange);
     DataExporter dataExporter;
+    File savedFile;
     switch (format) {
       case csvFormatOption:
         {
           dataExporter = CSVDataExporter();
           String fileContents = dataExporter.formatDataForExporting(dataList);
-          StorageHelper.writeStringToFile(fileName, fileContents, context)
-              .then((value) {
-            print("File created");
-            print(value);
-          });
+          savedFile = await StorageHelper.writeStringToFile(fileName, fileContents, context);
+          final snackBar = SnackBar(
+            content: Text(
+              'Data exported to ${savedFile.parent}',
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         }
       case jsonFormatOption:
         {
           dataExporter = JSONDataExporter();
           String fileContents = dataExporter.formatDataForExporting(dataList);
-          StorageHelper.writeStringToFile(fileName, fileContents, context)
-              .then((value) {
-            print("File created");
-            print(value);
-          });
+          savedFile = await StorageHelper.writeStringToFile(fileName, fileContents, context);
+          final snackBar = SnackBar(
+            content: Text(
+              'Data exported to ${savedFile.parent}',
+            ),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
           break;
         }
     }
@@ -673,7 +722,6 @@ class _DataCenterPageState extends State<DataCenterPage> {
   Future<List<Goal>> importGoals(String path) async {
     List<Goal> goals = [];
     String extension = path.split(".").last;
-    print("extension: $extension");
     switch (extension){
       case "json": {
         String value = await StorageHelper.readStringFromFile(path);
@@ -707,7 +755,6 @@ class _DataCenterPageState extends State<DataCenterPage> {
   Future<List<Set>> importSets(String path) async {
     List<Set> sets = [];
     String extension = path.split(".").last;
-    print("extension: $extension");
     switch (extension){
       case "json": {
         String value = await StorageHelper.readStringFromFile(path);

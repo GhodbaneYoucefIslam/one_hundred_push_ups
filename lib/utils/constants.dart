@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:one_hundred_push_ups/models/Goal.dart';
 
+import '../models/User.dart';
+
 Color darkBlue = const Color(0xFF233565);
 Color lightBlue = const Color(0xFF0075A6);
 Color turquoiseBlue = const Color(0xFF00B9C9);
@@ -35,4 +37,5 @@ final Goal placeholderGoal = Goal(
     date:
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
     goalAmount: 100);
+final User placeholderUser = User(-1,"","","");
 const String endpoint = "https://jyghodbane.alwaysdata.net";

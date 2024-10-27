@@ -282,8 +282,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   .toList();
                               double average = 0;
                               List<FlSpot> dataPoints = [];
+                              List<double> percentages = [];
                               for (int i = 0; i < reps.length; i++) {
                                 double per = (reps[i] / goals[i]) * 100;
+                                percentages.add(per);
                                 average += per;
                                 dataPoints.add(FlSpot(i.toDouble() + 1, (per)));
                               }
@@ -311,10 +313,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                             minX: 1,
                                             maxX: dates.length.toDouble(),
                                             minY: 0,
-                                            maxY: reps.reduce((reps1, reps2) =>
-                                                    reps1 > reps2
-                                                        ? reps1
-                                                        : reps2) +
+                                            maxY: percentages.reduce((per1, per2) =>
+                                                    per1 > per2
+                                                        ? per1
+                                                        : per2) +
                                                 10,
                                             dates: dates,
                                             dataPoints: dataPoints)),

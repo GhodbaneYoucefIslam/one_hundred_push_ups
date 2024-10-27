@@ -26,7 +26,7 @@ Future<List<Map<String,dynamic>>?> getUserAchievements(int userId) async{
   final response = await http.get(uri);
   if (response.statusCode == 200){
     final List jsonResponse = json.decode(response.body);
-    return jsonResponse.map((e) => {'dailyRank':e['dailyRank'].toString(),'day':e['day'].toString()}).toList();
+    return jsonResponse.map((e) => {'dailyRank':e['dailyRank'].toString(),'day':e['day'].toString(),'type':defaultGoalType,'score':e['score'],'rankChange': e['rankChange']}).toList();
   }else{
     print(response.body.toString());
     return null;
@@ -34,7 +34,7 @@ Future<List<Map<String,dynamic>>?> getUserAchievements(int userId) async{
 }
 
 Future<Achievement?> postTodayAchievement(Achievement achievement) async {
-  //todo: maybe there is a problem here posting the achievement of the same user twice check later
+  //todo: maybe there is a problem here posting the achievement of the same user twice check later, problem happened again
   // Construct the URI
   final uri = Uri.parse("$endpoint/achievement");
   try {
@@ -42,7 +42,7 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'}, // Set Content-Type header
-      body: json.encode(achievement.toJson()), // Encode achievement object to JSON
+      body: json.encode(achievement.toJsonBeforeRank()), // Encode achievement object to JSON
     );
 
     // Check if the request was successful (status code 200)

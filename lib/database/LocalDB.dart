@@ -28,8 +28,6 @@ class LocalDB{
     final goals = await db.rawQuery(
         "SELECT * from $goalsTable order by id"
     );
-    print("in localdb, contents of db are: ${goals.toString()}");
-    print("there are ${goals.length} goals from db");
     return goals.map((map) => Goal.fromMap(map)).toList();
   }
   Future<int> updateGoal({required int id,required int goalAmount}) async{
@@ -126,16 +124,20 @@ class LocalDB{
       "GROUP BY goal.id",
     );
     var stats = result;
+    print("daily reps stats: $stats");
     return stats;
   }
 
   //sample data for statistics :
   Future<int> initializeGoals() async{
     final db = await DatabaseService().database;
+    await db.execute("DROP TABLE $goalsTable");
+    await db.execute("DROP TABLE $setsTable");
+    await createTables(db);
     await db.rawQuery(
         "INSERT INTO goal (type, date, goalAmount) VALUES "
-            "('pushUps', '2024-05-03T00:00:00', 100),"
-            "('pushUps', '2024-05-04T00:00:00', 100);"
+            "('pushUps', '2024-06-09T00:00:00', 100),"
+            "('pushUps', '2024-06-10T00:00:00', 75);"
     );
     print("init goals done!");
     return 1;
@@ -144,18 +146,18 @@ class LocalDB{
     final db = await DatabaseService().database;
     await db.rawQuery(
         "INSERT INTO sets (reps, time, goalId) VALUES "
-            "(5, '2024-05-03T18:07:44.924267', 1),"
-            "(10, '2024-05-03T18:08:44.924267', 1),"
-            "(11, '2024-05-03T18:09:44.924267', 1),"
-            "(20, '2024-05-03T18:12:44.924267', 1),"
-            "(25, '2024-05-03T18:13:44.924267', 1),"
-            "(7, '2024-05-04T18:07:44.924267', 2),"
-            "(16, '2024-05-04T18:08:44.924267', 2),"
-            "(17, '2024-05-04T18:09:44.924267', 2),"
-            "(18, '2024-05-04T18:10:44.924267', 2),"
-            "(19, '2024-05-04T18:11:44.924267', 2),"
-            "(10, '2024-05-04T18:12:44.924267', 2),"
-            "(11, '2024-05-04T18:13:44.924267', 2);"
+            "(5, '2024-06-09T18:07:44.924267', 1),"
+            "(10, '2024-06-09T18:08:44.924267', 1),"
+            "(11, '2024-06-09T18:09:44.924267', 1),"
+            "(20, '2024-06-09T18:12:44.924267', 1),"
+            "(25, '2024-06-09T18:13:44.924267', 1),"
+            "(7, '2024-06-10T18:07:44.924267', 2),"
+            "(16, '2024-06-10T18:08:44.924267', 2),"
+            "(17, '2024-06-10T18:09:44.924267', 2),"
+            "(18, '2024-06-10T18:10:44.924267', 2),"
+            "(19, '2024-06-10T18:11:44.924267', 2),"
+            "(10, '2024-06-10T18:12:44.924267', 2),"
+            "(11, '2024-06-10T18:13:44.924267', 2);"
     );
     print("init sets done!");
     return 1;

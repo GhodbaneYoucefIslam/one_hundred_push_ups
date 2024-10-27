@@ -1,9 +1,10 @@
+import 'package:one_hundred_push_ups/models/Mappable.dart';
 import 'package:one_hundred_push_ups/models/User.dart';
 import "package:one_hundred_push_ups/utils/constants.dart";
 import 'package:one_hundred_push_ups/utils/methods.dart';
 import 'Goal.dart';
 
-class Achievement {
+class Achievement extends Mappable {
   String type;
   int rank;
   User user;
@@ -22,7 +23,7 @@ class Achievement {
   String toString() {
     return "Achievement($rank,${user.initials()},$reps,$rankChange,$date)";
   }
-  Map<String,dynamic> toJson(){
+  Map<String,dynamic> toJsonBeforeRank(){
     return {
       'type':type,
       'score': reps,
@@ -39,5 +40,26 @@ class Achievement {
       sets,
       0,
       day);
+  }
+
+  @override
+  Map<String, dynamic> toMap() {
+    return {
+      'type': type,
+      'date': date,
+      'rank': rank,
+      'reps': reps,
+      'rankChange': rankChange,
+    };
+  }
+
+  static Achievement fromMap(Map<String,dynamic> map){
+    return Achievement(
+        map["type"],
+        int.parse(map["dailyRank"]),
+        placeholderUser,
+        map["score"],
+        map["rankChange"]??0,
+        map["day"]);
   }
 }
