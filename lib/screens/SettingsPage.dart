@@ -5,6 +5,7 @@ import "package:one_hundred_push_ups/models/Goal.dart";
 import "package:one_hundred_push_ups/models/StorageHelper.dart";
 import "package:one_hundred_push_ups/screens/AboutAppPage.dart";
 import "package:one_hundred_push_ups/screens/DataCenterPage.dart";
+import "package:one_hundred_push_ups/screens/PersonalSettingsPage.dart";
 import "package:one_hundred_push_ups/widgets/SettingsMenuItem.dart";
 import 'package:csv/csv.dart';
 import 'dart:io';
@@ -29,6 +30,8 @@ class SettingsPage extends StatelessWidget {
               text: "Personal",
               icon: Icons.person,
               onTap: () async {
+                Navigator.of(context).push(
+                    MaterialPageRoute(builder: (context) => PersonalSettingsPage()));
               },
             ),
           ),

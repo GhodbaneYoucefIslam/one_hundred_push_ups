@@ -11,6 +11,7 @@ class RoundedTextFormField extends StatelessWidget {
   TextEditingController? controller;
   FormFieldValidator? validator;
   FormFieldSetter<String?>? onSaved;
+  String? initialValue;
   RoundedTextFormField({
     Key? key,
     required this.hintText,
@@ -24,6 +25,7 @@ class RoundedTextFormField extends StatelessWidget {
     this.controller,
     this.validator,
     this.onSaved,
+    this.initialValue
   }) : super(key: key);
 
   @override
@@ -55,6 +57,7 @@ class RoundedTextFormField extends StatelessWidget {
       controller: controller,
       validator: validator,
       onSaved: onSaved,
+      initialValue: initialValue,
     );
   }
 }
