@@ -338,6 +338,8 @@ class _SignUpPageState extends State<SignUpPage> {
                               userFname, loggedInUser.firstname);
                           myPrefs.setString(
                               userLname, loggedInUser.lastname);
+                          myPrefs.setBool(
+                              userIsPublic, loggedInUser.isPublic);
                           myPrefs.setBool(userIsLoggedIn, true);
                           Provider.of<UserProvider>(context,
                               listen: false)

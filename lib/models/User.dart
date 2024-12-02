@@ -3,7 +3,8 @@ class User {
   String firstname;
   String lastname;
   String email;
-  User(this.id, this.firstname, this.lastname, this.email);
+  bool isPublic;
+  User(this.id, this.firstname, this.lastname, this.email, this.isPublic);
 
   bool isEqualTo(User other) {
     return id == other.id &&
@@ -18,6 +19,6 @@ class User {
 
   @override
   String toString(){
-    return "User($id,$firstname,$lastname,$email)";
+    return "User($id,$firstname,$lastname,$email,$isPublic)";
   }
 }

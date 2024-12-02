@@ -15,7 +15,7 @@ class Achievement extends Mappable {
   factory Achievement.fromJson(Map<String, dynamic> json) => Achievement(
       defaultGoalType,//todo: modify server later to include type in response
       json['dailyRank'],
-      User(json['user']['id'], json['user']['firstname'].toString(), json['user']['lastname'].toString(), json['user']['email'].toString()),
+      User(json['user']['id'], json['user']['firstname'].toString(), json['user']['lastname'].toString(), json['user']['email'].toString(), json['user']['ispublic']),
       json['score'],
       json['rankChange']??0,
       json['day']);

@@ -41,6 +41,7 @@ class _AppHomeState extends State<AppHome> {
     myPrefs.setString(userEmail, "");
     myPrefs.setString(userFname, "");
     myPrefs.setString(userLname, "");
+    myPrefs.setBool(userIsPublic, true);
     myPrefs.setBool(userIsLoggedIn, false);
     Provider.of<UserProvider>(context, listen: false).setUser(user: null);
   }

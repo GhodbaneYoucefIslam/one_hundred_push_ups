@@ -14,7 +14,8 @@ class UserProvider extends ChangeNotifier {
       final lName = myPrefs.getString(userLname)?? "";
       final email = myPrefs.getString(userEmail)?? "";
       final id = myPrefs.getInt(userId)?? -1;
-      currentUser = User(id, fName, lName, email);
+      final isPublic = myPrefs.getBool(userIsPublic)?? true;
+      currentUser = User(id, fName, lName, email, isPublic);
       notifyListeners();
     }
   }

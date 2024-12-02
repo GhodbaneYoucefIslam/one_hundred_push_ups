@@ -157,6 +157,7 @@ class _LoginPageState extends State<LoginPage> {
                               myPrefs.setString(userEmail, user.email);
                               myPrefs.setString(userFname, user.firstname);
                               myPrefs.setString(userLname, user.lastname);
+                              myPrefs.setBool(userIsPublic, user.isPublic);
                               myPrefs.setBool(userIsLoggedIn, true);
                               Provider.of<UserProvider>(context, listen: false)
                                   .initUserFromPrefs();
@@ -263,6 +264,7 @@ class _LoginPageState extends State<LoginPage> {
                               userFname, loggedInUser.firstname);
                           myPrefs.setString(
                               userLname, loggedInUser.lastname);
+                          myPrefs.setBool(userIsPublic, loggedInUser.isPublic);
                           myPrefs.setBool(userIsLoggedIn, true);
                           Provider.of<UserProvider>(context,
                               listen: false)

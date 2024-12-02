@@ -216,6 +216,8 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                           userFname, newUser.firstname);
                                       myPrefs.setString(
                                           userLname, newUser.lastname);
+                                      myPrefs.setBool(
+                                          userIsPublic, newUser.isPublic);
                                       myPrefs.setBool(userIsLoggedIn, true);
                                       Provider.of<UserProvider>(context,
                                           listen: false)

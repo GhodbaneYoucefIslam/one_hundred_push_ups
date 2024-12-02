@@ -186,7 +186,7 @@ Future<User?> postNewUser(String email, String fName, String lName, String passw
     if (response.statusCode == 201){
       print("added user successfully");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
     } else if (response.statusCode==400) {
       print(response.body);
       return null;
@@ -211,7 +211,7 @@ Future<User?> changeUserPassword(String email,String password) async{
     if (response.statusCode == 201){
       print("password changed successfully");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
     } else if (response.statusCode==400) {
       print(response.body);
       return null;
@@ -237,10 +237,10 @@ Future<User?> loginWithEmailAndPassword(String email, String password) async{
     if (response.statusCode == 200){
       print("login successful");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
     } else if (response.statusCode == 401){
       print(response.body);
-      return User(-1,"","","");
+      return User(-1,"","","", true);
     }else{
       return null;
     }
@@ -264,12 +264,40 @@ Future<User?> loginOrSignUpWithGoogle(String email, String fName, String lName) 
     );
     if (response.statusCode == 200 || response.statusCode == 201){
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email']);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
     }else if (response.statusCode==400) {
-      return User(-1, "", "", "");
+      return User(-1, "", "", "", true);
     }
   } catch (error) {
     print("Error adding user: $error");
+  }
+  return null;
+}
+
+Future<User?> changeUserPersonalDetails(int id, String fName,String lName, bool isVisible) async{
+  print("entered function change details");
+  final uri = Uri.parse("$endpoint/user/changePersonalDetails");
+  try {
+    final response = await http.post(
+      uri,
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({
+        "id": id,
+        "firstname":fName,
+        "lastname":lName,
+        "ispublic": isVisible
+      }),
+    );
+    if (response.statusCode == 201){
+      print("details changed successfully");
+      final jsonData = json.decode(response.body);
+      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
+    } else if (response.statusCode==400) {
+      print(response.body);
+      return null;
+    }
+  } catch (error) {
+    print("Error changing user details: $error");
   }
   return null;
 }

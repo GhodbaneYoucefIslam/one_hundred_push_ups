@@ -17,6 +17,7 @@ const String userFname = "userFname";
 const String userLname = "userLname";
 const String userEmail = "userEmail";
 const String userId = "userId";
+const String userIsPublic = "isPublic";
 const String userIsLoggedIn = "userIsLoggedIn";
 
 const String goalsTable = "goal";
@@ -37,5 +38,5 @@ final Goal placeholderGoal = Goal(
     date:
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
     goalAmount: 100);
-final User placeholderUser = User(-1,"","","");
+final User placeholderUser = User(-1,"","","", true);
 const String endpoint = "https://jyghodbane.alwaysdata.net";
