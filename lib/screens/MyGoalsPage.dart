@@ -4,12 +4,14 @@ import "package:one_hundred_push_ups/database/LocalDB.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
 import "package:provider/provider.dart";
+import "package:shared_preferences/shared_preferences.dart";
 import "package:toastification/toastification.dart";
 import "../models/Achievement.dart";
 import "../models/Goal.dart";
 import "../models/GoalProvider.dart";
 import "../models/User.dart";
 import "../models/UserProvider.dart";
+import "../utils/LocalNotifications.dart";
 import "../widgets/RoundedTextField.dart";
 import "../widgets/LineGraph.dart";
 
@@ -582,6 +584,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                     getStats();
                   });
                 }
+                final myPrefs = await SharedPreferences.getInstance();
+                bool areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
+                LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, Provider.of<GoalProvider>(context, listen: false).totalReps >= Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount);
               },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),

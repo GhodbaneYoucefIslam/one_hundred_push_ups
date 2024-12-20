@@ -9,6 +9,7 @@ Color turquoiseBlue = const Color(0xFF00B9C9);
 Color greenBlue = const Color(0xFF6EFACC);
 Color grey = const Color(0xFFB9B9B9);
 
+//shared preferences key constants
 const String showOnboarding = "showOnboarding";
 const String dailyGoalId = "dailyGoalId";
 const String defaultGoalType = "pushUps";
@@ -19,6 +20,8 @@ const String userEmail = "userEmail";
 const String userId = "userId";
 const String userIsPublic = "isPublic";
 const String userIsLoggedIn = "userIsLoggedIn";
+const String activateNotifications = "activateNotifications";
+const String chosenLanguage = "chosenLanguage";
 
 const String goalsTable = "goal";
 const String setsTable = "sets";
@@ -33,6 +36,9 @@ const String emailSaveOption = "Send to email";
 const String allTimeDateOption = "All time";
 const String customRangeDateOption = "Custom range";
 
+const String english = "English";
+const String french = "Français";
+
 final Goal placeholderGoal = Goal(
     type: defaultGoalType,
     date:
@@ -40,3 +46,5 @@ final Goal placeholderGoal = Goal(
     goalAmount: 100);
 final User placeholderUser = User(-1,"","","", true);
 const String endpoint = "https://jyghodbane.alwaysdata.net";
+
+const int notificationID = 0;

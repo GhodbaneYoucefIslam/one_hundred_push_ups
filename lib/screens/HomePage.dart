@@ -2,8 +2,10 @@ import 'dart:async';
 import 'package:circular_chart_flutter/circular_chart_flutter.dart';
 import "package:flutter/material.dart";
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
+import 'package:one_hundred_push_ups/utils/LocalNotifications.dart';
 import 'package:one_hundred_push_ups/widgets/RoundedTextField.dart';
 import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../models/Goal.dart';
 import '../utils/constants.dart';
 import 'package:toastification/toastification.dart';
@@ -139,6 +141,7 @@ class _HomePageState extends State<HomePage> {
                       ValueListenableBuilder(
                         valueListenable: remainingTime,
                         builder: (context,value,child)=> Text(
+                          //todo: optimise code? (use goal variable)
                           totalReps <
                               context
                                   .watch<GoalProvider>()
@@ -168,7 +171,15 @@ class _HomePageState extends State<HomePage> {
                               onPressed: () async {
                                 var result = await openDialog();
                                 int repsToAdd = int.parse(result!);
+                                print("totalReps1: ${Provider.of<GoalProvider>(context, listen: false).totalReps}");
                                 Provider.of<GoalProvider>(context, listen: false).addSet(reps: repsToAdd, goalId:Provider.of<GoalProvider>(context, listen: false).todayGoal!.id!);
+                                //change notification status if goal completed
+                                final myPrefs = await SharedPreferences.getInstance();
+                                bool areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
+                                print(areNotificationsOn);
+                                print("totalReps2: ${Provider.of<GoalProvider>(context, listen: false).totalReps + repsToAdd}");
+                                print("goal: ${Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount}");
+                                LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, Provider.of<GoalProvider>(context, listen: false).totalReps + repsToAdd>=Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount);
                                 setState(() {
                                   List<CircularStackEntry> updatedChartData =
                                   <CircularStackEntry>[

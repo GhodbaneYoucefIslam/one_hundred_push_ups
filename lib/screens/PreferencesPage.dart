@@ -1,6 +1,10 @@
 import "package:flutter/material.dart";
-
+import "package:one_hundred_push_ups/utils/LocalNotifications.dart";
+import "package:provider/provider.dart";
+import "package:shared_preferences/shared_preferences.dart";
+import "../models/GoalProvider.dart";
 import "../utils/constants.dart";
+
 class PreferencesPage extends StatefulWidget {
   const PreferencesPage({super.key});
 
@@ -9,156 +13,191 @@ class PreferencesPage extends StatefulWidget {
 }
 
 class _PreferencesPageState extends State<PreferencesPage> {
-  bool areNotificationsOn = true;
-  String currentLanguage = "English";
+  late bool areNotificationsOn;
+  late String currentLanguage;
+  bool isDataLoaded = false;
+
+  Future<void> loadPreferences() async {
+    final myPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      areNotificationsOn = myPrefs.getBool(activateNotifications) ?? false;
+      currentLanguage = myPrefs.getString(chosenLanguage) ?? english;
+      isDataLoaded = true;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    loadPreferences();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
-        width: MediaQuery.of(context).size.width,
-        padding: EdgeInsets.only(left: 30, right: 30, bottom: 100),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            const Text(
-              "In-App Preferences",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+      body: isDataLoaded? buildPage(context) : const Center(child: CircularProgressIndicator()),
+    );
+  }
+
+  Widget buildPage(BuildContext context){
+    return Container(
+      width: MediaQuery.of(context).size.width,
+      padding: EdgeInsets.only(left: 30, right: 30, bottom: 100),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            "In-App Preferences",
+            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.25,
+            decoration: BoxDecoration(
+              color: grey.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
             ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height*0.25,
-              decoration: BoxDecoration(
-                color: grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text(
-                    "Notifications",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      const Row(
-                        children: [
-                          Icon(
-                            Icons.notifications_off,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Text(
+                  "Notifications",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    const Row(
+                      children: [
+                        Icon(
+                          Icons.notifications_off,
+                          size: 20,
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 7),
+                          child: Text("Inactive",
+                              style: TextStyle(
+                                  fontSize: 13, fontWeight: FontWeight.bold)),
+                        )
+                      ],
+                    ),
+                    Switch(
+                        value: areNotificationsOn,
+                        onChanged: (value) async{
+                          setState(() {
+                            areNotificationsOn = !areNotificationsOn;
+                          });
+                          //save notification activation status
+                          final myPrefs = await SharedPreferences.getInstance();
+                          myPrefs.setBool(activateNotifications, areNotificationsOn);
+                          //trigger changes
+                          print("status : $areNotificationsOn");
+                          int goal = Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount;
+                          int totalReps = Provider.of<GoalProvider>(context, listen: false).totalReps;
+                          LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, totalReps>=goal);
+                        }),
+                    const Row(
+                      children: [
+                        Padding(
+                          padding: EdgeInsets.only(right: 7),
+                          child: Icon(
+                            Icons.notifications_active,
                             size: 20,
                           ),
-                          Padding(
-                            padding: EdgeInsets.only(left: 7),
-                            child: Text("Inactive",
-                                style: TextStyle(
-                                    fontSize: 13, fontWeight: FontWeight.bold)),
-                          )
-                        ],
-                      ),
-                      Switch(
-                          value: areNotificationsOn,
-                          onChanged: (value) {
-                            setState(() {
-                              areNotificationsOn = !areNotificationsOn;
-                            });
-                          }),
-                      const Row(
-                        children: [
-                          Padding(
-                            padding: EdgeInsets.only(right: 7),
-                            child: Icon(
-                              Icons.notifications_active,
-                              size: 20,
-                            ),
+                        ),
+                        Text("Active",
+                            style: TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.bold))
+                      ],
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+            width: MediaQuery.of(context).size.width,
+            height: MediaQuery.of(context).size.height * 0.25,
+            decoration: BoxDecoration(
+              color: grey.withOpacity(0.2),
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                const Text(
+                  "Display Language",
+                  style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    showModalBottomSheet(
+                        context: context,
+                        builder: (context) => Container(
+                          padding: EdgeInsets.symmetric(
+                              horizontal: 10, vertical: 20),
+                          width: MediaQuery.of(context).size.width * 0.95,
+                          child: Column(
+                            children: [
+                              Column(
+                                children: [
+                                  RadioMenuButton(
+                                      value: english,
+                                      groupValue: currentLanguage,
+                                      onChanged: (selectedLanguage) async {
+                                        setState(() {
+                                          currentLanguage =
+                                          selectedLanguage!;
+                                        });
+                                        final myPrefs = await SharedPreferences.getInstance();
+                                        myPrefs.setString(chosenLanguage, currentLanguage);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(english)),
+                                  RadioMenuButton(
+                                      value: french,
+                                      groupValue: currentLanguage,
+                                      onChanged: (selectedLanguage) async{
+                                        setState(() {
+                                          currentLanguage =
+                                          selectedLanguage!;
+                                        });
+                                        final myPrefs = await SharedPreferences.getInstance();
+                                        myPrefs.setString(chosenLanguage, currentLanguage);
+                                        Navigator.pop(context);
+                                      },
+                                      child: Text(french))
+                                ],
+                              ),
+                            ],
                           ),
-                          Text("Active",
-                              style:
-                              TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
-                        ],
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-              width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height*0.25,
-              decoration: BoxDecoration(
-                color: grey.withOpacity(0.2),
-                borderRadius: BorderRadius.circular(10),
-              ),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  const Text(
-                    "Display Language",
-                    style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
-                  ),
-                  ElevatedButton(
-                    onPressed: () {
-                      showModalBottomSheet(context: context, builder: (context) => Container(
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
-                        width: MediaQuery.of(context).size.width*0.95,
-                        child: Column(
-                          children: [
-                            Column(
-                              children: [
-                                RadioMenuButton(
-                                    value: "English",
-                                    groupValue: currentLanguage,
-                                    onChanged: (selectedLanguage){
-                                      setState(() {
-                                        currentLanguage = selectedLanguage!;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("English")
-                                ),
-                                RadioMenuButton(
-                                    value: "Français",
-                                    groupValue: currentLanguage,
-                                    onChanged: (selectedLanguage){
-                                      setState(() {
-                                        currentLanguage = selectedLanguage!;
-                                      });
-                                      Navigator.pop(context);
-                                    },
-                                    child: Text("Français")
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ));
-                    },
-                    style: ButtonStyle(
-                      backgroundColor: MaterialStateProperty.all(lightBlue),
-                      shape:
-                      MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                      ),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.all(5.0),
-                      child: Text(
-                        "Current Language : $currentLanguage \n (Tap to change)",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 16, color: Colors.white),
+                        ));
+                  },
+                  style: ButtonStyle(
+                    backgroundColor: MaterialStateProperty.all(lightBlue),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
                       ),
                     ),
                   ),
-                ],
-              ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(5.0),
+                    child: Text(
+                      "Current Language : $currentLanguage \n (Tap to change)",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 16, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
