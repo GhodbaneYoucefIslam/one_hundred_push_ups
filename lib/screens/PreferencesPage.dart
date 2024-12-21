@@ -1,5 +1,7 @@
 import "package:flutter/material.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/utils/LocalNotifications.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "../models/GoalProvider.dart";
@@ -20,7 +22,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
   Future<void> loadPreferences() async {
     final myPrefs = await SharedPreferences.getInstance();
     setState(() {
-      areNotificationsOn = myPrefs.getBool(activateNotifications) ?? false;
+      areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
       currentLanguage = myPrefs.getString(chosenLanguage) ?? english;
       isDataLoaded = true;
     });
@@ -48,8 +50,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
-          const Text(
-            "In-App Preferences",
+          Text(
+            inAppPreferences.tr,
             style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           Container(
@@ -63,14 +65,14 @@ class _PreferencesPageState extends State<PreferencesPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Text(
-                  "Notifications",
+                Text(
+                  notifications.tr,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Icon(
                           Icons.notifications_off,
@@ -78,7 +80,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 7),
-                          child: Text("Inactive",
+                          child: Text(inactive.tr,
                               style: TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold)),
                         )
@@ -99,7 +101,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                           int totalReps = Provider.of<GoalProvider>(context, listen: false).totalReps;
                           LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, totalReps>=goal);
                         }),
-                    const Row(
+                    Row(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(right: 7),
@@ -108,7 +110,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                             size: 20,
                           ),
                         ),
-                        Text("Active",
+                        Text(active.tr,
                             style: TextStyle(
                                 fontSize: 13, fontWeight: FontWeight.bold))
                       ],
@@ -129,8 +131,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                const Text(
-                  "Display Language",
+                Text(
+                  displayLanguage.tr,
                   style: TextStyle(fontSize: 25, fontWeight: FontWeight.bold),
                 ),
                 ElevatedButton(
@@ -155,6 +157,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                         });
                                         final myPrefs = await SharedPreferences.getInstance();
                                         myPrefs.setString(chosenLanguage, currentLanguage);
+                                        var locale = Locale("en","US");
+                                        Get.updateLocale(locale);
                                         Navigator.pop(context);
                                       },
                                       child: Text(english)),
@@ -168,6 +172,8 @@ class _PreferencesPageState extends State<PreferencesPage> {
                                         });
                                         final myPrefs = await SharedPreferences.getInstance();
                                         myPrefs.setString(chosenLanguage, currentLanguage);
+                                        var locale = Locale("fr","FR");
+                                        Get.updateLocale(locale);
                                         Navigator.pop(context);
                                       },
                                       child: Text(french))
@@ -188,7 +194,7 @@ class _PreferencesPageState extends State<PreferencesPage> {
                   child: Padding(
                     padding: const EdgeInsets.all(5.0),
                     child: Text(
-                      "Current Language : $currentLanguage \n (Tap to change)",
+                      "${displayLanguage.tr} : $currentLanguage \n (${tapToChange.tr})",
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 16, color: Colors.white),
                     ),

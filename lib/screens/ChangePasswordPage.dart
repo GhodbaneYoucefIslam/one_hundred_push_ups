@@ -1,7 +1,9 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/screens/LoginPage.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "../models/User.dart";
@@ -41,12 +43,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 Column(
                   children: [
                     Text(
-                      "Change password for",
+                      changedPasswordFor.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                     Text(
-                      "${widget.email}",
+                      widget.email,
                       style: TextStyle(
                           fontSize: 15, fontWeight: FontWeight.normal),
                       textAlign: TextAlign.center,
@@ -56,7 +58,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 Column(
                   children: [
                     RoundedTextFormField(
-                      hintText: "Password",
+                      hintText: passwordField.tr,
                       hintTextSize: 17,
                       borderColor: grey,
                       selectedBorderColor: greenBlue,
@@ -74,9 +76,9 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Password cannot be empty';
+                          return passwordNotEmptyMessage.tr;
                         } else if (value.toString().length < 4) {
-                          return 'Password cannot contain less than 4 characters';
+                          return minCharactersErrorMessage.tr;
                         }
                         return null;
                       },
@@ -88,7 +90,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       height: MediaQuery.of(context).size.height*0.025,
                     ),
                     RoundedTextFormField(
-                      hintText: "Confirm password",
+                      hintText: confirmPassword.tr,
                       hintTextSize: 17,
                       borderColor: grey,
                       selectedBorderColor: greenBlue,
@@ -106,7 +108,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       ),
                       validator: (value) {
                         if (value == null || value.isEmpty) {
-                          return 'Confirmed password cannot be empty';
+                          return confirmedPasswordEmptyErrorMessage.tr;
                         }
                         return null;
                       },
@@ -124,13 +126,13 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           if (password == confirmedPassword) {
-                            LoadingIndicatorDialog().show(context, text: "Changing password");
+                            LoadingIndicatorDialog().show(context, text: changingPassword.tr);
                             User? updatedUser = await changeUserPassword(widget.email, password);
                             LoadingIndicatorDialog().dismiss();
                               if (updatedUser != null) {
                                 final snackBar = SnackBar(
                                   content: Text(
-                                    'Changed password successfully for ${updatedUser.lastname} ${updatedUser.firstname} successful with id:${updatedUser.id}!',
+                                    '${changedPasswordFor.tr} ${updatedUser.lastname} ${updatedUser.firstname} ${successfulWithId.tr}: ${updatedUser.id}!',
                                   ),
                                 );
                                 ScaffoldMessenger.of(context)
@@ -141,18 +143,18 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                                         builder: (context) =>
                                         const LoginPage()));
                               }else{
-                                const snackBar = SnackBar(
+                                final snackBar = SnackBar(
                                   content: Text(
-                                    'Error changing password',
+                                    errorChangingPasswordErrorMessage.tr,
                                   ),
                                 );
                                 ScaffoldMessenger.of(context)
                                     .showSnackBar(snackBar);
                               }
                           } else {
-                            const snackBar = SnackBar(
+                            final snackBar = SnackBar(
                               content: Text(
-                                'Please confirm your password',
+                                pleaseConfirmPassword.tr,
                               ),
                             );
                             ScaffoldMessenger.of(context)
@@ -169,7 +171,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                           ),
                         ),
                       ),
-                      child: const Text("Change password",
+                      child: Text(changePassword.tr,
                           style: TextStyle(fontSize: 16, color: Colors.white))),
                 ),
               ],

@@ -1,3 +1,6 @@
+import 'package:get/get.dart';
+import 'package:one_hundred_push_ups/utils/translationConstants.dart';
+
 String toPrismaCompatibleIsoStringForDate(DateTime date){
   return "${date.year}-${date.month.toString().padLeft(2,"0")}-${date.day.toString().padLeft(2,"0")}T00:00:00Z";
 }
@@ -7,7 +10,7 @@ String toDisplayableDate(DateTime date){
 }
 
 String? validateEmail(String? value) {
-  if (value == null || value.isEmpty) return 'Email cannot be empty';
+  if (value == null || value.isEmpty) return emailEmptyErrorMessage.tr;
   const pattern = r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
       r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
       r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
@@ -18,6 +21,6 @@ String? validateEmail(String? value) {
   final regex = RegExp(pattern);
   bool invalid = (value.isNotEmpty && !regex.hasMatch(value));
   return invalid
-      ? 'Enter a valid email address'
+      ? emailInvalidFormatErrorMessage.tr
       : null;
 }

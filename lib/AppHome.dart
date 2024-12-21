@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:one_hundred_push_ups/database/DatabaseService.dart';
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
 import 'package:one_hundred_push_ups/screens/HomePage.dart';
@@ -6,6 +7,7 @@ import 'package:one_hundred_push_ups/screens/LeaderboardPage.dart';
 import 'package:one_hundred_push_ups/screens/LoginPage.dart';
 import 'package:one_hundred_push_ups/screens/MyGoalsPage.dart';
 import 'package:one_hundred_push_ups/screens/SettingsPage.dart';
+import 'package:one_hundred_push_ups/utils/translationConstants.dart';
 import 'package:one_hundred_push_ups/widgets/SideMenu.dart';
 import 'package:one_hundred_push_ups/widgets/SideMenuItem.dart';
 import 'package:provider/provider.dart';
@@ -81,7 +83,7 @@ class _AppHomeState extends State<AppHome> {
                   : "",
               accountName: context.watch<UserProvider>().currentUser != null
                   ? "${context.watch<UserProvider>().currentUser!.lastname} ${context.watch<UserProvider>().currentUser!.firstname}"
-                  : "Not connected",
+                  : notConnected.tr,
               avatar: Text(
                 context.watch<UserProvider>().currentUser != null
                     ? context.watch<UserProvider>().currentUser!.initials()
@@ -91,7 +93,7 @@ class _AppHomeState extends State<AppHome> {
               menuEntries: [
                 SideMenuItem(
                   id: 1,
-                  title: "Home",
+                  title: home.tr,
                   icon: Icons.home_filled,
                   selected: currentPage == MenuEntry.home ? true : false,
                   onTap: () {
@@ -104,7 +106,7 @@ class _AppHomeState extends State<AppHome> {
                 ),
                 SideMenuItem(
                   id: 2,
-                  title: "My goal",
+                  title: statsAndGoals.tr,
                   icon: Icons.query_stats,
                   selected: currentPage == MenuEntry.goal ? true : false,
                   onTap: () {
@@ -117,7 +119,7 @@ class _AppHomeState extends State<AppHome> {
                 ),
                 SideMenuItem(
                     id: 3,
-                    title: "Leaderboard",
+                    title: leaderboard.tr,
                     icon: Icons.leaderboard,
                     selected: currentPage == MenuEntry.leaderboard ? true : false,
                     onTap: () {
@@ -129,7 +131,7 @@ class _AppHomeState extends State<AppHome> {
                     }),
                 SideMenuItem(
                     id: 4,
-                    title: "Settings",
+                    title: settings.tr,
                     icon: Icons.settings,
                     selected: currentPage == MenuEntry.settings ? true : false,
                     onTap: () {
@@ -144,7 +146,7 @@ class _AppHomeState extends State<AppHome> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    const Row(
+                    Row(
                       children: [
                         Padding(
                           padding: EdgeInsets.only(right: 7),
@@ -153,7 +155,7 @@ class _AppHomeState extends State<AppHome> {
                             size: 20,
                           ),
                         ),
-                        Text("Light\nmode",
+                        Text(lightMode.tr,
                             style:
                             TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
                       ],
@@ -165,7 +167,7 @@ class _AppHomeState extends State<AppHome> {
                             isDarkMode = !isDarkMode;
                           });
                         }),
-                    const Row(
+                    Row(
                       children: [
                         Icon(
                           Icons.dark_mode,
@@ -173,7 +175,7 @@ class _AppHomeState extends State<AppHome> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 7),
-                          child: Text("Night\nmode",
+                          child: Text(nightMode.tr,
                               style: TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold)),
                         )
@@ -211,7 +213,7 @@ class _AppHomeState extends State<AppHome> {
                     },
                     icon:  Icon(isLoggedIn? Icons.logout: Icons.login, size: 20),
                     label: Text(
-                        isLoggedIn? "Logout": "Login",
+                        isLoggedIn? logout.tr: login.tr,
                         style: const TextStyle(fontSize: 16)),
                     style: ButtonStyle(
                       fixedSize: MaterialStateProperty.all(
@@ -253,8 +255,8 @@ class _AppHomeState extends State<AppHome> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(
-                    "Do you want to reset all your data (progress, stats)?",
+                  Text(
+                    resetDataQuestion.tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
@@ -275,7 +277,7 @@ class _AppHomeState extends State<AppHome> {
                               ),
                             ),
                           ),
-                          child: const Text("No",
+                          child: Text(no.tr,
                               style: TextStyle(
                                   fontSize: 16, color: Colors.white))),
                       ElevatedButton(
@@ -292,7 +294,7 @@ class _AppHomeState extends State<AppHome> {
                               ),
                             ),
                           ),
-                          child: const Text("Yes",
+                          child: Text(yes.tr,
                               style: TextStyle(
                                   fontSize: 16, color: Colors.white))),
                     ],

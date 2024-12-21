@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
+import 'package:one_hundred_push_ups/utils/translationConstants.dart';
 import 'package:one_hundred_push_ups/widgets/FourDigitFormCell.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -56,14 +58,14 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
             WidgetsBinding.instance.addPostFrameCallback((_) {
               toastification.show(
                   context: context,
-                  title: const Text("Error connecting to server"),
+                  title: Text(serverConnectionError.tr),
                   autoCloseDuration: const Duration(seconds: 2),
                   style: ToastificationStyle.simple,
                   alignment: const Alignment(0, 0.75));
             });
-            return const Center(
+            return Center(
               child: Text(
-                "Failed sending verification code, please go to previous page",
+                failedSendingCodeErrorMessage.tr,
                 style:
                 TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
               ),
@@ -81,7 +83,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                         width: 25,
                         child: SvgPicture.asset("assets/images/logo.svg")),
                     Text(
-                      "Verify email address",
+                      verifyRegistrationEmail.tr,
                       textAlign: TextAlign.center,
                       style: TextStyle(
                           fontSize: 30, fontWeight: FontWeight.bold),
@@ -89,7 +91,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                     Column(
                       children: [
                         Text(
-                          "A verification code has been sent to ${widget.email}",
+                          "${verificationCodeSent.tr} ${widget.email}",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.normal),
                           textAlign: TextAlign.center,
@@ -98,8 +100,8 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                           valueListenable: remainingTime,
                           builder: (context, value, child) => Text(
                             !value.isNegative
-                                ? "Code expires in ${value.inMinutes}:${(value.inSeconds - value.inMinutes * 60).toString().padLeft(2,"0")}"
-                                : "Code expired click resend",
+                                ? "${codeExpiresIn.tr} ${value.inMinutes}:${(value.inSeconds - value.inMinutes * 60).toString().padLeft(2,"0")}"
+                                : codeExpired.tr,
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.normal,
@@ -173,7 +175,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                           ),
                                         ),
                                       ),
-                                      child: Text("Resend",
+                                      child: Text(resend.tr,
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.white)))),
@@ -200,7 +202,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                     if (newUser != null) {
                                       final snackBar = SnackBar(
                                         content: Text(
-                                          'Registration of ${newUser.lastname} ${newUser.firstname} successful with id:${newUser.id}!',
+                                          '${authenticationOf.tr} ${newUser.lastname} ${newUser.firstname} ${successfulWithId.tr}: ${newUser.id}!',
                                         ),
                                       );
                                       ScaffoldMessenger.of(context)
@@ -230,9 +232,9 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                                   title: appName)));
                                     }
                                   } else if (correct == false) {
-                                    const snackBar = SnackBar(
+                                    final snackBar = SnackBar(
                                       content: Text(
-                                        'Incorrect otp code!',
+                                        incorrectOtpErrorMessage.tr,
                                       ),
                                     );
                                     ScaffoldMessenger.of(context)
@@ -250,7 +252,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                   ),
                                 ),
                               ),
-                              child: const Text("Confirm",
+                              child: Text(confirm.tr,
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white))),
                         ),

@@ -55,6 +55,7 @@ dependencies:
   flutter_timezone: ^1.0.8
   timezone: ^0.9.4
   flutter_background: ^1.2.0
+  get: ^4.6.6
 
 dev_dependencies:
   flutter_test:

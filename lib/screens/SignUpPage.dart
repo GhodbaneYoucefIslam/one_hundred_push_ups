@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/models/GoogleSignInApi.dart";
 import "package:one_hundred_push_ups/screens/AboutAppPage.dart";
 import "package:one_hundred_push_ups/screens/LoginPage.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:provider/provider.dart";
@@ -51,7 +53,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Welcome to  ",
+                          welcome.tr,
                           style:
                           TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
                         ),
@@ -68,18 +70,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   ],
                 ),
                 Text(
-                  "Create your account",
+                  createAccount.tr,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 RoundedTextFormField(
-                  hintText: "First name",
+                  hintText: firstName.tr,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
                   validator: (value){
                     if (value == null || value.isEmpty) {
-                      return 'First name cannot be empty';
+                      return fNameEmptyErrorMessage.tr;
                     }
                     return null;
                   },
@@ -88,14 +90,14 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
                 RoundedTextFormField(
-                  hintText: "Last name",
+                  hintText: lastName.tr,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
                   validator: (value){
                     if (value == null || value.isEmpty) {
-                      return 'Last name cannot be empty';
+                      return lNameEmptyErrorMessage.tr;
                     }
                     return null;
                   },
@@ -104,7 +106,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
                 RoundedTextFormField(
-                  hintText: "Email",
+                  hintText: emailField.tr,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
@@ -115,7 +117,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
                 RoundedTextFormField(
-                  hintText: "Password",
+                  hintText: passwordField,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
@@ -133,9 +135,9 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   validator: (value){
                     if (value == null || value.isEmpty) {
-                      return 'Password cannot be empty';
+                      return passwordNotEmptyMessage.tr;
                     }else if(value.toString().length<4){
-                      return 'Password cannot contain less than 4 characters';
+                      return minCharactersErrorMessage.tr;
                     }
                     return null;
                   },
@@ -144,7 +146,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   },
                 ),
                 RoundedTextFormField(
-                  hintText: "Confirm password",
+                  hintText: confirmPassword.tr,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
@@ -162,7 +164,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   ),
                   validator: (value){
                     if (value == null || value.isEmpty) {
-                      return 'Confirmed password cannot be empty';
+                      return confirmedPasswordEmptyErrorMessage.tr;
                     }
                     return null;
                   },
@@ -189,8 +191,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         const BorderSide(width: 1.0, color: Color(0xff9BAEBC)),
                       ),
                     ),
-                    const Text(
-                      'I accept ',
+                    Text(
+                      iAccept.tr + " ",
                       style: TextStyle(
                         fontSize: 17,
                         color: Colors.black,
@@ -201,7 +203,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 1)));
                       },
                       child: Text(
-                        'terms ',
+                        terms.tr,
                         style: TextStyle(
                           fontSize: 17,
                           color: greenBlue,
@@ -210,8 +212,8 @@ class _SignUpPageState extends State<SignUpPage> {
                         ),
                       ),
                     ),
-                    const Text(
-                      'and ',
+                    Text(
+                      " " +and.tr+" ",
                       style: TextStyle(
                         fontSize: 17,
                         color: Colors.black,
@@ -222,7 +224,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 1)));
                       },
                       child: Text(
-                        'conditions ',
+                        conditions.tr,
                         style: TextStyle(
                           fontSize: 17,
                           color: greenBlue,
@@ -244,17 +246,17 @@ class _SignUpPageState extends State<SignUpPage> {
                             if (password==confirmedPassword){
                               signUp(fName, lName, email, password);
                             }else{
-                              const snackBar = SnackBar(
+                              final snackBar = SnackBar(
                                 content: Text(
-                                  'Please confirm your password',
+                                  pleaseConfirmPassword.tr,
                                 ),
                               );
                               ScaffoldMessenger.of(context).showSnackBar(snackBar);
                             }
                           }else{
-                            const snackBar = SnackBar(
+                            final snackBar = SnackBar(
                               content: Text(
-                                'Terms & conditions must be accepted',
+                                termsMustBeAcceptedErrorMessage.tr,
                               ),
                             );
                             ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -270,7 +272,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           ),
                         ),
                       ),
-                      child: const Text("Sign up",
+                      child: Text(signUpKey.tr,
                           style: TextStyle(fontSize: 16, color: Colors.white))),
                 ),
                 Row(
@@ -284,7 +286,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       ),
                     ),
                     Text(
-                      'or',
+                      or.tr,
                       style: TextStyle(
                         fontSize: 16,
                         color: darkBlue,
@@ -315,14 +317,14 @@ class _SignUpPageState extends State<SignUpPage> {
                         fName= "";
                       }
                       print("user: ${fName} $lName $email");
-                      LoadingIndicatorDialog().show(context, text: "Logging in");
+                      LoadingIndicatorDialog().show(context, text: loggingIn.tr);
                       final loggedInUser = await loginOrSignUpWithGoogle(email, fName, lName);
                       LoadingIndicatorDialog().dismiss();
                       if(loggedInUser != null){
                         if (loggedInUser.id!= -1){
                           final snackBar = SnackBar(
                             content: Text(
-                              'Registration of ${loggedInUser.lastname} ${loggedInUser.firstname} successful with id:${loggedInUser.id}!',
+                              '${authenticationOf.tr} ${loggedInUser.lastname} ${loggedInUser.firstname} ${successfulWithId.tr}:${loggedInUser.id}!',
                             ),
                           );
                           ScaffoldMessenger.of(context)
@@ -351,25 +353,25 @@ class _SignUpPageState extends State<SignUpPage> {
                                   const AppHome(
                                       title: appName)));
                         }else{
-                          const snackBar = SnackBar(
+                          final snackBar = SnackBar(
                             content: Text(
-                              'This user is not connected through google, please use email and password to login',
+                              notConnectedWithGoogleErrorMessage.tr,
                             ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       }else{
-                        const snackBar = SnackBar(
+                        final snackBar = SnackBar(
                           content: Text(
-                            'Error connecting to server, please try again',
+                            serverConnectionError.tr,
                           ),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
                     }else{
-                      const snackBar = SnackBar(
+                      final snackBar = SnackBar(
                         content: Text(
-                          'Google authentication failed please try again',
+                          googleFailed.tr,
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -381,7 +383,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: const Color(0xffD9D9D9))),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
@@ -389,7 +391,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           size: 40,
                         ),
                         Text(
-                          'Continue with google',
+                          continueWithGoogle.tr,
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black,
@@ -402,8 +404,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Already have an account?  ',
+                    Text(
+                      alreadyHaveAccount.tr + " ",
                       style: TextStyle(
                         fontSize: 17,
                         color: Colors.black,
@@ -414,7 +416,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
                       },
                       child: Text(
-                        'Login',
+                        login.tr,
                         style: TextStyle(
                             fontSize: 17,
                             color: greenBlue,
@@ -433,23 +435,23 @@ class _SignUpPageState extends State<SignUpPage> {
   }
   void signUp(String fName, String lName, String email, String password) async{
     //see if email available
-    LoadingIndicatorDialog().show(context, text: "Verifying email");
+    LoadingIndicatorDialog().show(context, text: verifyingEmail.tr);
     bool? availableEmail = await isEmailNotPreviouslyUsed(email);
     LoadingIndicatorDialog().dismiss();
     if (availableEmail==true){
       //take user to confirmation screen
       Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPageForSignUp(email: email, fName: fName, lName: lName, password: password, codeExpiresIn: const Duration(minutes: 5),)));
     }else if(availableEmail== false){
-      const snackBar = SnackBar(
+      final snackBar = SnackBar(
         content: Text(
-          'This email address is already used, please provide a different one',
+          emailUsedErrorMessage.tr,
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }else{
-      const snackBar = SnackBar(
+      final snackBar = SnackBar(
         content: Text(
-          'Cannot connect to server, please try again',
+          serverConnectionError.tr,
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);

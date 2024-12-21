@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/screens/OnboardingScreenContent.dart";
 import "package:one_hundred_push_ups/screens/SignUpPage.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:smooth_page_indicator/smooth_page_indicator.dart";
 
@@ -28,10 +30,10 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
           },
           controller: _controller,
           children: [
-            OnboardingScreenContent(content: "Your partner in\nmastering your fitness\nchallenges"),
-            OnboardingScreenContent(content: "Keep track of\nyour fitness goals"),
-            OnboardingScreenContent(content: "See worldwide\nrankings!"),
-            OnboardingScreenContent(content: "Would you like\nto create an account?"),
+            OnboardingScreenContent(content: onboardingContent1.tr),
+            OnboardingScreenContent(content: onboardingContent2.tr),
+            OnboardingScreenContent(content: onboardingContent3.tr),
+            OnboardingScreenContent(content: onboardingContent4.tr),
           ],
         ),
         Padding(
@@ -44,7 +46,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                 children: [
                   GestureDetector(
                     child: Text(
-                      currentPage == 3 ? "Maybe later" : "Back",
+                      currentPage == 3 ? maybeLater.tr : back.tr,
                       style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -94,7 +96,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             color: Colors.white,
                           )
                         : Text(
-                            "Yes!",
+                            "${yes.tr}!",
                             style: TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold),
                           ),

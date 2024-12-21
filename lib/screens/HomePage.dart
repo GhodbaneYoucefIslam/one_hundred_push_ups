@@ -1,8 +1,10 @@
 import 'dart:async';
 import 'package:circular_chart_flutter/circular_chart_flutter.dart';
 import "package:flutter/material.dart";
+import 'package:get/get.dart';
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
 import 'package:one_hundred_push_ups/utils/LocalNotifications.dart';
+import 'package:one_hundred_push_ups/utils/translationConstants.dart';
 import 'package:one_hundred_push_ups/widgets/RoundedTextField.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -53,17 +55,17 @@ class _HomePageState extends State<HomePage> {
   String upperText(Goal todayGoal) {
     switch (totalReps * 100 ~/ todayGoal.goalAmount) {
       case (<= 20):
-        return "Do your best";
+        return homeExpression1.tr;
       case (> 20 && < 50):
-        return "Keep going";
+        return homeExpression2.tr;
       case (>= 50 && < 70):
-        return "You're doing great!";
+        return homeExpression3.tr;
       case (>= 70 && < 90):
-        return "Keep grinding!";
+        return homeExpression4.tr;
       case (>= 90 && < 100):
-        return "Almost done!";
+        return homeExpression5.tr;
       default:
-        return "You've made it!";
+        return homeExpression6.tr;
     }
   }
 
@@ -147,8 +149,8 @@ class _HomePageState extends State<HomePage> {
                                   .watch<GoalProvider>()
                                   .todayGoal!
                                   .goalAmount
-                              ? "You have\n ${value.inHours} hours ${value.inMinutes - value.inHours * 60} mins and ${(value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600).toString().padLeft(2,"0")}\n seconds\n to finish your goal"
-                              : "\nDone for the day!\n\n",
+                              ? "${youHave.tr}\n ${value.inHours} ${hours.tr} ${value.inMinutes - value.inHours * 60} ${minsAnd.tr} ${(value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600).toString().padLeft(2,"0")}\n ${secondsToFinish.tr}"
+                              : "\n${doneForTheDay.tr}\n\n",
                           style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25),
                           textAlign: TextAlign.center,
@@ -157,7 +159,7 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Text("Add set",
+                          Text(addSet.tr,
                               style: TextStyle(
                                   fontWeight: FontWeight.bold, fontSize: 30)),
                           const SizedBox(
@@ -235,15 +237,15 @@ class _HomePageState extends State<HomePage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(
-                    "Add new set",
+                  Text(
+                    addNewSet.tr,
                     style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   SizedBox(
                     width: 220,
                     child: RoundedTextField(
                       textInputType: TextInputType.number,
-                      hintText: "Enter number of reps",
+                      hintText: enterNumberOfReps.tr,
                       hintTextSize: 10,
                       borderColor: grey,
                       selectedBorderColor: greenBlue,
@@ -260,7 +262,7 @@ class _HomePageState extends State<HomePage> {
                         } else {
                           toastification.show(
                               context: context,
-                              title: const Text("Input can't be empty"),
+                              title: Text(emptyInputErrorMessage.tr),
                               autoCloseDuration: const Duration(seconds: 2),
                               style: ToastificationStyle.simple,
                               alignment: const Alignment(0, 0.75));
@@ -275,7 +277,7 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ),
                       ),
-                      child: const Text("Add reps",
+                      child: Text(addReps.tr,
                           style: TextStyle(fontSize: 16, color: Colors.white))),
                 ],
               ),

@@ -1,7 +1,9 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:get/get.dart';
 import 'package:one_hundred_push_ups/screens/ChangePasswordPage.dart';
+import 'package:one_hundred_push_ups/utils/translationConstants.dart';
 import 'package:toastification/toastification.dart';
 import '../models/Endpoints.dart';
 import '../utils/constants.dart';
@@ -54,14 +56,14 @@ class _CodeConfirmationPageForForgotPasswordState
             WidgetsBinding.instance.addPostFrameCallback((_) {
               toastification.show(
                   context: context,
-                  title: const Text("Error connecting to server"),
+                  title: Text(serverConnectionError.tr),
                   autoCloseDuration: const Duration(seconds: 2),
                   style: ToastificationStyle.simple,
                   alignment: const Alignment(0, 0.75));
             });
-            return const Center(
+            return Center(
               child: Text(
-                "Failed sending verification code, please go to previous page",
+                failedSendingCodeErrorMessage.tr,
                 style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
               ),
             );
@@ -78,7 +80,7 @@ class _CodeConfirmationPageForForgotPasswordState
                         width: 25,
                         child: SvgPicture.asset("assets/images/logo.svg")),
                     Text(
-                      "Verify password resetting request",
+                      verifyPasswordReset.tr,
                       textAlign: TextAlign.center,
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -86,7 +88,7 @@ class _CodeConfirmationPageForForgotPasswordState
                     Column(
                       children: [
                         Text(
-                          "A verification code has been sent to ${widget.email}",
+                          "${verificationCodeSent.tr} ${widget.email}",
                           style: TextStyle(
                               fontSize: 15, fontWeight: FontWeight.normal),
                           textAlign: TextAlign.center,
@@ -95,8 +97,8 @@ class _CodeConfirmationPageForForgotPasswordState
                           valueListenable: remainingTime,
                           builder: (context, value, child) => Text(
                             !value.isNegative
-                                ? "Code expires in ${value.inMinutes}:${(value.inSeconds - value.inMinutes * 60).toString().padLeft(2, "0")}"
-                                : "Code expired click resend",
+                                ? "${codeExpiresIn.tr} ${value.inMinutes}:${(value.inSeconds - value.inMinutes * 60).toString().padLeft(2, "0")}"
+                                : codeExpired.tr,
                             style: TextStyle(
                                 fontSize: 15,
                                 fontWeight: FontWeight.normal,
@@ -173,7 +175,7 @@ class _CodeConfirmationPageForForgotPasswordState
                                           ),
                                         ),
                                       ),
-                                      child: Text("Resend",
+                                      child: Text(resend.tr,
                                           style: TextStyle(
                                               fontSize: 16,
                                               color: Colors.white)))),
@@ -199,9 +201,9 @@ class _CodeConfirmationPageForForgotPasswordState
                                                 ChangePasswordPage(
                                                     email: widget.email)));
                                   } else if (correct == false) {
-                                    const snackBar = SnackBar(
+                                    final snackBar = SnackBar(
                                       content: Text(
-                                        'Incorrect otp code!',
+                                        incorrectOtpErrorMessage.tr,
                                       ),
                                     );
                                     ScaffoldMessenger.of(context)
@@ -219,7 +221,7 @@ class _CodeConfirmationPageForForgotPasswordState
                                   ),
                                 ),
                               ),
-                              child: const Text("Confirm",
+                              child: Text(confirm.tr,
                                   style: TextStyle(
                                       fontSize: 16, color: Colors.white))),
                         ),

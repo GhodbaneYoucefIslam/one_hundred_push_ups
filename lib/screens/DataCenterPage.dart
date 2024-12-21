@@ -3,8 +3,10 @@ import "dart:io";
 import "package:csv/csv.dart";
 import "package:file_picker/file_picker.dart";
 import "package:flutter/material.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/models/CSVDataExporter.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:one_hundred_push_ups/widgets/CustomDropDownMenu.dart";
 import "package:provider/provider.dart";
 import "package:toastification/toastification.dart";
@@ -36,10 +38,11 @@ class _DataCenterPageState extends State<DataCenterPage> {
   final myExportTextController = TextEditingController();
   final myImportTextControllers = [TextEditingController(),TextEditingController()];
   final List<String> tableList = [
-    goalsTableOption,
-    setsTableOption,
-    rankTableOption,
+    goalsTableOption.tr,
+    setsTableOption.tr,
+    rankTableOption.tr,
   ];
+  //todo: translate options
   final List<String> formatList = [jsonFormatOption, csvFormatOption];
   final List<String> dateList = [allTimeDateOption, customRangeDateOption];
   final List<String> sendOptionsList = [
@@ -48,7 +51,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
   ];
   DateTimeRange? dateRange;
   String? selectedTable, selectedFormat, selectedSendOption, selectedDate;
-  String fileName = "Enter the name you would like";
+  String fileName = enterFileName.tr;
 
   String? goalsFilePath, setsFilePath;
 
@@ -69,10 +72,10 @@ class _DataCenterPageState extends State<DataCenterPage> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Text("Data Center",
+              Text(dataCenter.tr,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
               Text(
-                "Import and export your In-App data",
+                importAndExport.tr,
                 style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
                 textAlign: TextAlign.center,
               ),
@@ -102,12 +105,12 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                "Table :     ",
+                                "${table.tr} :     ",
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
-                                hintText: "Select",
+                                hintText: select.tr,
                                 menuEntries: tableList,
                                 value: selectedTable,
                                 borderColor: darkBlue,
@@ -134,12 +137,12 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                "Format :    ",
+                                "${format.tr} :    ",
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
-                                hintText: "Select",
+                                hintText: select.tr,
                                 menuEntries: formatList,
                                 value: selectedFormat,
                                 borderColor: darkBlue,
@@ -166,12 +169,12 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                "Date range :",
+                                "${dateRangeKey.tr} :",
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
-                                hintText: "Select",
+                                hintText: select.tr,
                                 menuEntries: dateList,
                                 value: selectedDate,
                                 borderColor: darkBlue,
@@ -200,12 +203,12 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
-                                "Save to :   ",
+                                "${saveTo.tr} :",
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
-                                hintText: "Select",
+                                hintText: select.tr,
                                 menuEntries: sendOptionsList,
                                 value: selectedSendOption,
                                 borderColor: darkBlue,
@@ -226,14 +229,14 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                "File name",
+                                fileNameKey.tr,
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 child: RoundedTextField(
-                                  hintText: "Enter file name",
+                                  hintText: enterFileName.tr,
                                   hintTextSize: 10,
                                   borderColor: grey,
                                   selectedBorderColor: greenBlue,
@@ -244,7 +247,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                           ),
                         ),
                         Text(
-                          'Export data from ${dateRange != null ? toDisplayableDate(dateRange!.start) : 'N/A'} to ${dateRange != null ? toDisplayableDate(dateRange!.end) : 'N/A'}',
+                          '${exportDataFrom.tr} ${dateRange != null ? toDisplayableDate(dateRange!.start) : 'N/A'} ${to.tr} ${dateRange != null ? toDisplayableDate(dateRange!.end) : 'N/A'}',
                           style: TextStyle(
                             fontSize: 12,
                             color: (selectedDate == customRangeDateOption) &&
@@ -266,8 +269,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                       dateRange == null)) {
                                 toastification.show(
                                     context: context,
-                                    title: const Text(
-                                        "Please verify all of your export options"),
+                                    title: Text(
+                                        pleaseVerifyExportOptions.tr),
                                     autoCloseDuration:
                                         const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
@@ -279,8 +282,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 }else{
                                   toastification.show(
                                       context: context,
-                                      title: const Text(
-                                          "File format and extension don't match"),
+                                      title: Text(
+                                      extensionAndFormatDontMatchErrorMessage.tr),
                                       autoCloseDuration:
                                       const Duration(seconds: 2),
                                       style: ToastificationStyle.simple,
@@ -298,7 +301,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 ),
                               ),
                             ),
-                            child: Text("Confirm",
+                            child: Text(confirm.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.white))),
@@ -308,7 +311,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       children: [
                         Text(
-                          'Please provide the data files for both\n the goals and sets tables in JSON or CSV formats',
+                          pleaseSelectTwoFiles.tr,
                           style: TextStyle(
                             fontSize: 12,
                             color: Colors.black
@@ -321,14 +324,14 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                "Goals data file",
+                                goalFile.tr,
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 child: RoundedTextField(
-                                  hintText: "Choose file",
+                                  hintText: chooseFile.tr,
                                   hintTextSize: 10,
                                   borderColor: grey,
                                   selectedBorderColor: greenBlue,
@@ -352,14 +355,14 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Text(
-                                "Sets data file ",
+                                "${setsFile.tr} ",
                                 style: TextStyle(
-                                    fontSize: 20, fontWeight: FontWeight.bold),
+                                    fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
                                 width: MediaQuery.of(context).size.width * 0.4,
                                 child: RoundedTextField(
-                                  hintText: "Choose file",
+                                  hintText: chooseFile.tr,
                                   hintTextSize: 10,
                                   borderColor: grey,
                                   selectedBorderColor: greenBlue,
@@ -391,9 +394,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                     db.importGoalsList(goals: goals);
                                     db.importSetsList(sets: sets);
                                     Provider.of<GoalProvider>(context, listen: false).nullifyGoal();
-                                    const snackBar = SnackBar(
+                                    final snackBar = SnackBar(
                                       content: Text(
-                                        'Data imported successfully',
+                                        dataImportedSuccessfully.tr,
                                       ),
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -403,9 +406,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                     setsFilePath = null;
                                   }catch(e){
                                     //todo: content validation? FK dependencies
-                                    const snackBar = SnackBar(
+                                    final snackBar = SnackBar(
                                       content: Text(
-                                        'Import failed, please make sure file contents are formatted correctly',
+                                      importFailedMessage.tr,
                                       ),
                                     );
                                     ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -414,8 +417,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
                               }else{
                                 toastification.show(
                                     context: context,
-                                    title: const Text(
-                                        "Please select 2 appropriate files"),
+                                    title: Text(
+                                        pleaseSelectTwoFiles.tr),
                                     autoCloseDuration:
                                     const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
@@ -432,7 +435,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 ),
                               ),
                             ),
-                            child: Text("Confirm",
+                            child: Text(confirm.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontSize: 15, color: Colors.white))),
@@ -467,7 +470,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             ),
                           ),
                         ),
-                        child: Text("Export",
+                        child: Text(export.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 15,
@@ -501,7 +504,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             ),
                           ),
                         ),
-                        child: Text("Import",
+                        child: Text(import.tr,
                             textAlign: TextAlign.center,
                             style: TextStyle(
                                 fontSize: 15,
@@ -590,15 +593,15 @@ class _DataCenterPageState extends State<DataCenterPage> {
       case rankTableOption:
         {
           if (Provider.of<UserProvider>(context, listen: false).currentUser == null){
-            const snackBar = SnackBar(
+            final snackBar = SnackBar(
               content: Text(
-                "Login first to access your rank data",
+                loginToAccessRankErrorMessage.tr,
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
           }else{
             try{
-              LoadingIndicatorDialog().show(context, text: "Retrieving data");
+              LoadingIndicatorDialog().show(context, text: retrievingData.tr);
               List<Map<String,dynamic>>? intermediateList = await getUserAchievements(Provider.of<UserProvider>(context, listen: false).currentUser!.id!);
               LoadingIndicatorDialog().dismiss();
               List<Mappable> dataList = intermediateList!.map((e) => Achievement.fromMap(e)).toList();
@@ -608,8 +611,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 toastification.show(
                     context: context,
-                    title: const Text(
-                        "Error connecting to server"),
+                    title: Text(
+                        serverConnectionError.tr),
                     autoCloseDuration:
                     const Duration(seconds: 2),
                     style: ToastificationStyle.simple,
@@ -636,7 +639,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
           savedFile = await StorageHelper.writeStringToFile(fileName, fileContents, context);
           final snackBar = SnackBar(
             content: Text(
-              'Data exported to ${savedFile.parent}',
+              '${dataExportedTo.tr} ${savedFile.parent}',
             ),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -649,7 +652,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
           savedFile = await StorageHelper.writeStringToFile(fileName, fileContents, context);
           final snackBar = SnackBar(
             content: Text(
-              'Data exported to ${savedFile.parent}',
+              '${dataExportedTo.tr} ${savedFile.parent}',
             ),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -670,8 +673,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text(
-                "Are you sure you want to continue ?\n All of your current In-App data will be deleted",
+              Text(
+                dataDeletionWarning.tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                 textAlign: TextAlign.center,
               ),
@@ -692,7 +695,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                           ),
                         ),
                       ),
-                      child: const Text("No",
+                      child: Text(no.tr,
                           style: TextStyle(
                               fontSize: 16, color: Colors.white))),
                   ElevatedButton(
@@ -709,7 +712,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                           ),
                         ),
                       ),
-                      child: const Text("Yes",
+                      child: Text(yes.tr,
                           style: TextStyle(
                               fontSize: 16, color: Colors.white))),
                 ],

@@ -1,11 +1,13 @@
 import 'package:flutter_background/flutter_background.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+import 'package:get/get.dart';
 import 'dart:async';
 import 'package:one_hundred_push_ups/utils/constants.dart';
+import 'package:one_hundred_push_ups/utils/translationConstants.dart';
 import 'package:timezone/timezone.dart' as tz;
 
 class LocalNotifications {
-  static late bool isRunning;
+  static bool isRunning = false;
   static late Timer timer;
   static final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
       FlutterLocalNotificationsPlugin();
@@ -55,7 +57,7 @@ class LocalNotifications {
       if (success) {
         isRunning = true;
         timer = Timer.periodic(Duration(seconds: 3600), (timer) {
-          showSimpleNotification("Reminder ${DateTime.now().second}", "Don't forget to complete your daily goal", "");
+          showSimpleNotification(notificationTitle.tr, notificationMessage.tr, "");
         });
       }
     }
@@ -80,35 +82,4 @@ class LocalNotifications {
       }
     }
   }
- /*
-  static Future showReminderNotification(
-      String title, String body, String payload, bool isOn) async {
-    if (isOn) {
-      const NotificationDetails notificationDetails = NotificationDetails(
-        android: AndroidNotificationDetails(
-            'reminder_channel',
-            'Daily Goal Reminders',
-            channelDescription: 'Reminders to complete daily goal',
-            importance: Importance.high,
-            priority: Priority.high,
-            ticker: "Ticker"),
-      );
-      await flutterLocalNotificationsPlugin.periodicallyShow(
-          notificationID,
-          title,
-          body,
-          RepeatInterval.everyMinute,
-          notificationDetails,
-          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle);
-    }
-  }
-
-  static Future updateReminderNotificationStatus(bool activate) async {
-    if (activate){
-      await showReminderNotification("Daily goal reminder", "Don't forget to complete your daily goal", "", true);
-    }else{
-      flutterLocalNotificationsPlugin.cancel(notificationID);
-    }
-  }
-*/
 }

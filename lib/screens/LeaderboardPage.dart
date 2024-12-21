@@ -1,8 +1,10 @@
 import "package:flutter/material.dart";
+import "package:get/get.dart";
 import 'package:one_hundred_push_ups/models/Achievement.dart';
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/models/UserProvider.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:toastification/toastification.dart";
@@ -49,11 +51,11 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Leaderboard",
+                  Text(leaderboard.tr,
                       style:
                           TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
                   Text(
-                      "For: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
+                      "${forKey.tr}: ${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}",
                       style: TextStyle(
                         fontSize: 20,
                       )),
@@ -70,9 +72,9 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                       context),
                   builder: (context, snapshot) {
                     if (context.watch<UserProvider>().currentUser == null) {
-                      return const Center(
+                      return Center(
                         child: Text(
-                          "Please login to access leaderboard!",
+                          pleaseLoginLeaderboardMessage.tr,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 25),
@@ -85,14 +87,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                         WidgetsBinding.instance.addPostFrameCallback((_) {
                           toastification.show(
                               context: context,
-                              title: const Text("Error connecting to server"),
+                              title: Text(serverConnectionError.tr),
                               autoCloseDuration: const Duration(seconds: 2),
                               style: ToastificationStyle.simple,
                               alignment: const Alignment(0, 0.75));
                         });
-                        return const Center(
+                        return Center(
                           child: Text(
-                            "Leaderboard not available",
+                            leaderboardNotAvailable.tr,
                             style: TextStyle(
                                 fontWeight: FontWeight.normal, fontSize: 20),
                           ),
@@ -105,14 +107,14 @@ class _LeaderboardPageState extends State<LeaderboardPage> {
                           WidgetsBinding.instance.addPostFrameCallback((_) {
                             toastification.show(
                                 context: context,
-                                title: const Text("Error connecting to server"),
+                                title: Text(serverConnectionError.tr),
                                 autoCloseDuration: const Duration(seconds: 2),
                                 style: ToastificationStyle.simple,
                                 alignment: const Alignment(0, 0.75));
                           });
-                          return const Center(
+                          return Center(
                             child: Text(
-                              "Leaderboard not available",
+                              leaderboardNotAvailable.tr,
                               style: TextStyle(
                                   fontWeight: FontWeight.normal, fontSize: 20),
                             ),

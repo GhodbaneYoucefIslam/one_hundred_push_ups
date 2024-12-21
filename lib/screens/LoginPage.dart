@@ -1,9 +1,11 @@
 import "package:flutter/material.dart";
 import "package:flutter_svg/svg.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/AppHome.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/screens/CodeConfirmationPageForForgotPassword.dart";
 import "package:one_hundred_push_ups/screens/SignUpPage.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
@@ -52,7 +54,7 @@ class _LoginPageState extends State<LoginPage> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          "Welcome to  ",
+                          "${welcome.tr}  ",
                           style: TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 15),
                         ),
@@ -69,11 +71,11 @@ class _LoginPageState extends State<LoginPage> {
                   ],
                 ),
                 Text(
-                  "Login now",
+                  loginNow.tr,
                   style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 RoundedTextFormField(
-                  hintText: "Enter Your email",
+                  hintText: enterEmail.tr,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
@@ -84,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
                   },
                 ),
                 RoundedTextFormField(
-                  hintText: "Enter Your password",
+                  hintText: enterPassword.tr,
                   hintTextSize: 17,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
@@ -92,7 +94,7 @@ class _LoginPageState extends State<LoginPage> {
                   obscureText: !passwordVisible,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
-                      return 'Password cannot be empty';
+                      return passwordNotEmptyMessage.tr;
                     }
                     return null;
                   },
@@ -120,7 +122,7 @@ class _LoginPageState extends State<LoginPage> {
                         resetPassword(emailForForgotPassword);
                       },
                       child: Text(
-                        'Forgot password ?',
+                        forgotPassword.tr,
                         style: TextStyle(
                           fontSize: 17,
                           color: grey,
@@ -137,7 +139,7 @@ class _LoginPageState extends State<LoginPage> {
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           LoadingIndicatorDialog()
-                              .show(context, text: "Verifying credentials");
+                              .show(context, text: verifyingCredentials.tr);
                           User? user =
                               await loginWithEmailAndPassword(email, password);
                           LoadingIndicatorDialog().dismiss();
@@ -145,7 +147,7 @@ class _LoginPageState extends State<LoginPage> {
                             if (user.id != -1) {
                               final snackBar = SnackBar(
                                 content: Text(
-                                  'Login of ${user.lastname} ${user.firstname} successful with id:${user.id}!',
+                                  '${authenticationOf.tr} ${user.lastname} ${user.firstname} ${successfulWithId.tr}:${user.id}!',
                                 ),
                               );
                               ScaffoldMessenger.of(context)
@@ -167,18 +169,18 @@ class _LoginPageState extends State<LoginPage> {
                                       builder: (context) =>
                                           const AppHome(title: appName)));
                             } else {
-                              const snackBar = SnackBar(
+                              final snackBar = SnackBar(
                                 content: Text(
-                                  'Invalid credentials!',
+                                  invalidCredentials.tr,
                                 ),
                               );
                               ScaffoldMessenger.of(context)
                                   .showSnackBar(snackBar);
                             }
                           } else {
-                            const snackBar = SnackBar(
+                            final snackBar = SnackBar(
                               content: Text(
-                                'Error connecting to server, please try again later',
+                                serverConnectionError.tr,
                               ),
                             );
                             ScaffoldMessenger.of(context)
@@ -195,7 +197,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      child: const Text("Login",
+                      child: Text(login.tr,
                           style: TextStyle(fontSize: 16, color: Colors.white))),
                 ),
                 Row(
@@ -209,7 +211,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                     Text(
-                      'or',
+                      or.tr,
                       style: TextStyle(
                         fontSize: 16,
                         color: darkBlue,
@@ -241,14 +243,14 @@ class _LoginPageState extends State<LoginPage> {
                         fName= "";
                       }
                       print("user: ${fName} $lName $email");
-                      LoadingIndicatorDialog().show(context, text: "Logging in");
+                      LoadingIndicatorDialog().show(context, text: loggingIn.tr);
                       final loggedInUser = await loginOrSignUpWithGoogle(email, fName, lName);
                       LoadingIndicatorDialog().dismiss();
                       if(loggedInUser != null){
                         if (loggedInUser.id!= -1){
                           final snackBar = SnackBar(
                             content: Text(
-                              'Authentication of ${loggedInUser.lastname} ${loggedInUser.firstname} successful with id:${loggedInUser.id}!',
+                              '${authenticationOf.tr} ${loggedInUser.lastname} ${loggedInUser.firstname} ${successfulWithId.tr}:${loggedInUser.id}!',
                             ),
                           );
                           ScaffoldMessenger.of(context)
@@ -276,25 +278,25 @@ class _LoginPageState extends State<LoginPage> {
                                   const AppHome(
                                       title: appName)));
                         }else{
-                          const snackBar = SnackBar(
+                          final snackBar = SnackBar(
                             content: Text(
-                              'This user is not connected through google, please use email and password to login',
+                              notConnectedWithGoogleErrorMessage.tr,
                             ),
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
                       }else{
-                        const snackBar = SnackBar(
+                        final snackBar = SnackBar(
                           content: Text(
-                            'Error connecting to server, please try again',
+                            serverConnectionError.tr,
                           ),
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
                     }else{
-                      const snackBar = SnackBar(
+                      final snackBar = SnackBar(
                         content: Text(
-                          'Google authentication failed please try again',
+                          googleFailed.tr,
                         ),
                       );
                       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -306,7 +308,7 @@ class _LoginPageState extends State<LoginPage> {
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         border: Border.all(color: const Color(0xffD9D9D9))),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Icon(
@@ -314,7 +316,7 @@ class _LoginPageState extends State<LoginPage> {
                           size: 40,
                         ),
                         Text(
-                          'Continue with google',
+                          continueWithGoogle.tr,
                           style: TextStyle(
                             fontSize: 20,
                             color: Colors.black,
@@ -327,8 +329,8 @@ class _LoginPageState extends State<LoginPage> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    const Text(
-                      'Don’t have an account?  ',
+                    Text(
+                      dontHaveAccount.tr+" ",
                       style: TextStyle(
                         fontSize: 17,
                         color: Colors.black,
@@ -342,7 +344,7 @@ class _LoginPageState extends State<LoginPage> {
                                 builder: (context) => SignUpPage()));
                       },
                       child: Text(
-                        'Sign up',
+                        signUpKey.tr,
                         style: TextStyle(
                             fontSize: 17,
                             color: greenBlue,
@@ -364,7 +366,7 @@ class _LoginPageState extends State<LoginPage> {
                     }
                   },
                   child: Text(
-                    'Continue without an account',
+                    continueWithoutAccount.tr,
                     style: TextStyle(
                       fontSize: 15,
                       color: grey,
@@ -381,23 +383,23 @@ class _LoginPageState extends State<LoginPage> {
 
   void resetPassword(String email) async{
     //see if email is associated to an account
-    LoadingIndicatorDialog().show(context, text: "Verifying email");
+    LoadingIndicatorDialog().show(context, text: verifyingEmail.tr);
     bool? emailDoesntExists = await isEmailNotPreviouslyUsed(email);
     LoadingIndicatorDialog().dismiss();
     if (emailDoesntExists==false){
       //take user to confirmation screen
       Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPageForForgotPassword(email: email, codeExpiresIn: const Duration(minutes: 5))));
     }else if(emailDoesntExists == true){
-      const snackBar = SnackBar(
+      final snackBar = SnackBar(
         content: Text(
-          'No account found for this email address, please confirm your email',
+          noAccountForEmailErrorMessage.tr,
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
     }else{
-      const snackBar = SnackBar(
+      final snackBar = SnackBar(
         content: Text(
-          'Cannot connect to server, please try again',
+          serverConnectionError.tr,
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
@@ -416,15 +418,15 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text(
-                "Please provide your email address",
+              Text(
+                pleaseProvideEmail.tr,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
               ),
               SizedBox(
                 width: 220,
                 child: RoundedTextField(
-                  hintText: "Enter your email",
+                  hintText: enterEmail.tr,
                   hintTextSize: 10,
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
@@ -457,7 +459,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  child: const Text("Confirm",
+                  child: Text(confirm.tr,
                       style: TextStyle(fontSize: 16, color: Colors.white))),
             ],
           ),
@@ -476,9 +478,8 @@ class _LoginPageState extends State<LoginPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              const Text(
-                "Proceed without an account?\n"
-                    "You won't have access to all of 100PushUps's features",
+              Text(
+                proceedWithoutAccountWarningMessage.tr,
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
                 textAlign: TextAlign.center,
               ),
@@ -499,7 +500,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      child: const Text("No",
+                      child: Text(no.tr,
                           style: TextStyle(
                               fontSize: 16, color: Colors.white))),
                   ElevatedButton(
@@ -516,7 +517,7 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      child: const Text("Yes",
+                      child: Text(yes.tr,
                           style: TextStyle(
                               fontSize: 16, color: Colors.white))),
                 ],

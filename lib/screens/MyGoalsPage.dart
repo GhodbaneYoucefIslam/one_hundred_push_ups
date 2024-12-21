@@ -1,8 +1,10 @@
 import "package:fl_chart/fl_chart.dart";
 import "package:flutter/material.dart";
+import "package:get/get.dart";
 import "package:one_hundred_push_ups/database/LocalDB.dart";
 import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/utils/constants.dart";
+import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:provider/provider.dart";
 import "package:shared_preferences/shared_preferences.dart";
 import "package:toastification/toastification.dart";
@@ -32,13 +34,13 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
   String graphTitle() {
     switch (currentGraph) {
       case (0):
-        return "Daily reps";
+        return graph1Title.tr;
       case (1):
-        return "% of daily goal";
+        return graph2Title.tr;
       case (2):
-        return "Reps per set";
+        return graph3Title.tr;
       case (3):
-        return "Rank";
+        return graph4Title.tr;
       default:
         return "";
     }
@@ -119,7 +121,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Text("Statistics",
+            Text(statistics.tr,
                 style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
             Container(
               width: MediaQuery.of(context).size.width * 0.9,
@@ -132,7 +134,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     Icon(Icons.electric_bolt_outlined, size: 20),
-                    Text("Current goal\ncompletion streak",
+                    Text(streakMessage.tr,
                         textAlign: TextAlign.center,
                         style: TextStyle(fontSize: 15)),
                     FutureBuilder(
@@ -218,7 +220,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    "Your average is ${average.toStringAsFixed(2)} reps per day",
+                                    "${yourAverage.tr} ${average.toStringAsFixed(2)} ${repsPerDay.tr}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15),
@@ -251,7 +253,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   "an error occurred during the building of the widget: ${e.toString()}");
                               return Center(
                                 child: Text(
-                                  "No available stats yet",
+                                  noAvailableStats.tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
@@ -297,7 +299,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    "Your average is ${average.toStringAsFixed(2)}%",
+                                    "${yourAverage.tr} ${average.toStringAsFixed(2)}%",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15),
@@ -330,7 +332,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   "an error occurred during the building of the widget: ${e.toString()}");
                               return Center(
                                 child: Text(
-                                  "No available stats yet",
+                                  noAvailableStats.tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
@@ -370,7 +372,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                     MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Text(
-                                    "Your average is ${average.toStringAsFixed(2)} reps per set",
+                                    "${yourAverage.tr} ${average.toStringAsFixed(2)} ${repsPerSet.tr}",
                                     style: TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15),
@@ -404,7 +406,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   "an error occurred during the building of the widget: ${e.toString()}");
                               return Center(
                                 child: Text(
-                                  "No available stats yet",
+                                  noAvailableStats.tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
@@ -421,9 +423,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                         builder: (context, snapshot) {
                           if (context.watch<UserProvider>().currentUser ==
                               null) {
-                            return const Center(
+                            return Center(
                               child: Text(
-                                "Please login to access rank stats!",
+                                pleaseLoginRankMessage.tr,
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 25),
@@ -438,16 +440,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 toastification.show(
                                     context: context,
-                                    title: const Text(
-                                        "Error connecting to server"),
+                                    title: Text(
+                                        serverConnectionError.tr),
                                     autoCloseDuration:
                                         const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
                                     alignment: const Alignment(0, 0.75));
                               });
-                              return const Center(
+                              return Center(
                                 child: Text(
-                                  "Rank stats not available",
+                                  rankStatsNotAvailable.tr,
                                   style: TextStyle(
                                       fontWeight: FontWeight.normal,
                                       fontSize: 20),
@@ -475,7 +477,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                       MainAxisAlignment.spaceEvenly,
                                   children: [
                                     Text(
-                                      "Your average rank is ${average.toStringAsFixed(2)}",
+                                      "${yourAverageRank.tr} ${average.toStringAsFixed(2)}",
                                       style: TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15),
@@ -509,16 +511,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                     .addPostFrameCallback((_) {
                                   toastification.show(
                                       context: context,
-                                      title: const Text(
-                                          "Error connecting to server"),
+                                      title: Text(
+                                          serverConnectionError.tr),
                                       autoCloseDuration:
                                           const Duration(seconds: 2),
                                       style: ToastificationStyle.simple,
                                       alignment: const Alignment(0, 0.75));
                                 });
-                                return const Center(
+                                return Center(
                                   child: Text(
-                                    "Rank stats not available",
+                                    rankStatsNotAvailable.tr,
                                     style: TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 20),
@@ -560,14 +562,14 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               ),
             ),
             Text(
-              "Daily goal",
+              dailyGoal.tr,
               style: TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              "${context.watch<GoalProvider>().todayGoal== null? "100":context.watch<GoalProvider>().todayGoal!.goalAmount } Reps",
+              "${context.watch<GoalProvider>().todayGoal== null? "100":context.watch<GoalProvider>().todayGoal!.goalAmount } ${reps.tr}",
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -605,9 +607,9 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                 ),
               ),
               child: Text(
-                "Change goal",
+                changeGoal.tr,
                 style: TextStyle(
-                    fontSize: 30,
+                    fontSize: 28,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
               ),
@@ -630,15 +632,15 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  const Text(
-                    "Change daily goal",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                  Text(
+                    changeDailyGoal.tr,
+                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   SizedBox(
                     width: 220,
                     child: RoundedTextField(
                       textInputType: TextInputType.number,
-                      hintText: "Enter daily goal",
+                      hintText: enterDailyGoal.tr,
                       hintTextSize: 10,
                       borderColor: grey,
                       selectedBorderColor: greenBlue,
@@ -655,7 +657,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                         } else {
                           toastification.show(
                               context: context,
-                              title: const Text("Input can't be empty"),
+                              title: Text(emptyInputErrorMessage.tr),
                               autoCloseDuration: const Duration(seconds: 2),
                               style: ToastificationStyle.simple,
                               alignment: const Alignment(0, 0.75));
@@ -670,7 +672,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                           ),
                         ),
                       ),
-                      child: const Text("Change",
+                      child: Text(change.tr,
                           style: TextStyle(fontSize: 16, color: Colors.white))),
                 ],
               ),
