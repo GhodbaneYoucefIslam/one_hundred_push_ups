@@ -37,9 +37,6 @@ void main() async {
 
   await FlutterBackground.initialize(androidConfig: androidConfig);
   await LocalNotifications.init();
-  //todo: problem with starting logic when goal is complete
-  await LocalNotifications.startBackgroundNotificationChecker(
-      areNotificationsOn);
 
   runApp(MyApp(
     isFirstUse:

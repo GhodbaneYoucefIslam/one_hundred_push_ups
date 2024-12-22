@@ -23,6 +23,9 @@ class _HomePageState extends State<HomePage> {
   final myController = TextEditingController();
   late int totalReps;
   late int goal;
+  late bool areNotificationsOn;
+  bool isDataLoaded = false;
+  bool isFirstNotificationTrigger = true;
   final GlobalKey<AnimatedCircularChartState> _chartKey =
       GlobalKey<AnimatedCircularChartState>();
 
@@ -45,11 +48,11 @@ class _HomePageState extends State<HomePage> {
   late ValueNotifier<Duration> remainingTime;
   void startTimer() async {
     Timer timer = Timer.periodic(const Duration(seconds: 1), (timer) {
-        remainingTime.value = DateTime(DateTime.now().year, DateTime.now().month,
-                DateTime.now().day, 0, 0, 0)
-            .add(const Duration(days: 1))
-            .difference(DateTime.now());
-      });
+      remainingTime.value = DateTime(DateTime.now().year, DateTime.now().month,
+              DateTime.now().day, 0, 0, 0)
+          .add(const Duration(days: 1))
+          .difference(DateTime.now());
+    });
   }
 
   String upperText(Goal todayGoal) {
@@ -69,15 +72,22 @@ class _HomePageState extends State<HomePage> {
     }
   }
 
+  Future<void> loadNotificationPreferences() async {
+    final myPrefs = await SharedPreferences.getInstance();
+    setState(() {
+      areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
+      isDataLoaded = true;
+    });
+  }
+
   @override
   void initState() {
-    remainingTime = ValueNotifier<Duration>(DateTime(
-        DateTime.now().year,
-        DateTime.now().month,
-        DateTime.now().day, 0, 0, 0)
+    remainingTime = ValueNotifier<Duration>(DateTime(DateTime.now().year,
+            DateTime.now().month, DateTime.now().day, 0, 0, 0)
         .add(const Duration(days: 1))
         .difference(DateTime.now()));
     startTimer();
+    loadNotificationPreferences();
     super.initState();
   }
 
@@ -85,106 +95,45 @@ class _HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         resizeToAvoidBottomInset: false,
-        body: FutureBuilder(
-          future: Provider.of<GoalProvider>(context, listen: false)
-              .getOrCreateTodayGoal(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Text("Error: ${snapshot.error}");
-            } else {
-              try{
-                goal = context.watch<GoalProvider>().todayGoal!.goalAmount;
-                totalReps = context.watch<GoalProvider>().totalReps;
-                return Container(
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: <Widget>[
-                      Column(
-                        children: [
-                          Text(
-                              upperText(context.watch<GoalProvider>().todayGoal!),
-                              style: const TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 30)),
-                          const SizedBox(
-                            height: 20,
-                          ),
-                          AnimatedCircularChart(
-                            size: const Size(280, 280),
-                            initialChartData: <CircularStackEntry>[
-                              CircularStackEntry(
-                                <CircularSegmentEntry>[
-                                  CircularSegmentEntry(
-                                      totalReps.toDouble(), turquoiseBlue,
-                                      rankKey: '% of daily goal'),
-                                  CircularSegmentEntry(
-                                      (goal - totalReps).toDouble(),
-                                      Colors.white10,
-                                      rankKey: 'remaining %'),
-                                ],
-                                rankKey: 'Daily Progress',
-                              ),
-                            ],
-                            key: _chartKey,
-                            chartType: CircularChartType.Radial,
-                            holeLabel: "${totalReps * 100 ~/ goal}%",
-                            labelStyle: TextStyle(
-                              fontSize: 50,
-                              fontWeight: FontWeight.bold,
-                              color: Theme.of(context).colorScheme.onBackground,
-                              fontFamily: "SpaceGrotesk",
-                            ),
-                          ),
-                        ],
-                      ),
-                      ValueListenableBuilder(
-                        valueListenable: remainingTime,
-                        builder: (context,value,child)=> Text(
-                          //todo: optimise code? (use goal variable)
-                          totalReps <
-                              context
-                                  .watch<GoalProvider>()
-                                  .todayGoal!
-                                  .goalAmount
-                              ? "${youHave.tr}\n ${value.inHours} ${hours.tr} ${value.inMinutes - value.inHours * 60} ${minsAnd.tr} ${(value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600).toString().padLeft(2,"0")}\n ${secondsToFinish.tr}"
-                              : "\n${doneForTheDay.tr}\n\n",
-                          style: const TextStyle(
-                              fontWeight: FontWeight.bold, fontSize: 25),
-                          textAlign: TextAlign.center,
-                        ),
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(addSet.tr,
-                              style: TextStyle(
-                                  fontWeight: FontWeight.bold, fontSize: 30)),
-                          const SizedBox(
-                            width: 20,
-                          ),
-                          Container(
-                            width: 80,
-                            height: 80,
-                            child: FloatingActionButton(
-                              elevation: 3,
-                              onPressed: () async {
-                                var result = await openDialog();
-                                int repsToAdd = int.parse(result!);
-                                print("totalReps1: ${Provider.of<GoalProvider>(context, listen: false).totalReps}");
-                                Provider.of<GoalProvider>(context, listen: false).addSet(reps: repsToAdd, goalId:Provider.of<GoalProvider>(context, listen: false).todayGoal!.id!);
-                                //change notification status if goal completed
-                                final myPrefs = await SharedPreferences.getInstance();
-                                bool areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
-                                print(areNotificationsOn);
-                                print("totalReps2: ${Provider.of<GoalProvider>(context, listen: false).totalReps + repsToAdd}");
-                                print("goal: ${Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount}");
-                                LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, Provider.of<GoalProvider>(context, listen: false).totalReps + repsToAdd>=Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount);
-                                setState(() {
-                                  List<CircularStackEntry> updatedChartData =
-                                  <CircularStackEntry>[
+        body: isDataLoaded
+            ? FutureBuilder(
+                future: Provider.of<GoalProvider>(context, listen: false)
+                    .getOrCreateTodayGoal(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Text("Error: ${snapshot.error}");
+                  } else {
+                    try {
+                      goal =
+                          context.watch<GoalProvider>().todayGoal!.goalAmount;
+                      totalReps = context.watch<GoalProvider>().totalReps;
+                      if (isFirstNotificationTrigger) {
+                        LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, Provider.of<GoalProvider>(context, listen: false).totalReps >= Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount);
+                        isFirstNotificationTrigger = false;
+                      }
+                      return Container(
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Column(
+                              children: [
+                                Text(
+                                    upperText(context
+                                        .watch<GoalProvider>()
+                                        .todayGoal!),
+                                    style: const TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30)),
+                                const SizedBox(
+                                  height: 20,
+                                ),
+                                AnimatedCircularChart(
+                                  size: const Size(280, 280),
+                                  initialChartData: <CircularStackEntry>[
                                     CircularStackEntry(
                                       <CircularSegmentEntry>[
                                         CircularSegmentEntry(
@@ -197,32 +146,134 @@ class _HomePageState extends State<HomePage> {
                                       ],
                                       rankKey: 'Daily Progress',
                                     ),
-                                  ];
-                                  _chartKey.currentState!
-                                      .updateData(updatedChartData);
-                                });
-                              },
-                              backgroundColor: greenBlue,
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(100)),
-                              child: const Icon(
-                                Icons.add,
-                                color: Colors.white,
-                                size: 70,
+                                  ],
+                                  key: _chartKey,
+                                  chartType: CircularChartType.Radial,
+                                  holeLabel: "${totalReps * 100 ~/ goal}%",
+                                  labelStyle: TextStyle(
+                                    fontSize: 50,
+                                    fontWeight: FontWeight.bold,
+                                    color: Theme.of(context)
+                                        .colorScheme
+                                        .onBackground,
+                                    fontFamily: "SpaceGrotesk",
+                                  ),
+                                ),
+                              ],
+                            ),
+                            ValueListenableBuilder(
+                              valueListenable: remainingTime,
+                              builder: (context, value, child) => Text(
+                                //todo: optimise code? (use goal variable)
+                                totalReps <
+                                        context
+                                            .watch<GoalProvider>()
+                                            .todayGoal!
+                                            .goalAmount
+                                    ? "${youHave.tr}\n ${value.inHours} ${hours.tr} ${value.inMinutes - value.inHours * 60} ${minsAnd.tr} ${(value.inSeconds - (value.inMinutes - value.inHours * 60) * 60 - (value.inHours) * 3600).toString().padLeft(2, "0")}\n ${secondsToFinish.tr}"
+                                    : "\n${doneForTheDay.tr}\n\n",
+                                style: const TextStyle(
+                                    fontWeight: FontWeight.bold, fontSize: 25),
+                                textAlign: TextAlign.center,
                               ),
                             ),
-                          )
-                        ],
-                      )
-                    ],
-                  ),
-                );
-              }catch(e){
-                return const Center(child: CircularProgressIndicator());
-              }
-            }
-          },
-        ));
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(addSet.tr,
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 30)),
+                                const SizedBox(
+                                  width: 20,
+                                ),
+                                Container(
+                                  width: 80,
+                                  height: 80,
+                                  child: FloatingActionButton(
+                                    elevation: 3,
+                                    onPressed: () async {
+                                      var result = await openDialog();
+                                      int repsToAdd = int.parse(result!);
+                                      print(
+                                          "totalReps1: ${Provider.of<GoalProvider>(context, listen: false).totalReps}");
+                                      Provider.of<GoalProvider>(context,
+                                              listen: false)
+                                          .addSet(
+                                              reps: repsToAdd,
+                                              goalId: Provider.of<GoalProvider>(
+                                                      context,
+                                                      listen: false)
+                                                  .todayGoal!
+                                                  .id!);
+                                      //change notification status if goal completed
+                                      final myPrefs =
+                                          await SharedPreferences.getInstance();
+                                      bool areNotificationsOn = myPrefs
+                                              .getBool(activateNotifications) ??
+                                          true;
+                                      print(areNotificationsOn);
+                                      print(
+                                          "totalReps2: ${Provider.of<GoalProvider>(context, listen: false).totalReps + repsToAdd}");
+                                      print(
+                                          "goal: ${Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount}");
+                                      LocalNotifications
+                                          .updateBackgroundNotificationCheckerStatus(
+                                              areNotificationsOn,
+                                              Provider.of<GoalProvider>(context,
+                                                              listen: false)
+                                                          .totalReps +
+                                                      repsToAdd >=
+                                                  Provider.of<GoalProvider>(
+                                                          context,
+                                                          listen: false)
+                                                      .todayGoal!
+                                                      .goalAmount);
+                                      setState(() {
+                                        List<CircularStackEntry>
+                                            updatedChartData =
+                                            <CircularStackEntry>[
+                                          CircularStackEntry(
+                                            <CircularSegmentEntry>[
+                                              CircularSegmentEntry(
+                                                  totalReps.toDouble(),
+                                                  turquoiseBlue,
+                                                  rankKey: '% of daily goal'),
+                                              CircularSegmentEntry(
+                                                  (goal - totalReps).toDouble(),
+                                                  Colors.white10,
+                                                  rankKey: 'remaining %'),
+                                            ],
+                                            rankKey: 'Daily Progress',
+                                          ),
+                                        ];
+                                        _chartKey.currentState!
+                                            .updateData(updatedChartData);
+                                      });
+                                    },
+                                    backgroundColor: greenBlue,
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius:
+                                            BorderRadius.circular(100)),
+                                    child: const Icon(
+                                      Icons.add,
+                                      color: Colors.white,
+                                      size: 70,
+                                    ),
+                                  ),
+                                )
+                              ],
+                            )
+                          ],
+                        ),
+                      );
+                    } catch (e) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
+                  }
+                },
+              )
+            : const Center(child: CircularProgressIndicator()));
   }
 
   Future<String?> openDialog() => showDialog(
