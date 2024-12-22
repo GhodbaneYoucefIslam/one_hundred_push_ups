@@ -254,6 +254,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               return Center(
                                 child: Text(
                                   noAvailableStats.tr,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
@@ -333,6 +334,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               return Center(
                                 child: Text(
                                   noAvailableStats.tr,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
@@ -407,6 +409,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               return Center(
                                 child: Text(
                                   noAvailableStats.tr,
+                                  textAlign: TextAlign.center,
                                   style: TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),

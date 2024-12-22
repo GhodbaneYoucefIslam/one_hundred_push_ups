@@ -18,9 +18,11 @@ import 'package:flutter_background/flutter_background.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:get/get.dart';
 import 'theme/AppThemes.dart';
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  FlutterNativeSplash.removeAfter(initialization);
 
   final myPrefs = await SharedPreferences.getInstance();
   final isFirstUse = myPrefs.getBool(showOnboarding) ?? true;
@@ -43,6 +45,10 @@ void main() async {
         isFirstUse /*todo: replace false with actual value before deployment*/,
     currentLanguage: currentLanguage,
   ));
+}
+
+Future initialization(BuildContext? context)async{
+  await Future.delayed(Duration(seconds: 3));
 }
 
 class MyApp extends StatelessWidget {
