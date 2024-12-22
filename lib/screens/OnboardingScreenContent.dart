@@ -15,7 +15,7 @@ class OnboardingScreenContent extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SvgPicture.asset("assets/images/logo.svg"),
+              SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg"),
               Text(
                 "Welcome to",
                 style: TextStyle(fontWeight: FontWeight.bold, fontSize: 30),

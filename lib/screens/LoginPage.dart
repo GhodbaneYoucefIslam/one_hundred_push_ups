@@ -49,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     SizedBox(
                         width: 25,
-                        child: SvgPicture.asset("assets/images/logo.svg")),
+                        child: SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -207,14 +207,14 @@ class _LoginPageState extends State<LoginPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
                       ),
                     ),
                     Text(
                       or.tr,
                       style: TextStyle(
                         fontSize: 16,
-                        color: darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
                       ),
                     ),
                     Expanded(
@@ -222,7 +222,7 @@ class _LoginPageState extends State<LoginPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
                       ),
                     ),
                   ],
@@ -319,7 +319,7 @@ class _LoginPageState extends State<LoginPage> {
                           continueWithGoogle.tr,
                           style: TextStyle(
                             fontSize: 20,
-                            color: Colors.black,
+                            color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
                           ),
                         )
                       ],
@@ -333,7 +333,7 @@ class _LoginPageState extends State<LoginPage> {
                       dontHaveAccount.tr+" ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
                       ),
                     ),
                     GestureDetector(
@@ -413,7 +413,7 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height * 0.3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.background,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -473,7 +473,7 @@ class _LoginPageState extends State<LoginPage> {
           height: MediaQuery.of(context).size.height * 0.3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.background,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

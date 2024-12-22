@@ -81,7 +81,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                   children: [
                     SizedBox(
                         width: 25,
-                        child: SvgPicture.asset("assets/images/logo.svg")),
+                        child: SvgPicture.asset("assets/images/logo_black.svg")),
                     Text(
                       verifyRegistrationEmail.tr,
                       textAlign: TextAlign.center,

@@ -45,7 +45,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
               Column(
                 children: [
                   SizedBox(
-                      width: 25, child: SvgPicture.asset("assets/images/logo.svg")),
+                      width: 25, child: SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg")),
                   Text(
                     "100PushUps",
                     textAlign: TextAlign.center,

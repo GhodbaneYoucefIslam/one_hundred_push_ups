@@ -627,7 +627,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               height: MediaQuery.of(context).size.height * 0.3,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

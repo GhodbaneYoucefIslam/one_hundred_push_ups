@@ -78,7 +78,7 @@ class _CodeConfirmationPageForForgotPasswordState
                   children: [
                     SizedBox(
                         width: 25,
-                        child: SvgPicture.asset("assets/images/logo.svg")),
+                        child: SvgPicture.asset("assets/images/logo_black.svg")),
                     Text(
                       verifyPasswordReset.tr,
                       textAlign: TextAlign.center,

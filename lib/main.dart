@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:one_hundred_push_ups/models/GoalProvider.dart';
+import 'package:one_hundred_push_ups/models/ThemeProvider.dart';
 import 'package:one_hundred_push_ups/screens/LoginPage.dart';
 import 'package:one_hundred_push_ups/screens/OnboardingScreen.dart';
 import 'package:one_hundred_push_ups/screens/SettingsPage.dart';
@@ -16,18 +17,17 @@ import "AppHome.dart";
 import 'package:flutter_background/flutter_background.dart';
 import 'package:timezone/data/latest.dart' as tz;
 import 'package:get/get.dart';
+import 'theme/AppThemes.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   final myPrefs = await SharedPreferences.getInstance();
-  final  isFirstUse = myPrefs.getBool(showOnboarding)?? true;
+  final isFirstUse = myPrefs.getBool(showOnboarding) ?? true;
   final areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
   final currentLanguage = myPrefs.getString(chosenLanguage) ?? english;
 
   tz.initializeTimeZones();
-  //final String currentTimeZone = await FlutterTimezone.getLocalTimezone();
-  //tz.setLocalLocation(tz.getLocation(currentTimeZone));
   final androidConfig = FlutterBackgroundAndroidConfig(
     notificationTitle: "Daily reminder notification controller",
     notificationText: "Running in the background to check if goal is complete",
@@ -38,24 +38,30 @@ void main() async {
   await FlutterBackground.initialize(androidConfig: androidConfig);
   await LocalNotifications.init();
   //todo: problem with starting logic when goal is complete
-  await LocalNotifications.startBackgroundNotificationChecker(areNotificationsOn);
+  await LocalNotifications.startBackgroundNotificationChecker(
+      areNotificationsOn);
 
-  runApp(MyApp(isFirstUse: isFirstUse/*todo: replace false with actual value before deployment*/, currentLanguage: currentLanguage,));
+  runApp(MyApp(
+    isFirstUse:
+        isFirstUse /*todo: replace false with actual value before deployment*/,
+    currentLanguage: currentLanguage,
+  ));
 }
 
 class MyApp extends StatelessWidget {
   final bool isFirstUse;
   final String currentLanguage;
-  const MyApp({super.key, required this.isFirstUse, required this.currentLanguage});
-  
-  Locale languageToLocale(String language){
-    switch(language){
+  const MyApp(
+      {super.key, required this.isFirstUse, required this.currentLanguage});
+
+  Locale languageToLocale(String language) {
+    switch (language) {
       case english:
-        return Locale("en","US");
-      case french: 
-        return Locale("fr","FR");
-      default : 
-        return Locale("en","US");
+        return Locale("en", "US");
+      case french:
+        return Locale("fr", "FR");
+      default:
+        return Locale("en", "US");
     }
   }
 
@@ -64,23 +70,24 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
-        ChangeNotifierProvider(create: (context)=>GoalProvider()),
-        ChangeNotifierProvider(create: (context)=>UserProvider())
+        ChangeNotifierProvider(create: (context) => GoalProvider()),
+        ChangeNotifierProvider(create: (context) => UserProvider()),
+        ChangeNotifierProvider(create: (context) => ThemeProvider()),
       ],
-      child: GetMaterialApp(
-        debugShowCheckedModeBanner: false,
-        translations: LocaleStrings(),
-        locale: languageToLocale(currentLanguage),
-        title: appName,
-        theme: ThemeData(
-          colorScheme: ColorScheme.fromSeed(seedColor: lightBlue),
-          useMaterial3: true,
-          fontFamily: "SpaceGrotesk",
-        ),
-        home: isFirstUse? const OnboardingScreen() : const AppHome(title: appName) /*AppHome(title: appName,)*/,
-      ),
+      child: Consumer<ThemeProvider>(builder: (context, themeProvider, child) {
+        return GetMaterialApp(
+          debugShowCheckedModeBanner: false,
+          translations: LocaleStrings(),
+          locale: languageToLocale(currentLanguage),
+          title: appName,
+          theme: AppThemes.getLightTheme(),
+          darkTheme: AppThemes.getDarkTheme(),
+          themeMode: context.watch<ThemeProvider>().getCurrentThemeMode,
+          home: isFirstUse
+              ? const OnboardingScreen()
+              : const AppHome(title: appName) /*AppHome(title: appName,)*/,
+        );
+      }),
     );
   }
 }
-
-

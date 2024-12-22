@@ -48,7 +48,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   children: [
                     SizedBox(
                       width: 25,
-                        child: SvgPicture.asset("assets/images/logo.svg")),
+                        child: SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -195,7 +195,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       iAccept.tr + " ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
                       ),
                     ),
                     GestureDetector(
@@ -216,7 +216,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       " " +and.tr+" ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
                       ),
                     ),
                     GestureDetector(
@@ -282,14 +282,14 @@ class _SignUpPageState extends State<SignUpPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
                       ),
                     ),
                     Text(
                       or.tr,
                       style: TextStyle(
                         fontSize: 16,
-                        color: darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
                       ),
                     ),
                     Expanded(
@@ -297,7 +297,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
                       ),
                     ),
                   ],
@@ -394,7 +394,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           continueWithGoogle.tr,
                           style: TextStyle(
                             fontSize: 20,
-                            color: Colors.black,
+                            color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
                           ),
                         )
                       ],
@@ -408,7 +408,7 @@ class _SignUpPageState extends State<SignUpPage> {
                       alreadyHaveAccount.tr + " ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
                       ),
                     ),
                     GestureDetector(

@@ -131,10 +131,10 @@ class _HomePageState extends State<HomePage> {
                             key: _chartKey,
                             chartType: CircularChartType.Radial,
                             holeLabel: "${totalReps * 100 ~/ goal}%",
-                            labelStyle: const TextStyle(
+                            labelStyle: TextStyle(
                               fontSize: 50,
                               fontWeight: FontWeight.bold,
-                              color: Colors.black,
+                              color: Theme.of(context).colorScheme.onBackground,
                               fontFamily: "SpaceGrotesk",
                             ),
                           ),
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
               height: MediaQuery.of(context).size.height * 0.3,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

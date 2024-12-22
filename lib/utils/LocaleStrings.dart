@@ -13,8 +13,8 @@ class LocaleStrings extends Translations {
     statsAndGoals: "Stats & Goals",
     leaderboard: "Leaderboard",
     settings: "Settings",
-    lightMode: "Light\nmode",
-    nightMode: "Night\nmode",
+    lightModeKey: "Light\nmode",
+    nightModeKey: "Night\nmode",
     logout: "Logout",
     login: "Login",
     resetDataQuestion: "Do you want to reset all your data (progress, stats)?",
@@ -167,7 +167,7 @@ class LocaleStrings extends Translations {
     tapToChange: "Tap to change",
 
     // DataCenterPage.dart
-    enterFileName: "Enter the name you would like",
+    enterFileName: "Provide file name",
     importAndExport: "Import and export your In-App data",
     table: "Table",
     select: "Select",
@@ -247,8 +247,8 @@ class LocaleStrings extends Translations {
     statsAndGoals: "Statistiques et Objectifs",
     leaderboard: "Classement",
     settings: "Paramètres",
-    lightMode: "Mode\nclair",
-    nightMode: "Mode\nnuit",
+    lightModeKey: "Mode\nclair",
+    nightModeKey: "Mode\nnuit",
     logout: "Déconnexion",
     login: "Connexion",
     resetDataQuestion:

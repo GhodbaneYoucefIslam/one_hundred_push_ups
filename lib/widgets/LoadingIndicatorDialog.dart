@@ -25,7 +25,7 @@ class LoadingIndicatorDialog {
           return WillPopScope(
             onWillPop: () async => false,
             child: SimpleDialog(
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.background,
               children: [
                 Center(
                   child: Column(

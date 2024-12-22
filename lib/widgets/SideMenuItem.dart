@@ -20,7 +20,7 @@ class SideMenuItem extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10),
       child: Material(
-        color: selected ? greenBlue.withOpacity(0.5) : Colors.white10,
+        color: selected ? greenBlue.withOpacity(0.5) : Colors.transparent,
         child: InkWell(
           onTap: onTap,
           child: Padding(
@@ -31,7 +31,7 @@ class SideMenuItem extends StatelessWidget {
                     child: Icon(
                   icon,
                   size: 20,
-                  color: selected ? turquoiseBlue : Colors.black,
+                  color: selected ? turquoiseBlue : Theme.of(context).iconTheme.color,
                 )),
                 Expanded(
                   flex: 3,
@@ -40,7 +40,7 @@ class SideMenuItem extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: selected ? turquoiseBlue : Colors.black),
+                        color: selected ? turquoiseBlue : Theme.of(context).colorScheme.onBackground),
                   ),
                 )
               ],

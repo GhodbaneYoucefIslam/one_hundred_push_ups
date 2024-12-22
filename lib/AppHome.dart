@@ -13,6 +13,7 @@ import 'package:one_hundred_push_ups/widgets/SideMenuItem.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'models/UserProvider.dart';
+import 'models/ThemeProvider.dart';
 import 'utils/constants.dart';
 import 'package:one_hundred_push_ups/utils/MenuEntry.dart';
 
@@ -27,7 +28,6 @@ class AppHome extends StatefulWidget {
 class _AppHomeState extends State<AppHome> {
   late MenuEntry currentPage;
   late Widget body;
-  bool isDarkMode = false;
   bool isLoggedIn = false;
 
   Future<void> verifyIsLoggedIn(BuildContext context) async {
@@ -60,6 +60,7 @@ class _AppHomeState extends State<AppHome> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
+      //backgroundColor: Theme.of(context).colorScheme.background,
       appBar: AppBar(
         backgroundColor: lightBlue,
         centerTitle: true,
@@ -155,17 +156,15 @@ class _AppHomeState extends State<AppHome> {
                             size: 20,
                           ),
                         ),
-                        Text(lightMode.tr,
+                        Text(lightModeKey.tr,
                             style:
                             TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
                       ],
                     ),
                     Switch(
-                        value: isDarkMode,
+                        value: Theme.of(context).brightness == Brightness.dark ? true : false,
                         onChanged: (value) {
-                          setState(() {
-                            isDarkMode = !isDarkMode;
-                          });
+                          Provider.of<ThemeProvider>(context, listen: false).toggleTheme(Theme.of(context).brightness);
                         }),
                     Row(
                       children: [
@@ -175,7 +174,7 @@ class _AppHomeState extends State<AppHome> {
                         ),
                         Padding(
                           padding: EdgeInsets.only(left: 7),
-                          child: Text(nightMode.tr,
+                          child: Text(nightModeKey.tr,
                               style: TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold)),
                         )
@@ -250,7 +249,7 @@ class _AppHomeState extends State<AppHome> {
               height: MediaQuery.of(context).size.height * 0.3,
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Colors.white,
+                color: Theme.of(context).colorScheme.background,
               ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,

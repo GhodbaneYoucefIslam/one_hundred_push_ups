@@ -99,7 +99,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -111,6 +111,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
+                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
                                 menuEntries: tableList,
                                 value: selectedTable,
                                 borderColor: darkBlue,
@@ -131,7 +134,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -143,6 +146,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
+                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
                                 menuEntries: formatList,
                                 value: selectedFormat,
                                 borderColor: darkBlue,
@@ -163,7 +169,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -175,6 +181,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
+                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
                                 menuEntries: dateList,
                                 value: selectedDate,
                                 borderColor: darkBlue,
@@ -197,7 +206,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Colors.white,
+                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -209,6 +218,9 @@ class _DataCenterPageState extends State<DataCenterPage> {
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
+                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
                                 menuEntries: sendOptionsList,
                                 value: selectedSendOption,
                                 borderColor: darkBlue,
@@ -252,9 +264,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             fontSize: 12,
                             color: (selectedDate == customRangeDateOption) &&
                                     (dateRange != null)
-                                ? Colors.black54
-                                : Colors
-                                    .white10, // the color white 10 makes the text invisible
+                                ? (Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black54)
+                                : Colors.transparent,
                           ),
                         ),
                         ElevatedButton(
@@ -668,7 +679,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
           height: MediaQuery.of(context).size.height * 0.3,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(20),
-            color: Colors.white,
+            color: Theme.of(context).colorScheme.background,
           ),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,

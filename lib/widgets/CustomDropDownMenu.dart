@@ -9,7 +9,10 @@ class CustomDropDownMenu extends StatelessWidget {
   final double horizontalOffset;
   final double verticalOffset;
   final String hintText;
-  const CustomDropDownMenu({super.key, required this.menuEntries,this.value, required this.borderColor, this.onChanged, required this.horizontalOffset, required this.verticalOffset, required this.hintText});
+  final Color? hintTextColor;
+  final Color? valueTextColor;
+  final Color? menuBackgroundColor;
+  const CustomDropDownMenu({super.key, required this.menuEntries,this.value, required this.borderColor, this.onChanged, required this.horizontalOffset, required this.verticalOffset, required this.hintText, this.hintTextColor, this.valueTextColor, this.menuBackgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +22,7 @@ class CustomDropDownMenu extends StatelessWidget {
           hintText,
           style: TextStyle(
             fontSize: 15,
+            color: hintTextColor
           ),
           overflow: TextOverflow.ellipsis,
         ),
@@ -27,9 +31,9 @@ class CustomDropDownMenu extends StatelessWidget {
           value: item,
           child: Text(
             item,
-            style: const TextStyle(
+            style: TextStyle(
               fontSize: 13,
-              color: Colors.black,
+              color: valueTextColor,
             ),
           ),
         ))
@@ -46,6 +50,7 @@ class CustomDropDownMenu extends StatelessWidget {
           width: 120,
           padding: null,
           decoration: BoxDecoration(
+            color: menuBackgroundColor,
             borderRadius: BorderRadius.circular(10),
             border: Border.all(
                 color: borderColor),
