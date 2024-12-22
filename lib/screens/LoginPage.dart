@@ -34,7 +34,7 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -49,13 +49,16 @@ class _LoginPageState extends State<LoginPage> {
                   children: [
                     SizedBox(
                         width: 25,
-                        child: SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg")),
+                        child: SvgPicture.asset(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? "assets/images/logo_white.svg"
+                                : "assets/images/logo_black.svg")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           "${welcome.tr}  ",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                         Text(
@@ -72,7 +75,8 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 Text(
                   loginNow.tr,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 RoundedTextFormField(
                   hintText: enterEmail.tr,
@@ -102,12 +106,12 @@ class _LoginPageState extends State<LoginPage> {
                     password = value!;
                   },
                   suffixIcon: IconButton(
-                    icon: Icon(
-                      passwordVisible? Icons.visibility_off: Icons.visibility
-                    ),
+                    icon: Icon(passwordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility),
                     onPressed: () {
                       setState(() {
-                        passwordVisible = ! passwordVisible;
+                        passwordVisible = !passwordVisible;
                       });
                     },
                   ),
@@ -116,7 +120,7 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
-                      onTap: () async{
+                      onTap: () async {
                         var result = await openDialogForForgetPassword();
                         String emailForForgotPassword = result!;
                         resetPassword(emailForForgotPassword);
@@ -198,7 +202,8 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       child: Text(login.tr,
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white))),
                 ),
                 Row(
                   children: [
@@ -207,14 +212,18 @@ class _LoginPageState extends State<LoginPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : darkBlue,
                       ),
                     ),
                     Text(
                       or.tr,
                       style: TextStyle(
                         fontSize: 16,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : darkBlue,
                       ),
                     ),
                     Expanded(
@@ -222,62 +231,57 @@ class _LoginPageState extends State<LoginPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : darkBlue,
                       ),
                     ),
                   ],
                 ),
                 GestureDetector(
-                  onTap: () async{
+                  onTap: () async {
                     String lName, fName;
                     final user = await GoogleSignInApi.login();
-                    if (user != null){
+                    if (user != null) {
                       String fullName = user.displayName.toString();
-                      email =  user.email;
+                      email = user.email;
                       List<String> names = fullName.split(" ");
-                      lName = names[names.length-1];
-                      if (names.length >= 2){
+                      lName = names[names.length - 1];
+                      if (names.length >= 2) {
                         names.remove(lName);
                         fName = names.join(" ");
-                      }else{
-                        fName= "";
+                      } else {
+                        fName = "";
                       }
-                      print("user: ${fName} $lName $email");
-                      LoadingIndicatorDialog().show(context, text: loggingIn.tr);
-                      final loggedInUser = await loginOrSignUpWithGoogle(email, fName, lName);
+                      LoadingIndicatorDialog()
+                          .show(context, text: loggingIn.tr);
+                      final loggedInUser =
+                          await loginOrSignUpWithGoogle(email, fName, lName);
                       LoadingIndicatorDialog().dismiss();
-                      if(loggedInUser != null){
-                        if (loggedInUser.id!= -1){
+                      if (loggedInUser != null) {
+                        if (loggedInUser.id != -1) {
                           final snackBar = SnackBar(
                             content: Text(
                               '${authenticationOf.tr} ${loggedInUser.lastname} ${loggedInUser.firstname} ${successfulWithId.tr}:${loggedInUser.id}!',
                             ),
                           );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBar);
-                          final myPrefs =
-                          await SharedPreferences
-                              .getInstance();
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          final myPrefs = await SharedPreferences.getInstance();
                           //Keeping hold of new user for subsequent uses of the app
                           myPrefs.setInt(userId, loggedInUser.id!);
-                          myPrefs.setString(
-                              userEmail, loggedInUser.email);
-                          myPrefs.setString(
-                              userFname, loggedInUser.firstname);
-                          myPrefs.setString(
-                              userLname, loggedInUser.lastname);
+                          myPrefs.setString(userEmail, loggedInUser.email);
+                          myPrefs.setString(userFname, loggedInUser.firstname);
+                          myPrefs.setString(userLname, loggedInUser.lastname);
                           myPrefs.setBool(userIsPublic, loggedInUser.isPublic);
                           myPrefs.setBool(userIsLoggedIn, true);
-                          Provider.of<UserProvider>(context,
-                              listen: false)
+                          Provider.of<UserProvider>(context, listen: false)
                               .initUserFromPrefs();
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                  const AppHome(
-                                      title: appName)));
-                        }else{
+                                      const AppHome(title: appName)));
+                        } else {
                           final snackBar = SnackBar(
                             content: Text(
                               notConnectedWithGoogleErrorMessage.tr,
@@ -285,7 +289,7 @@ class _LoginPageState extends State<LoginPage> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
-                      }else{
+                      } else {
                         final snackBar = SnackBar(
                           content: Text(
                             serverConnectionError.tr,
@@ -293,7 +297,7 @@ class _LoginPageState extends State<LoginPage> {
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
-                    }else{
+                    } else {
                       final snackBar = SnackBar(
                         content: Text(
                           googleFailed.tr,
@@ -311,7 +315,7 @@ class _LoginPageState extends State<LoginPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.g_mobiledata_rounded,
                           size: 40,
                         ),
@@ -319,7 +323,10 @@ class _LoginPageState extends State<LoginPage> {
                           continueWithGoogle.tr,
                           style: TextStyle(
                             fontSize: 20,
-                            color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
                           ),
                         )
                       ],
@@ -330,10 +337,12 @@ class _LoginPageState extends State<LoginPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      dontHaveAccount.tr+" ",
+                      "${dontHaveAccount.tr} ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : Colors.black,
                       ),
                     ),
                     GestureDetector(
@@ -341,7 +350,7 @@ class _LoginPageState extends State<LoginPage> {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => SignUpPage()));
+                                builder: (context) => const SignUpPage()));
                       },
                       child: Text(
                         signUpKey.tr,
@@ -356,13 +365,14 @@ class _LoginPageState extends State<LoginPage> {
                 ),
                 GestureDetector(
                   onTap: () async {
-                    bool? result = await openDialogForProceedingWithoutAccount();
-                    if(result == true){
+                    bool? result =
+                        await openDialogForProceedingWithoutAccount();
+                    if (result == true) {
                       Navigator.pushReplacement(
                           context,
                           MaterialPageRoute(
                               builder: (context) =>
-                              const AppHome(title: appName)));
+                                  const AppHome(title: appName)));
                     }
                   },
                   child: Text(
@@ -381,22 +391,26 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 
-  void resetPassword(String email) async{
+  void resetPassword(String email) async {
     //see if email is associated to an account
     LoadingIndicatorDialog().show(context, text: verifyingEmail.tr);
     bool? emailDoesntExists = await isEmailNotPreviouslyUsed(email);
     LoadingIndicatorDialog().dismiss();
-    if (emailDoesntExists==false){
+    if (emailDoesntExists == false) {
       //take user to confirmation screen
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPageForForgotPassword(email: email, codeExpiresIn: const Duration(minutes: 5))));
-    }else if(emailDoesntExists == true){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CodeConfirmationPageForForgotPassword(
+                  email: email, codeExpiresIn: const Duration(minutes: 5))));
+    } else if (emailDoesntExists == true) {
       final snackBar = SnackBar(
         content: Text(
           noAccountForEmailErrorMessage.tr,
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }else{
+    } else {
       final snackBar = SnackBar(
         content: Text(
           serverConnectionError.tr,
@@ -409,121 +423,125 @@ class _LoginPageState extends State<LoginPage> {
   Future<String?> openDialogForForgetPassword() => showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.3,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Theme.of(context).colorScheme.background,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                pleaseProvideEmail.tr,
-                textAlign: TextAlign.center,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.background,
               ),
-              SizedBox(
-                width: 220,
-                child: RoundedTextField(
-                  hintText: enterEmail.tr,
-                  hintTextSize: 10,
-                  borderColor: grey,
-                  selectedBorderColor: greenBlue,
-                  controller: myController,
-                  borderRadius: 10,
-                ),
-              ),
-              ElevatedButton(
-                  onPressed: () {
-                    FocusScope.of(context).unfocus();
-                    String? validationResult = validateEmail(myController.text);
-                    if (validationResult == null) {
-                      Navigator.of(context).pop(myController.text);
-                      myController.text = "";
-                    } else {
-                      toastification.show(
-                          context: context,
-                          title: Text(validationResult),
-                          autoCloseDuration: const Duration(seconds: 2),
-                          style: ToastificationStyle.simple,
-                          alignment: const Alignment(0, 0.75));
-                    }
-                  },
-                  style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all(greenBlue),
-                    shape:
-                    MaterialStateProperty.all<RoundedRectangleBorder>(
-                      RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  Text(
+                    pleaseProvideEmail.tr,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
+                  ),
+                  SizedBox(
+                    width: 220,
+                    child: RoundedTextField(
+                      hintText: enterEmail.tr,
+                      hintTextSize: 10,
+                      borderColor: grey,
+                      selectedBorderColor: greenBlue,
+                      controller: myController,
+                      borderRadius: 10,
                     ),
                   ),
-                  child: Text(confirm.tr,
-                      style: TextStyle(fontSize: 16, color: Colors.white))),
-            ],
-          ),
-        ),
-      ));
+                  ElevatedButton(
+                      onPressed: () {
+                        FocusScope.of(context).unfocus();
+                        String? validationResult =
+                            validateEmail(myController.text);
+                        if (validationResult == null) {
+                          Navigator.of(context).pop(myController.text);
+                          myController.text = "";
+                        } else {
+                          toastification.show(
+                              context: context,
+                              title: Text(validationResult),
+                              autoCloseDuration: const Duration(seconds: 2),
+                              style: ToastificationStyle.simple,
+                              alignment: const Alignment(0, 0.75));
+                        }
+                      },
+                      style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.all(greenBlue),
+                        shape:
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: Text(confirm.tr,
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white))),
+                ],
+              ),
+            ),
+          ));
 
   Future<bool?> openDialogForProceedingWithoutAccount() => showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.3,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Theme.of(context).colorScheme.background,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                proceedWithoutAccountWarningMessage.tr,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
-                textAlign: TextAlign.center,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.background,
               ),
-              Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(greenBlue),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                  Text(
+                    proceedWithoutAccountWarningMessage.tr,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
+                    textAlign: TextAlign.center,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(greenBlue),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      child: Text(no.tr,
-                          style: TextStyle(
-                              fontSize: 16, color: Colors.white))),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(turquoiseBlue),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                          child: Text(no.tr,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white))),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(turquoiseBlue),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      child: Text(yes.tr,
-                          style: TextStyle(
-                              fontSize: 16, color: Colors.white))),
+                          child: Text(yes.tr,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white))),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        ),
-      ));
+            ),
+          ));
 }

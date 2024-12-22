@@ -13,7 +13,7 @@ class GoalProvider extends ChangeNotifier {
   //set methods
   void addSet({required int reps, required int goalId}) async {
     var db = LocalDB();
-    int id = await db.createSet(
+    await db.createSet(
         set: Set(reps: reps, time: DateTime.now()), goalId: goalId);
     totalReps += reps;
     setsDifferentFromDb = true;
@@ -45,6 +45,7 @@ class GoalProvider extends ChangeNotifier {
   Future<void> getOrCreateTodayGoal() async {
     //first we deal with the daily goal
     if (todayGoal == null || goalDifferentFromDb) {
+      //init stats for demo
       /*await LocalDB().initializeGoals();
       await LocalDB().initializeSets();*/
       var db = LocalDB();

@@ -473,7 +473,7 @@ class LocaleStrings extends Translations {
         "5. Modifications de cette Politique de Confidentialité : Nous pouvons mettre à jour notre Politique de Confidentialité de temps en temps. Nous vous informerons de tout changement en publiant la nouvelle Politique de Confidentialité sur cette page.\n\n"
         "Si vous avez des questions ou des préoccupations concernant notre Politique de Confidentialité, veuillez nous contacter.",
     aboutSection: "À propos de l'application",
-    termsAndConditionsSection: "Conditions Générales de l'appli",
+    termsAndConditionsSection: "Les conditions Générales",
     privacyPolicySection: "Politique de Confidentialité",
 
     // methods.dart

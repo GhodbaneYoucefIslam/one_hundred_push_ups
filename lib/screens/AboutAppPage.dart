@@ -23,7 +23,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
     Future.microtask(() {
       myPageController.animateToPage(
         currentInfoPage,
-        duration: Duration(milliseconds: 500),
+        duration: const Duration(milliseconds: 500),
         curve: Curves.easeInOut,
       );
     });
@@ -34,7 +34,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -45,8 +45,12 @@ class _AboutAppPageState extends State<AboutAppPage> {
               Column(
                 children: [
                   SizedBox(
-                      width: 25, child: SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg")),
-                  Text(
+                      width: 25,
+                      child: SvgPicture.asset(
+                          Theme.of(context).brightness == Brightness.dark
+                              ? "assets/images/logo_white.svg"
+                              : "assets/images/logo_black.svg")),
+                  const Text(
                     "100PushUps",
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
@@ -69,34 +73,29 @@ class _AboutAppPageState extends State<AboutAppPage> {
                   children: [
                     SingleChildScrollView(
                         child: Padding(
-                          padding: const EdgeInsets.all(12),
-                          child: Text(
-                          infoParagraph.tr,
-                            style: TextStyle(fontSize: 16.0),
-                            textAlign: TextAlign.justify,
-                          ),
-                        )
-                    ),
+                      padding: const EdgeInsets.all(12),
+                      child: Text(
+                        infoParagraph.tr,
+                        style: const TextStyle(fontSize: 16.0),
+                        textAlign: TextAlign.justify,
+                      ),
+                    )),
                     SingleChildScrollView(
                         child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Text(
-                            termsAndConditionsParagraph.tr,
-                              style: TextStyle(fontSize: 16.0),
+                              termsAndConditionsParagraph.tr,
+                              style: const TextStyle(fontSize: 16.0),
                               textAlign: TextAlign.justify,
-                            )
-                        )
-                    ),
+                            ))),
                     SingleChildScrollView(
                         child: Padding(
                             padding: const EdgeInsets.all(12),
                             child: Text(
-                            privacyPolicyParagraph.tr,
-                              style: TextStyle(fontSize: 16.0),
+                              privacyPolicyParagraph.tr,
+                              style: const TextStyle(fontSize: 16.0),
                               textAlign: TextAlign.justify,
-                            )
-                        )
-                    ),
+                            ))),
                   ],
                 ),
               ),
@@ -112,7 +111,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                           });
                           myPageController.animateToPage(
                             0,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
@@ -120,7 +119,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                           backgroundColor: MaterialStateProperty.all(
                               currentInfoPage == 0 ? greenBlue : grey),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -134,7 +133,9 @@ class _AboutAppPageState extends State<AboutAppPage> {
                                     ? Colors.black
                                     : Colors.white))),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.01,
+                  ),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
@@ -144,7 +145,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                           });
                           myPageController.animateToPage(
                             1,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
@@ -152,7 +153,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                           backgroundColor: MaterialStateProperty.all(
                               currentInfoPage == 1 ? greenBlue : grey),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),
@@ -166,7 +167,9 @@ class _AboutAppPageState extends State<AboutAppPage> {
                                     ? Colors.black
                                     : Colors.white))),
                   ),
-                  SizedBox(width: MediaQuery.of(context).size.width * 0.01,),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width * 0.01,
+                  ),
                   Expanded(
                     flex: 1,
                     child: ElevatedButton(
@@ -176,7 +179,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                           });
                           myPageController.animateToPage(
                             2,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
@@ -184,7 +187,7 @@ class _AboutAppPageState extends State<AboutAppPage> {
                           backgroundColor: MaterialStateProperty.all(
                               currentInfoPage == 2 ? greenBlue : grey),
                           shape:
-                          MaterialStateProperty.all<RoundedRectangleBorder>(
+                              MaterialStateProperty.all<RoundedRectangleBorder>(
                             RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(5),
                             ),

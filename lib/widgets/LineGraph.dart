@@ -30,19 +30,21 @@ class LineGraph extends StatelessWidget {
         rightTitles: AxisTitles(sideTitles: SideTitles(showTitles: false)),
         bottomTitles: AxisTitles(
             sideTitles: SideTitles(
-                interval: (maxX/6).floorToDouble() + 1 ,
+                interval: (maxX / 6).floorToDouble() + 1,
                 showTitles: true,
                 getTitlesWidget: (value, meta) {
-                  if (dates!=null){
-                  DateTime date = DateTime.parse(dates![value.toInt()-1]);
-                  return Text(
-                    "${date.day}/${date.month}",
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
-                  );
-                }else{
+                  if (dates != null) {
+                    DateTime date = DateTime.parse(dates![value.toInt() - 1]);
                     return Text(
-                      "Day ${value.toInt()+1}",
-                      style: TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                      "${date.day}/${date.month}",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
+                    );
+                  } else {
+                    return Text(
+                      "Day ${value.toInt() + 1}",
+                      style:
+                          TextStyle(fontWeight: FontWeight.bold, fontSize: 10),
                     );
                   }
                 })),

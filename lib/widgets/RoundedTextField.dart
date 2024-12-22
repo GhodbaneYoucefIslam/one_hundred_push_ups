@@ -45,13 +45,11 @@ class RoundedTextField extends StatelessWidget {
           color: const Color(0xff9BAEBC),
         ),
         filled: false,
-        contentPadding:  const EdgeInsets.only(left: 15, top: 5, bottom: 5),
+        contentPadding: const EdgeInsets.only(left: 15, top: 5, bottom: 5),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular((borderRadius != null) ? borderRadius! : 20),
-          borderSide: BorderSide(
-              width: 1,
-              color: borderColor
-          ),
+          borderRadius: BorderRadius.circular(
+              (borderRadius != null) ? borderRadius! : 20),
+          borderSide: BorderSide(width: 1, color: borderColor),
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: BorderRadius.circular(20),

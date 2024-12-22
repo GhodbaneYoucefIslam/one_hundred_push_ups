@@ -31,7 +31,9 @@ class SideMenuItem extends StatelessWidget {
                     child: Icon(
                   icon,
                   size: 20,
-                  color: selected ? turquoiseBlue : Theme.of(context).iconTheme.color,
+                  color: selected
+                      ? turquoiseBlue
+                      : Theme.of(context).iconTheme.color,
                 )),
                 Expanded(
                   flex: 3,
@@ -40,7 +42,9 @@ class SideMenuItem extends StatelessWidget {
                     style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
-                        color: selected ? turquoiseBlue : Theme.of(context).colorScheme.onBackground),
+                        color: selected
+                            ? turquoiseBlue
+                            : Theme.of(context).colorScheme.onBackground),
                   ),
                 )
               ],

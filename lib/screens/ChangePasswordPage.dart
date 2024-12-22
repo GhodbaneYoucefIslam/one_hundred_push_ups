@@ -5,7 +5,6 @@ import "package:one_hundred_push_ups/models/Endpoints.dart";
 import "package:one_hundred_push_ups/screens/LoginPage.dart";
 import "package:one_hundred_push_ups/utils/translationConstants.dart";
 import "package:one_hundred_push_ups/widgets/RoundedTextFormField.dart";
-import "package:shared_preferences/shared_preferences.dart";
 import "../models/User.dart";
 import "../utils/constants.dart";
 import "../widgets/LoadingIndicatorDialog.dart";
@@ -27,7 +26,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -45,11 +44,12 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                     Text(
                       changedPasswordFor.tr,
                       textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                     Text(
                       widget.email,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 15, fontWeight: FontWeight.normal),
                       textAlign: TextAlign.center,
                     ),
@@ -87,7 +87,7 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                       },
                     ),
                     SizedBox(
-                      height: MediaQuery.of(context).size.height*0.025,
+                      height: MediaQuery.of(context).size.height * 0.025,
                     ),
                     RoundedTextFormField(
                       hintText: confirmPassword.tr,
@@ -121,36 +121,37 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                 SizedBox(
                   width: MediaQuery.of(context).size.width * 0.7,
                   child: ElevatedButton(
-                      onPressed: () async{
+                      onPressed: () async {
                         FocusScope.of(context).unfocus();
                         if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
                           if (password == confirmedPassword) {
-                            LoadingIndicatorDialog().show(context, text: changingPassword.tr);
-                            User? updatedUser = await changeUserPassword(widget.email, password);
+                            LoadingIndicatorDialog()
+                                .show(context, text: changingPassword.tr);
+                            User? updatedUser = await changeUserPassword(
+                                widget.email, password);
                             LoadingIndicatorDialog().dismiss();
-                              if (updatedUser != null) {
-                                final snackBar = SnackBar(
-                                  content: Text(
-                                    '${changedPasswordFor.tr} ${updatedUser.lastname} ${updatedUser.firstname} ${successfulWithId.tr}: ${updatedUser.id}!',
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                                Navigator.pushReplacement(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) =>
-                                        const LoginPage()));
-                              }else{
-                                final snackBar = SnackBar(
-                                  content: Text(
-                                    errorChangingPasswordErrorMessage.tr,
-                                  ),
-                                );
-                                ScaffoldMessenger.of(context)
-                                    .showSnackBar(snackBar);
-                              }
+                            if (updatedUser != null) {
+                              final snackBar = SnackBar(
+                                content: Text(
+                                  '${changedPasswordFor.tr} ${updatedUser.lastname} ${updatedUser.firstname} ${successfulWithId.tr}: ${updatedUser.id}!',
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                              Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => const LoginPage()));
+                            } else {
+                              final snackBar = SnackBar(
+                                content: Text(
+                                  errorChangingPasswordErrorMessage.tr,
+                                ),
+                              );
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
+                            }
                           } else {
                             final snackBar = SnackBar(
                               content: Text(
@@ -172,7 +173,8 @@ class _ChangePasswordPageState extends State<ChangePasswordPage> {
                         ),
                       ),
                       child: Text(changePassword.tr,
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white))),
                 ),
               ],
             ),

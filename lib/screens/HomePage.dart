@@ -47,7 +47,7 @@ class _HomePageState extends State<HomePage> {
   //dealing with timer
   late ValueNotifier<Duration> remainingTime;
   void startTimer() async {
-    Timer timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       remainingTime.value = DateTime(DateTime.now().year, DateTime.now().month,
               DateTime.now().day, 0, 0, 0)
           .add(const Duration(days: 1))
@@ -110,10 +110,19 @@ class _HomePageState extends State<HomePage> {
                           context.watch<GoalProvider>().todayGoal!.goalAmount;
                       totalReps = context.watch<GoalProvider>().totalReps;
                       if (isFirstNotificationTrigger) {
-                        LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, Provider.of<GoalProvider>(context, listen: false).totalReps >= Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount);
+                        LocalNotifications
+                            .updateBackgroundNotificationCheckerStatus(
+                                areNotificationsOn,
+                                Provider.of<GoalProvider>(context,
+                                            listen: false)
+                                        .totalReps >=
+                                    Provider.of<GoalProvider>(context,
+                                            listen: false)
+                                        .todayGoal!
+                                        .goalAmount);
                         isFirstNotificationTrigger = false;
                       }
-                      return Container(
+                      return SizedBox(
                         width: MediaQuery.of(context).size.width,
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
@@ -181,13 +190,13 @@ class _HomePageState extends State<HomePage> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Text(addSet.tr,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 30)),
                                 const SizedBox(
                                   width: 20,
                                 ),
-                                Container(
+                                SizedBox(
                                   width: 80,
                                   height: 80,
                                   child: FloatingActionButton(
@@ -195,8 +204,6 @@ class _HomePageState extends State<HomePage> {
                                     onPressed: () async {
                                       var result = await openDialog();
                                       int repsToAdd = int.parse(result!);
-                                      print(
-                                          "totalReps1: ${Provider.of<GoalProvider>(context, listen: false).totalReps}");
                                       Provider.of<GoalProvider>(context,
                                               listen: false)
                                           .addSet(
@@ -212,11 +219,6 @@ class _HomePageState extends State<HomePage> {
                                       bool areNotificationsOn = myPrefs
                                               .getBool(activateNotifications) ??
                                           true;
-                                      print(areNotificationsOn);
-                                      print(
-                                          "totalReps2: ${Provider.of<GoalProvider>(context, listen: false).totalReps + repsToAdd}");
-                                      print(
-                                          "goal: ${Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount}");
                                       LocalNotifications
                                           .updateBackgroundNotificationCheckerStatus(
                                               areNotificationsOn,
@@ -290,7 +292,8 @@ class _HomePageState extends State<HomePage> {
                 children: [
                   Text(
                     addNewSet.tr,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
                   ),
                   SizedBox(
                     width: 220,
@@ -329,7 +332,8 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       child: Text(addReps.tr,
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white))),
                 ],
               ),
             ),

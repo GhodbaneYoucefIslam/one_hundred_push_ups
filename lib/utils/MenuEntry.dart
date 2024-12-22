@@ -1,6 +1,1 @@
-enum MenuEntry{
-  home,
-  goal,
-  leaderboard,
-  settings
-}
+enum MenuEntry { home, goal, leaderboard, settings }

@@ -11,13 +11,14 @@ class StorageHelper {
 
   static Future<File> _getLocalFile(String fileName) async {
     final localPath = await _localPath;
-    print("path is : ${localPath}/$fileName");
     return File("$localPath/$fileName");
   }
 
-  static Future<File> writeStringToFile(String fileName, String content, BuildContext context) async {
+  static Future<File> writeStringToFile(
+      String fileName, String content, BuildContext context) async {
     final file = await _getLocalFile(fileName);
-    return file.writeAsString(content, mode: FileMode.write); // Explicitly specifying FileMode.write
+    return file.writeAsString(content,
+        mode: FileMode.write); // Explicitly specifying FileMode.write
   }
 
   static Future<String> readStringFromFile(String filePath) async {
@@ -25,7 +26,6 @@ class StorageHelper {
       final file = File(filePath);
       return file.readAsString();
     } catch (e) {
-      print("Error reading file: $e");
       return '';
     }
   }

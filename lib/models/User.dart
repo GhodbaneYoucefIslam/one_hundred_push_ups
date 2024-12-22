@@ -18,7 +18,7 @@ class User {
   }
 
   @override
-  String toString(){
+  String toString() {
     return "User($id,$firstname,$lastname,$email,$isPublic)";
   }
 }

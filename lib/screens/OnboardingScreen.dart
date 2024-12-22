@@ -16,7 +16,7 @@ class OnboardingScreen extends StatefulWidget {
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  PageController _controller = PageController();
+  final PageController _controller = PageController();
   int currentPage = 0;
   @override
   Widget build(BuildContext context) {
@@ -55,7 +55,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     onTap: () async {
                       if (currentPage < 3) {
                         _controller.previousPage(
-                            duration: Duration(microseconds: 500),
+                            duration: const Duration(microseconds: 500),
                             curve: Curves.easeIn);
                       } else {
                         final myPrefs = await SharedPreferences.getInstance();
@@ -64,7 +64,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  AppHome(title: "100PushUPs"),
+                                  const AppHome(title: "100PushUPs"),
                             ));
                       }
                     },
@@ -73,7 +73,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     onPressed: () async {
                       if (currentPage < 3) {
                         _controller.nextPage(
-                            duration: Duration(microseconds: 500),
+                            duration: const Duration(microseconds: 500),
                             curve: Curves.easeIn);
                       } else {
                         final myPrefs = await SharedPreferences.getInstance();
@@ -82,7 +82,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             context,
                             MaterialPageRoute(
                               builder: (BuildContext context) =>
-                                  SignUpPage(),
+                                  const SignUpPage(),
                             ));
                       }
                     },
@@ -90,31 +90,29 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         backgroundColor: MaterialStateProperty.all(
                             greenBlue.withOpacity(0.5))),
                     child: currentPage <= 2
-                        ? Icon(
+                        ? const Icon(
                             Icons.arrow_forward_ios,
                             size: 20,
                             color: Colors.white,
                           )
                         : Text(
                             "${yes.tr}!",
-                            style: TextStyle(
+                            style: const TextStyle(
                                 fontSize: 17, fontWeight: FontWeight.bold),
                           ),
                   )
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 30,
               ),
               SmoothPageIndicator(
                 controller: _controller,
                 count: 4,
-                effect: WormEffect(
-                  dotColor: grey,
-                  activeDotColor: turquoiseBlue
-                ),
+                effect:
+                    WormEffect(dotColor: grey, activeDotColor: turquoiseBlue),
                 onDotClicked: (index) => _controller.animateToPage(index,
-                    duration: Duration(microseconds: 500),
+                    duration: const Duration(microseconds: 500),
                     curve: Curves.easeIn),
               ),
             ],

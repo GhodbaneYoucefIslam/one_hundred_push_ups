@@ -36,7 +36,10 @@ class _DataCenterPageState extends State<DataCenterPage> {
   int currentPage = 0; // export 0 and import 1
   final myPageController = PageController();
   final myExportTextController = TextEditingController();
-  final myImportTextControllers = [TextEditingController(),TextEditingController()];
+  final myImportTextControllers = [
+    TextEditingController(),
+    TextEditingController()
+  ];
   final List<String> tableList = [
     goalsTableOption.tr,
     setsTableOption.tr,
@@ -55,7 +58,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
 
   String? goalsFilePath, setsFilePath;
 
-  bool validateFileName(){
+  bool validateFileName() {
     if (fileName.endsWith(".${selectedFormat!.toLowerCase()}")) return true;
     return false;
   }
@@ -64,7 +67,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -73,10 +76,12 @@ class _DataCenterPageState extends State<DataCenterPage> {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Text(dataCenter.tr,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                  style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold)),
               Text(
                 importAndExport.tr,
-                style: TextStyle(fontSize: 15, fontWeight: FontWeight.normal),
+                style: const TextStyle(
+                    fontSize: 15, fontWeight: FontWeight.normal),
                 textAlign: TextAlign.center,
               ),
               Container(
@@ -99,21 +104,34 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Theme.of(context).colorScheme.background
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
                                 "${table.tr} :     ",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
-                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
+                                hintTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                valueTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                menuBackgroundColor: Theme.of(context)
+                                            .brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.background
+                                    : Colors.white,
                                 menuEntries: tableList,
                                 value: selectedTable,
                                 borderColor: darkBlue,
@@ -122,8 +140,10 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedTable = value;
-                                    if (selectedTable != null && selectedFormat != null){
-                                      myExportTextController.text = "${selectedTable!}.${selectedFormat!.toLowerCase()}";
+                                    if (selectedTable != null &&
+                                        selectedFormat != null) {
+                                      myExportTextController.text =
+                                          "${selectedTable!}.${selectedFormat!.toLowerCase()}";
                                     }
                                   });
                                 },
@@ -134,21 +154,34 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Theme.of(context).colorScheme.background
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
                                 "${format.tr} :    ",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
-                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
+                                hintTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                valueTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                menuBackgroundColor: Theme.of(context)
+                                            .brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.background
+                                    : Colors.white,
                                 menuEntries: formatList,
                                 value: selectedFormat,
                                 borderColor: darkBlue,
@@ -157,8 +190,10 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                 onChanged: (value) {
                                   setState(() {
                                     selectedFormat = value;
-                                    if (selectedTable != null && selectedFormat != null){
-                                      myExportTextController.text = "${selectedTable!}.${selectedFormat!.toLowerCase()}";
+                                    if (selectedTable != null &&
+                                        selectedFormat != null) {
+                                      myExportTextController.text =
+                                          "${selectedTable!}.${selectedFormat!.toLowerCase()}";
                                     }
                                   });
                                 },
@@ -169,21 +204,34 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Theme.of(context).colorScheme.background
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
                                 "${dateRangeKey.tr} :",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
-                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
+                                hintTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                valueTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                menuBackgroundColor: Theme.of(context)
+                                            .brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.background
+                                    : Colors.white,
                                 menuEntries: dateList,
                                 value: selectedDate,
                                 borderColor: darkBlue,
@@ -206,21 +254,34 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         Container(
                           width: MediaQuery.of(context).size.width * 0.7,
                           decoration: BoxDecoration(
-                              color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.white,
+                              color: Theme.of(context).brightness ==
+                                      Brightness.dark
+                                  ? Theme.of(context).colorScheme.background
+                                  : Colors.white,
                               borderRadius: BorderRadius.circular(10)),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceAround,
                             children: [
                               Text(
                                 "${saveTo.tr} :",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               CustomDropDownMenu(
                                 hintText: select.tr,
-                                hintTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                valueTextColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
-                                menuBackgroundColor: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black,
+                                hintTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                valueTextColor: Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
+                                menuBackgroundColor: Theme.of(context)
+                                            .brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.background
+                                    : Colors.white,
                                 menuEntries: sendOptionsList,
                                 value: selectedSendOption,
                                 borderColor: darkBlue,
@@ -242,7 +303,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             children: [
                               Text(
                                 fileNameKey.tr,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -264,7 +325,10 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             fontSize: 12,
                             color: (selectedDate == customRangeDateOption) &&
                                     (dateRange != null)
-                                ? (Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.background : Colors.black54)
+                                ? (Theme.of(context).brightness ==
+                                        Brightness.dark
+                                    ? Theme.of(context).colorScheme.background
+                                    : Colors.black54)
                                 : Colors.transparent,
                           ),
                         ),
@@ -280,23 +344,23 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                       dateRange == null)) {
                                 toastification.show(
                                     context: context,
-                                    title: Text(
-                                        pleaseVerifyExportOptions.tr),
+                                    title: Text(pleaseVerifyExportOptions.tr),
                                     autoCloseDuration:
                                         const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
                                     alignment: const Alignment(0, 0.75));
                               } else {
-                                if (validateFileName()){
+                                if (validateFileName()) {
                                   exportData(selectedTable!, selectedDate!,
                                       dateRange, selectedFormat!, fileName);
-                                }else{
+                                } else {
                                   toastification.show(
                                       context: context,
                                       title: Text(
-                                      extensionAndFormatDontMatchErrorMessage.tr),
+                                          extensionAndFormatDontMatchErrorMessage
+                                              .tr),
                                       autoCloseDuration:
-                                      const Duration(seconds: 2),
+                                          const Duration(seconds: 2),
                                       style: ToastificationStyle.simple,
                                       alignment: const Alignment(0, 0.75));
                                 }
@@ -314,7 +378,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             ),
                             child: Text(confirm.tr,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 15, color: Colors.white))),
                       ],
                     ),
@@ -323,10 +387,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
                       children: [
                         Text(
                           pleaseSelectTwoFiles.tr,
-                          style: TextStyle(
-                            fontSize: 12,
-                            color: Colors.black
-                          ),
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.black),
                           textAlign: TextAlign.center,
                         ),
                         SizedBox(
@@ -336,7 +398,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             children: [
                               Text(
                                 goalFile.tr,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -349,10 +411,15 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                   controller: myImportTextControllers.first,
                                   readOnly: true,
                                   onTap: () async {
-                                    final result = await FilePicker.platform.pickFiles(allowMultiple: false,type: FileType.custom, allowedExtensions: ["csv", "json"]);
+                                    final result = await FilePicker.platform
+                                        .pickFiles(
+                                            allowMultiple: false,
+                                            type: FileType.custom,
+                                            allowedExtensions: ["csv", "json"]);
                                     if (result == null) return;
                                     final file = result.files.first;
-                                    myImportTextControllers.first.text = file.name;
+                                    myImportTextControllers.first.text =
+                                        file.name;
                                     goalsFilePath = file.path;
                                   },
                                 ),
@@ -367,7 +434,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             children: [
                               Text(
                                 "${setsFile.tr} ",
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 18, fontWeight: FontWeight.bold),
                               ),
                               SizedBox(
@@ -380,10 +447,15 @@ class _DataCenterPageState extends State<DataCenterPage> {
                                   controller: myImportTextControllers.last,
                                   readOnly: true,
                                   onTap: () async {
-                                    final result = await FilePicker.platform.pickFiles(allowMultiple: false,type: FileType.custom, allowedExtensions: ["csv", "json"]);
+                                    final result = await FilePicker.platform
+                                        .pickFiles(
+                                            allowMultiple: false,
+                                            type: FileType.custom,
+                                            allowedExtensions: ["csv", "json"]);
                                     if (result == null) return;
                                     final file = result.files.first;
-                                    myImportTextControllers.last.text = file.name;
+                                    myImportTextControllers.last.text =
+                                        file.name;
                                     setsFilePath = file.path;
                                   },
                                 ),
@@ -393,45 +465,51 @@ class _DataCenterPageState extends State<DataCenterPage> {
                         ),
                         ElevatedButton(
                             onPressed: () async {
-                              if (goalsFilePath !=null && setsFilePath != null){
+                              if (goalsFilePath != null &&
+                                  setsFilePath != null) {
                                 var ok = await openDialog();
-                                if (ok == true){
-                                  try{
-                                    List<Goal> goals = await importGoals(goalsFilePath!);
-                                    List<Set> sets = await importSets(setsFilePath!);
+                                if (ok == true) {
+                                  try {
+                                    List<Goal> goals =
+                                        await importGoals(goalsFilePath!);
+                                    List<Set> sets =
+                                        await importSets(setsFilePath!);
                                     final db = LocalDB();
                                     db.deleteAllSets();
                                     db.deleteAllGoals();
                                     db.importGoalsList(goals: goals);
                                     db.importSetsList(sets: sets);
-                                    Provider.of<GoalProvider>(context, listen: false).nullifyGoal();
+                                    Provider.of<GoalProvider>(context,
+                                            listen: false)
+                                        .nullifyGoal();
                                     final snackBar = SnackBar(
                                       content: Text(
                                         dataImportedSuccessfully.tr,
                                       ),
                                     );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                     myImportTextControllers.first.text = "";
                                     myImportTextControllers.last.text = "";
                                     goalsFilePath = null;
                                     setsFilePath = null;
-                                  }catch(e){
+                                  } catch (e) {
                                     //todo: content validation? FK dependencies
                                     final snackBar = SnackBar(
                                       content: Text(
-                                      importFailedMessage.tr,
+                                        importFailedMessage.tr,
                                       ),
                                     );
-                                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                                    ScaffoldMessenger.of(context)
+                                        .showSnackBar(snackBar);
                                   }
                                 }
-                              }else{
+                              } else {
                                 toastification.show(
                                     context: context,
-                                    title: Text(
-                                        pleaseSelectTwoFiles.tr),
+                                    title: Text(pleaseSelectTwoFiles.tr),
                                     autoCloseDuration:
-                                    const Duration(seconds: 2),
+                                        const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
                                     alignment: const Alignment(0, 0.75));
                               }
@@ -448,7 +526,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                             ),
                             child: Text(confirm.tr,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontSize: 15, color: Colors.white))),
                       ],
                     ),
@@ -467,7 +545,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                           });
                           myPageController.animateToPage(
                             0,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
@@ -501,7 +579,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
                           });
                           myPageController.animateToPage(
                             1,
-                            duration: Duration(milliseconds: 300),
+                            duration: const Duration(milliseconds: 300),
                             curve: Curves.easeInOut,
                           );
                         },
@@ -592,8 +670,7 @@ class _DataCenterPageState extends State<DataCenterPage> {
             //keeping only the relevant elements
             for (Set set in dbContentsList) {
               if (set.time.compareTo(rangeStart) >= 0 &&
-                  set.time.compareTo(
-                          rangeEnd.add(const Duration(days: 1))) <
+                  set.time.compareTo(rangeEnd.add(const Duration(days: 1))) <
                       0) {
                 dataList.add(set);
               }
@@ -603,29 +680,32 @@ class _DataCenterPageState extends State<DataCenterPage> {
         }
       case rankTableOption:
         {
-          if (Provider.of<UserProvider>(context, listen: false).currentUser == null){
+          if (Provider.of<UserProvider>(context, listen: false).currentUser ==
+              null) {
             final snackBar = SnackBar(
               content: Text(
                 loginToAccessRankErrorMessage.tr,
               ),
             );
             ScaffoldMessenger.of(context).showSnackBar(snackBar);
-          }else{
-            try{
+          } else {
+            try {
               LoadingIndicatorDialog().show(context, text: retrievingData.tr);
-              List<Map<String,dynamic>>? intermediateList = await getUserAchievements(Provider.of<UserProvider>(context, listen: false).currentUser!.id!);
+              List<Map<String, dynamic>>? intermediateList =
+                  await getUserAchievements(
+                      Provider.of<UserProvider>(context, listen: false)
+                          .currentUser!
+                          .id!);
               LoadingIndicatorDialog().dismiss();
-              List<Mappable> dataList = intermediateList!.map((e) => Achievement.fromMap(e)).toList();
+              List<Mappable> dataList =
+                  intermediateList!.map((e) => Achievement.fromMap(e)).toList();
               return dataList;
-            }catch(e){
-              print(e.toString());
+            } catch (e) {
               WidgetsBinding.instance.addPostFrameCallback((_) {
                 toastification.show(
                     context: context,
-                    title: Text(
-                        serverConnectionError.tr),
-                    autoCloseDuration:
-                    const Duration(seconds: 2),
+                    title: Text(serverConnectionError.tr),
+                    autoCloseDuration: const Duration(seconds: 2),
                     style: ToastificationStyle.simple,
                     alignment: const Alignment(0, 0.75));
               });
@@ -647,7 +727,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
         {
           dataExporter = CSVDataExporter();
           String fileContents = dataExporter.formatDataForExporting(dataList);
-          savedFile = await StorageHelper.writeStringToFile(fileName, fileContents, context);
+          savedFile = await StorageHelper.writeStringToFile(
+              fileName, fileContents, context);
           final snackBar = SnackBar(
             content: Text(
               '${dataExportedTo.tr} ${savedFile.parent}',
@@ -660,7 +741,8 @@ class _DataCenterPageState extends State<DataCenterPage> {
         {
           dataExporter = JSONDataExporter();
           String fileContents = dataExporter.formatDataForExporting(dataList);
-          savedFile = await StorageHelper.writeStringToFile(fileName, fileContents, context);
+          savedFile = await StorageHelper.writeStringToFile(
+              fileName, fileContents, context);
           final snackBar = SnackBar(
             content: Text(
               '${dataExportedTo.tr} ${savedFile.parent}',
@@ -675,127 +757,141 @@ class _DataCenterPageState extends State<DataCenterPage> {
   Future<bool?> openDialog() => showDialog(
       context: context,
       builder: (context) => Dialog(
-        child: Container(
-          height: MediaQuery.of(context).size.height * 0.3,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(20),
-            color: Theme.of(context).colorScheme.background,
-          ),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              Text(
-                dataDeletionWarning.tr,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-                textAlign: TextAlign.center,
+            child: Container(
+              height: MediaQuery.of(context).size.height * 0.3,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Theme.of(context).colorScheme.background,
               ),
-              Row(
+              child: Column(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(false);
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(greenBlue),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                  Text(
+                    dataDeletionWarning.tr,
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
+                    textAlign: TextAlign.center,
+                  ),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(false);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(greenBlue),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      child: Text(no.tr,
-                          style: TextStyle(
-                              fontSize: 16, color: Colors.white))),
-                  ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop(true);
-                      },
-                      style: ButtonStyle(
-                        backgroundColor:
-                        MaterialStateProperty.all(turquoiseBlue),
-                        shape: MaterialStateProperty.all<
-                            RoundedRectangleBorder>(
-                          RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
+                          child: Text(no.tr,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white))),
+                      ElevatedButton(
+                          onPressed: () {
+                            Navigator.of(context).pop(true);
+                          },
+                          style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(turquoiseBlue),
+                            shape: MaterialStateProperty.all<
+                                RoundedRectangleBorder>(
+                              RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(10),
+                              ),
+                            ),
                           ),
-                        ),
-                      ),
-                      child: Text(yes.tr,
-                          style: TextStyle(
-                              fontSize: 16, color: Colors.white))),
+                          child: Text(yes.tr,
+                              style: const TextStyle(
+                                  fontSize: 16, color: Colors.white))),
+                    ],
+                  ),
                 ],
               ),
-            ],
-          ),
-        ),
-      ));
+            ),
+          ));
 
   Future<List<Goal>> importGoals(String path) async {
     List<Goal> goals = [];
     String extension = path.split(".").last;
-    switch (extension){
-      case "json": {
-        String value = await StorageHelper.readStringFromFile(path);
-        print("goals file contents : $value");
-        List<dynamic> jsonValue = jsonDecode(value);
-        goals = jsonValue.map((map) => Goal.fromMap(Map<String, dynamic>.from(map))).toList();
-        return goals;
-      }
-      case "csv": {
-        List<Map<String,dynamic>> maps = [];
-        final source = File(path).openRead();
-        final lines = await source.transform(utf8.decoder).transform(CsvToListConverter(eol: '\n')).toList();
-        //first we extract they keys
-        final keys = lines.first;
-        lines.remove(lines.first);
-        //we create a map for each line
-        for (List<dynamic> line in lines){
-          Map<String, dynamic> map = {};
-          for (int i =0; i<keys.length; i++){
-            map[keys[i].toString()] = line[i];
-          }
-          maps.add(map);
+    switch (extension) {
+      case "json":
+        {
+          String value = await StorageHelper.readStringFromFile(path);
+          List<dynamic> jsonValue = jsonDecode(value);
+          goals = jsonValue
+              .map((map) => Goal.fromMap(Map<String, dynamic>.from(map)))
+              .toList();
+          return goals;
         }
-        //we convert the map to a list of goals
-        goals = maps.map((map) => Goal.fromMap(map)).toList();
-        return goals;
-      }
+      case "csv":
+        {
+          List<Map<String, dynamic>> maps = [];
+          final source = File(path).openRead();
+          final lines = await source
+              .transform(utf8.decoder)
+              .transform(const CsvToListConverter(eol: '\n'))
+              .toList();
+          //first we extract they keys
+          final keys = lines.first;
+          lines.remove(lines.first);
+          //we create a map for each line
+          for (List<dynamic> line in lines) {
+            Map<String, dynamic> map = {};
+            for (int i = 0; i < keys.length; i++) {
+              map[keys[i].toString()] = line[i];
+            }
+            maps.add(map);
+          }
+          //we convert the map to a list of goals
+          goals = maps.map((map) => Goal.fromMap(map)).toList();
+          return goals;
+        }
     }
     return [];
   }
+
   Future<List<Set>> importSets(String path) async {
     List<Set> sets = [];
     String extension = path.split(".").last;
-    switch (extension){
-      case "json": {
-        String value = await StorageHelper.readStringFromFile(path);
-        print("sets file contents : $value");
-        List<dynamic> jsonValue = jsonDecode(value);
-        sets = jsonValue.map((map) => Set.fromMap(Map<String, dynamic>.from(map))).toList();
-        return sets;
-      }
-      case "csv": {
-        List<Map<String,dynamic>> maps = [];
-        final source = File(path).openRead();
-        final lines = await source.transform(utf8.decoder).transform(CsvToListConverter(eol: '\n')).toList();
-        //first we extract they keys
-        final keys = lines.first;
-        lines.remove(lines.first);
-        //we create a map for each line
-        for (List<dynamic> line in lines){
-          Map<String, dynamic> map = {};
-          for (int i =0; i<keys.length; i++){
-            map[keys[i].toString()] = line[i];
-          }
-          maps.add(map);
+    switch (extension) {
+      case "json":
+        {
+          String value = await StorageHelper.readStringFromFile(path);
+          List<dynamic> jsonValue = jsonDecode(value);
+          sets = jsonValue
+              .map((map) => Set.fromMap(Map<String, dynamic>.from(map)))
+              .toList();
+          return sets;
         }
-        //we convert the map to a list of goals
-        sets = maps.map((map) => Set.fromMap(map)).toList();
-        return sets;
-      }
+      case "csv":
+        {
+          List<Map<String, dynamic>> maps = [];
+          final source = File(path).openRead();
+          final lines = await source
+              .transform(utf8.decoder)
+              .transform(const CsvToListConverter(eol: '\n'))
+              .toList();
+          //first we extract they keys
+          final keys = lines.first;
+          lines.remove(lines.first);
+          //we create a map for each line
+          for (List<dynamic> line in lines) {
+            Map<String, dynamic> map = {};
+            for (int i = 0; i < keys.length; i++) {
+              map[keys[i].toString()] = line[i];
+            }
+            maps.add(map);
+          }
+          //we convert the map to a list of goals
+          sets = maps.map((map) => Set.fromMap(map)).toList();
+          return sets;
+        }
     }
     return [];
   }

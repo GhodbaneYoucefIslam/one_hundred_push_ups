@@ -1,12 +1,12 @@
 import 'package:get/get.dart';
 import 'package:one_hundred_push_ups/utils/translationConstants.dart';
 
-String toPrismaCompatibleIsoStringForDate(DateTime date){
-  return "${date.year}-${date.month.toString().padLeft(2,"0")}-${date.day.toString().padLeft(2,"0")}T00:00:00Z";
+String toPrismaCompatibleIsoStringForDate(DateTime date) {
+  return "${date.year}-${date.month.toString().padLeft(2, "0")}-${date.day.toString().padLeft(2, "0")}T00:00:00Z";
 }
 
-String toDisplayableDate(DateTime date){
-  return "${date.year}-${date.month.toString().padLeft(2,"0")}-${date.day.toString().padLeft(2,"0")}";
+String toDisplayableDate(DateTime date) {
+  return "${date.year}-${date.month.toString().padLeft(2, "0")}-${date.day.toString().padLeft(2, "0")}";
 }
 
 String? validateEmail(String? value) {
@@ -20,7 +20,5 @@ String? validateEmail(String? value) {
       r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])';
   final regex = RegExp(pattern);
   bool invalid = (value.isNotEmpty && !regex.hasMatch(value));
-  return invalid
-      ? emailInvalidFormatErrorMessage.tr
-      : null;
+  return invalid ? emailInvalidFormatErrorMessage.tr : null;
 }

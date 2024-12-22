@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 
 class LoadingIndicatorDialog {
-  static final LoadingIndicatorDialog _singleton = LoadingIndicatorDialog._internal();
+  static final LoadingIndicatorDialog _singleton =
+      LoadingIndicatorDialog._internal();
   late BuildContext _context;
   bool isDisplayed = false;
 
@@ -13,7 +14,7 @@ class LoadingIndicatorDialog {
   LoadingIndicatorDialog._internal();
 
   show(BuildContext context, {String text = 'Loading...'}) {
-    if(isDisplayed) {
+    if (isDisplayed) {
       return;
     }
     showDialog<void>(
@@ -32,25 +33,28 @@ class LoadingIndicatorDialog {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(left: 16, top: 16, right: 16),
+                        padding:
+                            const EdgeInsets.only(left: 16, top: 16, right: 16),
                         child: CircularProgressIndicator(),
                       ),
                       Padding(
                         padding: const EdgeInsets.all(16),
-                        child: Text(text),
+                        child: Text(
+                          text,
+                          textAlign: TextAlign.center,
+                        ),
                       )
                     ],
                   ),
                 )
-              ] ,
+              ],
             ),
           );
-        }
-    );
+        });
   }
 
   dismiss() {
-    if(isDisplayed) {
+    if (isDisplayed) {
       Navigator.of(_context).pop();
       isDisplayed = false;
     }

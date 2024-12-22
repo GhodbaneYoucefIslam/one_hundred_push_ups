@@ -1,6 +1,5 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:get/get.dart';
 import 'package:one_hundred_push_ups/utils/translationConstants.dart';
@@ -19,19 +18,26 @@ class CodeConfirmationPageForSignUp extends StatefulWidget {
   String email;
   String? fName, lName, password;
   Duration codeExpiresIn;
-  CodeConfirmationPageForSignUp({required this.email, required this.codeExpiresIn, this.fName,this.lName,this.password,super.key});
+  CodeConfirmationPageForSignUp(
+      {required this.email,
+      required this.codeExpiresIn,
+      this.fName,
+      this.lName,
+      this.password,
+      super.key});
 
   @override
-  State<CodeConfirmationPageForSignUp> createState() => _CodeConfirmationPageForSignUpState();
+  State<CodeConfirmationPageForSignUp> createState() =>
+      _CodeConfirmationPageForSignUpState();
 }
 
-class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForSignUp> {
-
+class _CodeConfirmationPageForSignUpState
+    extends State<CodeConfirmationPageForSignUp> {
   final formKey = GlobalKey<FormState>();
   late String digit1, digit2, digit3, digit4;
   late ValueNotifier<Duration> remainingTime;
   void startTimer(DateTime expiryTime) async {
-    Timer timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!remainingTime.value.isNegative) {
         remainingTime.value = expiryTime.difference(DateTime.now());
       } else {
@@ -46,11 +52,14 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
     startTimer(DateTime.now().add(widget.codeExpiresIn));
     super.initState();
   }
+
   @override
   Widget build(BuildContext context) {
-    return CodeConfirmationPageGeneric(email: widget.email,
+    return CodeConfirmationPageGeneric(
+        email: widget.email,
         codeExpiresIn: widget.codeExpiresIn,
-        codeSendingFunction: sendOTPCodeForSignUp(widget.email, widget.fName!, widget.lName!),
+        codeSendingFunction:
+            sendOTPCodeForSignUp(widget.email, widget.fName!, widget.lName!),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
@@ -66,12 +75,12 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
             return Center(
               child: Text(
                 failedSendingCodeErrorMessage.tr,
-                style:
-                TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
+                style: const TextStyle(
+                    fontWeight: FontWeight.normal, fontSize: 20),
               ),
             );
           } else {
-            return Container(
+            return SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Form(
                 key: formKey,
@@ -81,18 +90,19 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                   children: [
                     SizedBox(
                         width: 25,
-                        child: SvgPicture.asset("assets/images/logo_black.svg")),
+                        child:
+                            SvgPicture.asset("assets/images/logo_black.svg")),
                     Text(
                       verifyRegistrationEmail.tr,
                       textAlign: TextAlign.center,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                     Column(
                       children: [
                         Text(
                           "${verificationCodeSent.tr} ${widget.email}",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.normal),
                           textAlign: TextAlign.center,
                         ),
@@ -100,7 +110,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                           valueListenable: remainingTime,
                           builder: (context, value, child) => Text(
                             !value.isNegative
-                                ? "${codeExpiresIn.tr} ${value.inMinutes}:${(value.inSeconds - value.inMinutes * 60).toString().padLeft(2,"0")}"
+                                ? "${codeExpiresIn.tr} ${value.inMinutes}:${(value.inSeconds - value.inMinutes * 60).toString().padLeft(2, "0")}"
                                 : codeExpired.tr,
                             style: TextStyle(
                                 fontSize: 15,
@@ -117,28 +127,28 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                         FourDigitFormCell(
                           height: 70,
                           width: 70,
-                          onSaved: (value){
+                          onSaved: (value) {
                             digit1 = value!;
                           },
                         ),
                         FourDigitFormCell(
                           height: 70,
                           width: 70,
-                          onSaved: (value){
+                          onSaved: (value) {
                             digit2 = value!;
                           },
                         ),
                         FourDigitFormCell(
                           height: 70,
                           width: 70,
-                          onSaved: (value){
+                          onSaved: (value) {
                             digit3 = value!;
                           },
                         ),
                         FourDigitFormCell(
                           height: 70,
                           width: 70,
-                          onSaved: (value){
+                          onSaved: (value) {
                             digit4 = value!;
                           },
                         ),
@@ -154,29 +164,32 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                               builder: (context, value, child) =>
                                   ElevatedButton(
                                       onPressed: () {
-                                        if(value.isNegative){
+                                        if (value.isNegative) {
                                           remainingTime =
                                               ValueNotifier<Duration>(
                                                   widget.codeExpiresIn);
                                           setState(() {
-                                            startTimer(DateTime.now().add(
-                                                widget.codeExpiresIn));
+                                            startTimer(DateTime.now()
+                                                .add(widget.codeExpiresIn));
                                           });
                                         }
                                       },
                                       style: ButtonStyle(
                                         backgroundColor:
-                                        MaterialStateProperty.all(value.isNegative? turquoiseBlue: grey),
+                                            MaterialStateProperty.all(
+                                                value.isNegative
+                                                    ? turquoiseBlue
+                                                    : grey),
                                         shape: MaterialStateProperty.all<
                                             RoundedRectangleBorder>(
                                           RoundedRectangleBorder(
                                             borderRadius:
-                                            BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                           ),
                                         ),
                                       ),
                                       child: Text(resend.tr,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 16,
                                               color: Colors.white)))),
                         ),
@@ -189,8 +202,6 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                   String otp =
                                       digit1 + digit2 + digit3 + digit4;
                                   String hash = snapshot.data!;
-                                  print("hash is : " +
-                                      snapshot.data.toString());
                                   bool? correct = await verifyOTPCode(
                                       widget.email, hash, otp);
                                   if (correct == true) {
@@ -208,8 +219,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                       ScaffoldMessenger.of(context)
                                           .showSnackBar(snackBar);
                                       final myPrefs =
-                                      await SharedPreferences
-                                          .getInstance();
+                                          await SharedPreferences.getInstance();
                                       //Keeping hold of new user for subsequent uses of the app
                                       myPrefs.setInt(userId, newUser.id!);
                                       myPrefs.setString(
@@ -222,14 +232,14 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                           userIsPublic, newUser.isPublic);
                                       myPrefs.setBool(userIsLoggedIn, true);
                                       Provider.of<UserProvider>(context,
-                                          listen: false)
+                                              listen: false)
                                           .initUserFromPrefs();
                                       Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(
                                               builder: (context) =>
-                                              const AppHome(
-                                                  title: appName)));
+                                                  const AppHome(
+                                                      title: appName)));
                                     }
                                   } else if (correct == false) {
                                     final snackBar = SnackBar(
@@ -244,7 +254,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                               },
                               style: ButtonStyle(
                                 backgroundColor:
-                                MaterialStateProperty.all(greenBlue),
+                                    MaterialStateProperty.all(greenBlue),
                                 shape: MaterialStateProperty.all<
                                     RoundedRectangleBorder>(
                                   RoundedRectangleBorder(
@@ -253,7 +263,7 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
                                 ),
                               ),
                               child: Text(confirm.tr,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 16, color: Colors.white))),
                         ),
                       ],
@@ -263,7 +273,6 @@ class _CodeConfirmationPageForSignUpState extends State<CodeConfirmationPageForS
               ),
             );
           }
-        }
-    );
+        });
   }
 }

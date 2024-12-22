@@ -27,7 +27,7 @@ class _CodeConfirmationPageForForgotPasswordState
   late String digit1, digit2, digit3, digit4;
   late ValueNotifier<Duration> remainingTime;
   void startTimer(DateTime expiryTime) async {
-    Timer timer = Timer.periodic(const Duration(seconds: 1), (timer) {
+    Timer.periodic(const Duration(seconds: 1), (timer) {
       if (!remainingTime.value.isNegative) {
         remainingTime.value = expiryTime.difference(DateTime.now());
       } else {
@@ -64,11 +64,12 @@ class _CodeConfirmationPageForForgotPasswordState
             return Center(
               child: Text(
                 failedSendingCodeErrorMessage.tr,
-                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 20),
+                style: const TextStyle(
+                    fontWeight: FontWeight.normal, fontSize: 20),
               ),
             );
           } else {
-            return Container(
+            return SizedBox(
               width: MediaQuery.of(context).size.width,
               child: Form(
                 key: formKey,
@@ -78,18 +79,19 @@ class _CodeConfirmationPageForForgotPasswordState
                   children: [
                     SizedBox(
                         width: 25,
-                        child: SvgPicture.asset("assets/images/logo_black.svg")),
+                        child:
+                            SvgPicture.asset("assets/images/logo_black.svg")),
                     Text(
                       verifyPasswordReset.tr,
                       textAlign: TextAlign.center,
-                      style:
-                          TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                          fontSize: 30, fontWeight: FontWeight.bold),
                     ),
                     Column(
                       children: [
                         Text(
                           "${verificationCodeSent.tr} ${widget.email}",
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontSize: 15, fontWeight: FontWeight.normal),
                           textAlign: TextAlign.center,
                         ),
@@ -176,7 +178,7 @@ class _CodeConfirmationPageForForgotPasswordState
                                         ),
                                       ),
                                       child: Text(resend.tr,
-                                          style: TextStyle(
+                                          style: const TextStyle(
                                               fontSize: 16,
                                               color: Colors.white)))),
                         ),
@@ -189,8 +191,6 @@ class _CodeConfirmationPageForForgotPasswordState
                                   String otp =
                                       digit1 + digit2 + digit3 + digit4;
                                   String hash = snapshot.data!;
-                                  print(
-                                      "hash is : " + snapshot.data.toString());
                                   bool? correct = await verifyOTPCode(
                                       widget.email, hash, otp);
                                   if (correct == true) {
@@ -222,7 +222,7 @@ class _CodeConfirmationPageForForgotPasswordState
                                 ),
                               ),
                               child: Text(confirm.tr,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontSize: 16, color: Colors.white))),
                         ),
                       ],

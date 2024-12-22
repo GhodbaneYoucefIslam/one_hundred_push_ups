@@ -115,14 +115,15 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Text(statistics.tr,
-                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
+                style:
+                    const TextStyle(fontSize: 30, fontWeight: FontWeight.bold)),
             Container(
               width: MediaQuery.of(context).size.width * 0.9,
               decoration: BoxDecoration(
@@ -133,10 +134,10 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
-                    Icon(Icons.electric_bolt_outlined, size: 20),
+                    const Icon(Icons.electric_bolt_outlined, size: 20),
                     Text(streakMessage.tr,
                         textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 15)),
+                        style: const TextStyle(fontSize: 15)),
                     FutureBuilder(
                         future: localStats,
                         builder: (context, snapshot) {
@@ -221,7 +222,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 children: [
                                   Text(
                                     "${yourAverage.tr} ${average.toStringAsFixed(2)} ${repsPerDay.tr}",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15),
                                   ),
@@ -231,7 +232,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                         bottom: 10,
                                         left: 5,
                                         right: 30),
-                                    child: Container(
+                                    child: SizedBox(
                                         width: 300,
                                         height: 250,
                                         child: LineGraph(
@@ -255,7 +256,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 child: Text(
                                   noAvailableStats.tr,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
                                 ),
@@ -301,7 +302,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 children: [
                                   Text(
                                     "${yourAverage.tr} ${average.toStringAsFixed(2)}%",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15),
                                   ),
@@ -311,17 +312,16 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                         bottom: 10,
                                         left: 5,
                                         right: 30),
-                                    child: Container(
+                                    child: SizedBox(
                                         width: 300,
                                         height: 250,
                                         child: LineGraph(
                                             minX: 1,
                                             maxX: dates.length.toDouble(),
                                             minY: 0,
-                                            maxY: percentages.reduce((per1, per2) =>
-                                                    per1 > per2
-                                                        ? per1
-                                                        : per2) +
+                                            maxY: percentages.reduce((per1,
+                                                        per2) =>
+                                                    per1 > per2 ? per1 : per2) +
                                                 10,
                                             dates: dates,
                                             dataPoints: dataPoints)),
@@ -335,7 +335,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 child: Text(
                                   noAvailableStats.tr,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
                                 ),
@@ -375,7 +375,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 children: [
                                   Text(
                                     "${yourAverage.tr} ${average.toStringAsFixed(2)} ${repsPerSet.tr}",
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.bold,
                                         fontSize: 15),
                                   ),
@@ -385,7 +385,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                         bottom: 10,
                                         left: 5,
                                         right: 30),
-                                    child: Container(
+                                    child: SizedBox(
                                         width: 300,
                                         height: 250,
                                         child: LineGraph(
@@ -410,7 +410,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 child: Text(
                                   noAvailableStats.tr,
                                   textAlign: TextAlign.center,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.bold,
                                       fontSize: 25),
                                 ),
@@ -430,7 +430,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               child: Text(
                                 pleaseLoginRankMessage.tr,
                                 textAlign: TextAlign.center,
-                                style: TextStyle(
+                                style: const TextStyle(
                                     fontWeight: FontWeight.bold, fontSize: 25),
                               ),
                             );
@@ -443,8 +443,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               WidgetsBinding.instance.addPostFrameCallback((_) {
                                 toastification.show(
                                     context: context,
-                                    title: Text(
-                                        serverConnectionError.tr),
+                                    title: Text(serverConnectionError.tr),
                                     autoCloseDuration:
                                         const Duration(seconds: 2),
                                     style: ToastificationStyle.simple,
@@ -453,7 +452,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                               return Center(
                                 child: Text(
                                   rankStatsNotAvailable.tr,
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                       fontWeight: FontWeight.normal,
                                       fontSize: 20),
                                 ),
@@ -481,7 +480,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                   children: [
                                     Text(
                                       "${yourAverageRank.tr} ${average.toStringAsFixed(2)}",
-                                      style: TextStyle(
+                                      style: const TextStyle(
                                           fontWeight: FontWeight.bold,
                                           fontSize: 15),
                                     ),
@@ -491,7 +490,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                           bottom: 10,
                                           left: 5,
                                           right: 30),
-                                      child: Container(
+                                      child: SizedBox(
                                           width: 300,
                                           height: 250,
                                           child: LineGraph(
@@ -514,8 +513,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                     .addPostFrameCallback((_) {
                                   toastification.show(
                                       context: context,
-                                      title: Text(
-                                          serverConnectionError.tr),
+                                      title: Text(serverConnectionError.tr),
                                       autoCloseDuration:
                                           const Duration(seconds: 2),
                                       style: ToastificationStyle.simple,
@@ -524,7 +522,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                                 return Center(
                                   child: Text(
                                     rankStatsNotAvailable.tr,
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         fontWeight: FontWeight.normal,
                                         fontSize: 20),
                                   ),
@@ -535,7 +533,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                         })
                   ]),
             ),
-            Container(
+            SizedBox(
               width: MediaQuery.of(context).size.width * 0.7,
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -543,18 +541,18 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                   IconButton(
                       onPressed: () {
                         myPageController.previousPage(
-                            duration: Duration(microseconds: 1000),
+                            duration: const Duration(microseconds: 1000),
                             curve: Curves.easeIn);
                       },
                       icon: Icon(
                         Icons.arrow_circle_left_outlined,
                         color: currentGraph == 0 ? grey : Colors.black,
                       )),
-                  Text(graphTitle(), style: TextStyle(fontSize: 20)),
+                  Text(graphTitle(), style: const TextStyle(fontSize: 20)),
                   IconButton(
                       onPressed: () {
                         myPageController.nextPage(
-                            duration: Duration(microseconds: 1000),
+                            duration: const Duration(microseconds: 1000),
                             curve: Curves.easeIn);
                       },
                       icon: Icon(
@@ -566,13 +564,13 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
             ),
             Text(
               dailyGoal.tr,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 30,
                 fontWeight: FontWeight.bold,
               ),
             ),
             Text(
-              "${context.watch<GoalProvider>().todayGoal== null? "100":context.watch<GoalProvider>().todayGoal!.goalAmount } ${reps.tr}",
+              "${context.watch<GoalProvider>().todayGoal == null ? "100" : context.watch<GoalProvider>().todayGoal!.goalAmount} ${reps.tr}",
               style: TextStyle(
                   fontSize: 30,
                   fontWeight: FontWeight.bold,
@@ -590,8 +588,15 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                   });
                 }
                 final myPrefs = await SharedPreferences.getInstance();
-                bool areNotificationsOn = myPrefs.getBool(activateNotifications) ?? true;
-                LocalNotifications.updateBackgroundNotificationCheckerStatus(areNotificationsOn, Provider.of<GoalProvider>(context, listen: false).totalReps >= Provider.of<GoalProvider>(context, listen: false).todayGoal!.goalAmount);
+                bool areNotificationsOn =
+                    myPrefs.getBool(activateNotifications) ?? true;
+                LocalNotifications.updateBackgroundNotificationCheckerStatus(
+                    areNotificationsOn,
+                    Provider.of<GoalProvider>(context, listen: false)
+                            .totalReps >=
+                        Provider.of<GoalProvider>(context, listen: false)
+                            .todayGoal!
+                            .goalAmount);
               },
               style: ButtonStyle(
                 elevation: MaterialStateProperty.all(5),
@@ -611,7 +616,7 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
               ),
               child: Text(
                 changeGoal.tr,
-                style: TextStyle(
+                style: const TextStyle(
                     fontSize: 28,
                     color: Colors.white,
                     fontWeight: FontWeight.bold),
@@ -637,7 +642,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                 children: [
                   Text(
                     changeDailyGoal.tr,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 18),
                   ),
                   SizedBox(
                     width: 220,
@@ -676,7 +682,8 @@ class _MyGoalsPageState extends State<MyGoalsPage> {
                         ),
                       ),
                       child: Text(change.tr,
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white))),
                 ],
               ),
             ),

@@ -33,7 +33,7 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: Container(
+      body: SizedBox(
         width: MediaQuery.of(context).size.width,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 15),
@@ -47,15 +47,18 @@ class _SignUpPageState extends State<SignUpPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     SizedBox(
-                      width: 25,
-                        child: SvgPicture.asset(Theme.of(context).brightness == Brightness.dark ? "assets/images/logo_white.svg":"assets/images/logo_black.svg")),
+                        width: 25,
+                        child: SvgPicture.asset(
+                            Theme.of(context).brightness == Brightness.dark
+                                ? "assets/images/logo_white.svg"
+                                : "assets/images/logo_black.svg")),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
                           welcome.tr,
-                          style:
-                          TextStyle(fontWeight: FontWeight.bold, fontSize: 15),
+                          style: const TextStyle(
+                              fontWeight: FontWeight.bold, fontSize: 15),
                         ),
                         Text(
                           appName,
@@ -71,7 +74,8 @@ class _SignUpPageState extends State<SignUpPage> {
                 ),
                 Text(
                   createAccount.tr,
-                  style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  style: const TextStyle(
+                      fontSize: 30, fontWeight: FontWeight.bold),
                 ),
                 RoundedTextFormField(
                   hintText: firstName.tr,
@@ -79,13 +83,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return fNameEmptyErrorMessage.tr;
                     }
                     return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {
                     fName = value!;
                   },
                 ),
@@ -95,13 +99,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderColor: grey,
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return lNameEmptyErrorMessage.tr;
                     }
                     return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {
                     lName = value!;
                   },
                 ),
@@ -112,7 +116,7 @@ class _SignUpPageState extends State<SignUpPage> {
                   selectedBorderColor: greenBlue,
                   borderRadius: 10,
                   validator: (value) => validateEmail(value),
-                  onSaved: (value){
+                  onSaved: (value) {
                     email = value!;
                   },
                 ),
@@ -124,24 +128,24 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderRadius: 10,
                   obscureText: !passwordVisible,
                   suffixIcon: IconButton(
-                    icon: Icon(
-                        passwordVisible? Icons.visibility_off: Icons.visibility
-                    ),
+                    icon: Icon(passwordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility),
                     onPressed: () {
                       setState(() {
-                        passwordVisible = ! passwordVisible;
+                        passwordVisible = !passwordVisible;
                       });
                     },
                   ),
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return passwordNotEmptyMessage.tr;
-                    }else if(value.toString().length<4){
+                    } else if (value.toString().length < 4) {
                       return minCharactersErrorMessage.tr;
                     }
                     return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {
                     password = value!;
                   },
                 ),
@@ -153,22 +157,22 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderRadius: 10,
                   obscureText: !passwordVisible,
                   suffixIcon: IconButton(
-                    icon: Icon(
-                        passwordVisible? Icons.visibility_off: Icons.visibility
-                    ),
+                    icon: Icon(passwordVisible
+                        ? Icons.visibility_off
+                        : Icons.visibility),
                     onPressed: () {
                       setState(() {
-                        passwordVisible = ! passwordVisible;
+                        passwordVisible = !passwordVisible;
                       });
                     },
                   ),
-                  validator: (value){
+                  validator: (value) {
                     if (value == null || value.isEmpty) {
                       return confirmedPasswordEmptyErrorMessage.tr;
                     }
                     return null;
                   },
-                  onSaved: (value){
+                  onSaved: (value) {
                     confirmedPassword = value!;
                   },
                 ),
@@ -180,57 +184,61 @@ class _SignUpPageState extends State<SignUpPage> {
                       value: accept,
                       onChanged: (value) {
                         setState(() {
-                          accept=value!;
+                          accept = value!;
                         });
                       },
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(5.0),
                       ),
                       side: MaterialStateBorderSide.resolveWith(
-                            (states) =>
-                        const BorderSide(width: 1.0, color: Color(0xff9BAEBC)),
+                        (states) => const BorderSide(
+                            width: 1.0, color: Color(0xff9BAEBC)),
                       ),
                     ),
                     Text(
-                      iAccept.tr + " ",
+                      "${iAccept.tr} ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : Colors.black,
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 1)));
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AboutAppPage(index: 1)));
                       },
                       child: Text(
                         terms.tr,
                         style: TextStyle(
-                          fontSize: 17,
-                          color: greenBlue,
-                          decoration: TextDecoration.underline,
-                          decorationColor: greenBlue
-                        ),
+                            fontSize: 17,
+                            color: greenBlue,
+                            decoration: TextDecoration.underline,
+                            decorationColor: greenBlue),
                       ),
                     ),
                     Text(
-                      " " +and.tr+" ",
+                      " ${and.tr} ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : Colors.black,
                       ),
                     ),
                     GestureDetector(
-                      onTap: (){
-                        Navigator.of(context).push(MaterialPageRoute(builder: (context)=>AboutAppPage(index: 1)));
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => AboutAppPage(index: 1)));
                       },
                       child: Text(
                         conditions.tr,
                         style: TextStyle(
-                          fontSize: 17,
-                          color: greenBlue,
-                          decoration: TextDecoration.underline,
-                          decorationColor: greenBlue
-                        ),
+                            fontSize: 17,
+                            color: greenBlue,
+                            decoration: TextDecoration.underline,
+                            decorationColor: greenBlue),
                       ),
                     ),
                   ],
@@ -240,40 +248,43 @@ class _SignUpPageState extends State<SignUpPage> {
                   child: ElevatedButton(
                       onPressed: () {
                         FocusScope.of(context).unfocus();
-                        if(formKey.currentState!.validate()){
+                        if (formKey.currentState!.validate()) {
                           formKey.currentState!.save();
-                          if(accept){
-                            if (password==confirmedPassword){
+                          if (accept) {
+                            if (password == confirmedPassword) {
                               signUp(fName, lName, email, password);
-                            }else{
+                            } else {
                               final snackBar = SnackBar(
                                 content: Text(
                                   pleaseConfirmPassword.tr,
                                 ),
                               );
-                              ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                              ScaffoldMessenger.of(context)
+                                  .showSnackBar(snackBar);
                             }
-                          }else{
+                          } else {
                             final snackBar = SnackBar(
                               content: Text(
                                 termsMustBeAcceptedErrorMessage.tr,
                               ),
                             );
-                            ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                            ScaffoldMessenger.of(context)
+                                .showSnackBar(snackBar);
                           }
                         }
                       },
                       style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.all(greenBlue),
                         shape:
-                        MaterialStateProperty.all<RoundedRectangleBorder>(
+                            MaterialStateProperty.all<RoundedRectangleBorder>(
                           RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(10),
                           ),
                         ),
                       ),
                       child: Text(signUpKey.tr,
-                          style: TextStyle(fontSize: 16, color: Colors.white))),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.white))),
                 ),
                 Row(
                   children: [
@@ -282,14 +293,18 @@ class _SignUpPageState extends State<SignUpPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : darkBlue,
                       ),
                     ),
                     Text(
                       or.tr,
                       style: TextStyle(
                         fontSize: 16,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : darkBlue,
                       ),
                     ),
                     Expanded(
@@ -297,62 +312,56 @@ class _SignUpPageState extends State<SignUpPage> {
                         indent: 10,
                         endIndent: 10,
                         thickness: 1,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : darkBlue,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : darkBlue,
                       ),
                     ),
                   ],
                 ),
                 GestureDetector(
-                  onTap: () async{
+                  onTap: () async {
                     final user = await GoogleSignInApi.login();
-                    if (user != null){
+                    if (user != null) {
                       String fullName = user.displayName.toString();
-                      email =  user.email;
+                      email = user.email;
                       List<String> names = fullName.split(" ");
-                      lName = names[names.length-1];
-                      if (names.length >= 2){
+                      lName = names[names.length - 1];
+                      if (names.length >= 2) {
                         names.remove(lName);
                         fName = names.join(" ");
-                      }else{
-                        fName= "";
+                      } else {
+                        fName = "";
                       }
-                      print("user: ${fName} $lName $email");
-                      LoadingIndicatorDialog().show(context, text: loggingIn.tr);
-                      final loggedInUser = await loginOrSignUpWithGoogle(email, fName, lName);
+                      LoadingIndicatorDialog()
+                          .show(context, text: loggingIn.tr);
+                      final loggedInUser =
+                          await loginOrSignUpWithGoogle(email, fName, lName);
                       LoadingIndicatorDialog().dismiss();
-                      if(loggedInUser != null){
-                        if (loggedInUser.id!= -1){
+                      if (loggedInUser != null) {
+                        if (loggedInUser.id != -1) {
                           final snackBar = SnackBar(
                             content: Text(
                               '${authenticationOf.tr} ${loggedInUser.lastname} ${loggedInUser.firstname} ${successfulWithId.tr}:${loggedInUser.id}!',
                             ),
                           );
-                          ScaffoldMessenger.of(context)
-                              .showSnackBar(snackBar);
-                          final myPrefs =
-                          await SharedPreferences
-                              .getInstance();
+                          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                          final myPrefs = await SharedPreferences.getInstance();
                           //Keeping hold of new user for subsequent uses of the app
                           myPrefs.setInt(userId, loggedInUser.id!);
-                          myPrefs.setString(
-                              userEmail, loggedInUser.email);
-                          myPrefs.setString(
-                              userFname, loggedInUser.firstname);
-                          myPrefs.setString(
-                              userLname, loggedInUser.lastname);
-                          myPrefs.setBool(
-                              userIsPublic, loggedInUser.isPublic);
+                          myPrefs.setString(userEmail, loggedInUser.email);
+                          myPrefs.setString(userFname, loggedInUser.firstname);
+                          myPrefs.setString(userLname, loggedInUser.lastname);
+                          myPrefs.setBool(userIsPublic, loggedInUser.isPublic);
                           myPrefs.setBool(userIsLoggedIn, true);
-                          Provider.of<UserProvider>(context,
-                              listen: false)
+                          Provider.of<UserProvider>(context, listen: false)
                               .initUserFromPrefs();
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                  const AppHome(
-                                      title: appName)));
-                        }else{
+                                      const AppHome(title: appName)));
+                        } else {
                           final snackBar = SnackBar(
                             content: Text(
                               notConnectedWithGoogleErrorMessage.tr,
@@ -360,7 +369,7 @@ class _SignUpPageState extends State<SignUpPage> {
                           );
                           ScaffoldMessenger.of(context).showSnackBar(snackBar);
                         }
-                      }else{
+                      } else {
                         final snackBar = SnackBar(
                           content: Text(
                             serverConnectionError.tr,
@@ -368,7 +377,7 @@ class _SignUpPageState extends State<SignUpPage> {
                         );
                         ScaffoldMessenger.of(context).showSnackBar(snackBar);
                       }
-                    }else{
+                    } else {
                       final snackBar = SnackBar(
                         content: Text(
                           googleFailed.tr,
@@ -386,7 +395,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.g_mobiledata_rounded,
                           size: 40,
                         ),
@@ -394,7 +403,10 @@ class _SignUpPageState extends State<SignUpPage> {
                           continueWithGoogle.tr,
                           style: TextStyle(
                             fontSize: 20,
-                            color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                            color:
+                                Theme.of(context).brightness == Brightness.dark
+                                    ? Theme.of(context).colorScheme.onBackground
+                                    : Colors.black,
                           ),
                         )
                       ],
@@ -405,15 +417,20 @@ class _SignUpPageState extends State<SignUpPage> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
                     Text(
-                      alreadyHaveAccount.tr + " ",
+                      "${alreadyHaveAccount.tr} ",
                       style: TextStyle(
                         fontSize: 17,
-                        color: Theme.of(context).brightness == Brightness.dark ? Theme.of(context).colorScheme.onBackground : Colors.black,
+                        color: Theme.of(context).brightness == Brightness.dark
+                            ? Theme.of(context).colorScheme.onBackground
+                            : Colors.black,
                       ),
                     ),
                     GestureDetector(
                       onTap: () {
-                        Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=> LoginPage()));
+                        Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => const LoginPage()));
                       },
                       child: Text(
                         login.tr,
@@ -433,22 +450,32 @@ class _SignUpPageState extends State<SignUpPage> {
       ),
     );
   }
-  void signUp(String fName, String lName, String email, String password) async{
+
+  void signUp(String fName, String lName, String email, String password) async {
     //see if email available
     LoadingIndicatorDialog().show(context, text: verifyingEmail.tr);
     bool? availableEmail = await isEmailNotPreviouslyUsed(email);
     LoadingIndicatorDialog().dismiss();
-    if (availableEmail==true){
+    if (availableEmail == true) {
       //take user to confirmation screen
-      Navigator.push(context, MaterialPageRoute(builder: (context)=>CodeConfirmationPageForSignUp(email: email, fName: fName, lName: lName, password: password, codeExpiresIn: const Duration(minutes: 5),)));
-    }else if(availableEmail== false){
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => CodeConfirmationPageForSignUp(
+                    email: email,
+                    fName: fName,
+                    lName: lName,
+                    password: password,
+                    codeExpiresIn: const Duration(minutes: 5),
+                  )));
+    } else if (availableEmail == false) {
       final snackBar = SnackBar(
         content: Text(
           emailUsedErrorMessage.tr,
         ),
       );
       ScaffoldMessenger.of(context).showSnackBar(snackBar);
-    }else{
+    } else {
       final snackBar = SnackBar(
         content: Text(
           serverConnectionError.tr,

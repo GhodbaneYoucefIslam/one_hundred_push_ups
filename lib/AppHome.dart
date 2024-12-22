@@ -34,7 +34,6 @@ class _AppHomeState extends State<AppHome> {
     final myPrefs = await SharedPreferences.getInstance();
     isLoggedIn = myPrefs.getBool(userIsLoggedIn) ?? false;
     Provider.of<UserProvider>(context, listen: false).initUserFromPrefs();
-    print("isLoggedIn: $isLoggedIn");
   }
 
   void logOut(BuildContext context) async {
@@ -47,7 +46,6 @@ class _AppHomeState extends State<AppHome> {
     myPrefs.setBool(userIsLoggedIn, false);
     Provider.of<UserProvider>(context, listen: false).setUser(user: null);
   }
-
 
   @override
   void initState() {
@@ -71,13 +69,12 @@ class _AppHomeState extends State<AppHome> {
       ),
       drawer: FutureBuilder(
         future: verifyIsLoggedIn(context),
-        builder: (context, snapshot){
+        builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Text("Error: ${snapshot.error}");
           } else {
-            print("verified isloggedin: ${context.watch<UserProvider>().currentUser}");
             return SideMenu(
               accountEmail: context.watch<UserProvider>().currentUser != null
                   ? context.watch<UserProvider>().currentUser!.email
@@ -122,7 +119,8 @@ class _AppHomeState extends State<AppHome> {
                     id: 3,
                     title: leaderboard.tr,
                     icon: Icons.leaderboard,
-                    selected: currentPage == MenuEntry.leaderboard ? true : false,
+                    selected:
+                        currentPage == MenuEntry.leaderboard ? true : false,
                     onTap: () {
                       Navigator.pop(context);
                       setState(() {
@@ -149,7 +147,7 @@ class _AppHomeState extends State<AppHome> {
                   children: [
                     Row(
                       children: [
-                        Padding(
+                        const Padding(
                           padding: EdgeInsets.only(right: 7),
                           child: Icon(
                             Icons.sunny,
@@ -157,25 +155,28 @@ class _AppHomeState extends State<AppHome> {
                           ),
                         ),
                         Text(lightModeKey.tr,
-                            style:
-                            TextStyle(fontSize: 13, fontWeight: FontWeight.bold))
+                            style: const TextStyle(
+                                fontSize: 13, fontWeight: FontWeight.bold))
                       ],
                     ),
                     Switch(
-                        value: Theme.of(context).brightness == Brightness.dark ? true : false,
+                        value: Theme.of(context).brightness == Brightness.dark
+                            ? true
+                            : false,
                         onChanged: (value) {
-                          Provider.of<ThemeProvider>(context, listen: false).toggleTheme(Theme.of(context).brightness);
+                          Provider.of<ThemeProvider>(context, listen: false)
+                              .toggleTheme(Theme.of(context).brightness);
                         }),
                     Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.dark_mode,
                           size: 20,
                         ),
                         Padding(
-                          padding: EdgeInsets.only(left: 7),
+                          padding: const EdgeInsets.only(left: 7),
                           child: Text(nightModeKey.tr,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 13, fontWeight: FontWeight.bold)),
                         )
                       ],
@@ -194,25 +195,25 @@ class _AppHomeState extends State<AppHome> {
                           if (result == true) {
                             var dbService = DatabaseService();
                             dbService.dropDB();
-                            Provider.of<GoalProvider>(context, listen: false).nullifyGoal();
+                            Provider.of<GoalProvider>(context, listen: false)
+                                .nullifyGoal();
                           }
                           Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                      AppHome(title: appName)));
+                                      const AppHome(title: appName)));
                         }
-                      }else {
+                      } else {
                         Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
-                                builder: (context) =>
-                                    LoginPage()));
+                                builder: (context) => const LoginPage()));
                       }
                     },
-                    icon:  Icon(isLoggedIn? Icons.logout: Icons.login, size: 20),
-                    label: Text(
-                        isLoggedIn? logout.tr: login.tr,
+                    icon:
+                        Icon(isLoggedIn ? Icons.logout : Icons.login, size: 20),
+                    label: Text(isLoggedIn ? logout.tr : login.tr,
                         style: const TextStyle(fontSize: 16)),
                     style: ButtonStyle(
                       fixedSize: MaterialStateProperty.all(
@@ -222,8 +223,9 @@ class _AppHomeState extends State<AppHome> {
                         ),
                       ),
                       foregroundColor: MaterialStateProperty.all(Colors.black),
-                      backgroundColor: MaterialStateProperty.all(
-                          isLoggedIn ? greenBlue : turquoiseBlue.withOpacity(0.7)),
+                      backgroundColor: MaterialStateProperty.all(isLoggedIn
+                          ? greenBlue
+                          : turquoiseBlue.withOpacity(0.7)),
                       shape: MaterialStateProperty.all<RoundedRectangleBorder>(
                         RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
@@ -256,7 +258,8 @@ class _AppHomeState extends State<AppHome> {
                 children: [
                   Text(
                     resetDataQuestion.tr,
-                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                    style: const TextStyle(
+                        fontWeight: FontWeight.bold, fontSize: 20),
                     textAlign: TextAlign.center,
                   ),
                   Row(
@@ -277,7 +280,7 @@ class _AppHomeState extends State<AppHome> {
                             ),
                           ),
                           child: Text(no.tr,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16, color: Colors.white))),
                       ElevatedButton(
                           onPressed: () {
@@ -294,7 +297,7 @@ class _AppHomeState extends State<AppHome> {
                             ),
                           ),
                           child: Text(yes.tr,
-                              style: TextStyle(
+                              style: const TextStyle(
                                   fontSize: 16, color: Colors.white))),
                     ],
                   ),

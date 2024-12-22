@@ -5,29 +5,38 @@ import 'package:one_hundred_push_ups/utils/methods.dart';
 import 'Achievement.dart';
 import 'package:http/http.dart' as http;
 
-Future<List<Achievement>?> getTodayAchievements() async{
+Future<List<Achievement>?> getTodayAchievements() async {
   final String day = toPrismaCompatibleIsoStringForDate(DateTime.now());
   const String type = defaultGoalType;
   final uri = Uri.parse("$endpoint/achievement/$day/$type");
   final response = await http.get(uri);
-  if (response.statusCode == 200){
+  if (response.statusCode == 200) {
     final List jsonResponse = json.decode(response.body);
-    final achievements = jsonResponse.map((e) => Achievement.fromJson(e)).toList();
+    final achievements =
+        jsonResponse.map((e) => Achievement.fromJson(e)).toList();
     return achievements;
-  }else{
+  } else {
     print(response.body.toString());
     return null;
   }
 }
 
-Future<List<Map<String,dynamic>>?> getUserAchievements(int userId) async{
+Future<List<Map<String, dynamic>>?> getUserAchievements(int userId) async {
   const String type = defaultGoalType;
   final uri = Uri.parse("$endpoint/achievement/user/$userId/$type");
   final response = await http.get(uri);
-  if (response.statusCode == 200){
+  if (response.statusCode == 200) {
     final List jsonResponse = json.decode(response.body);
-    return jsonResponse.map((e) => {'dailyRank':e['dailyRank'].toString(),'day':e['day'].toString(),'type':defaultGoalType,'score':e['score'],'rankChange': e['rankChange']}).toList();
-  }else{
+    return jsonResponse
+        .map((e) => {
+              'dailyRank': e['dailyRank'].toString(),
+              'day': e['day'].toString(),
+              'type': defaultGoalType,
+              'score': e['score'],
+              'rankChange': e['rankChange']
+            })
+        .toList();
+  } else {
     print(response.body.toString());
     return null;
   }
@@ -42,11 +51,12 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'}, // Set Content-Type header
-      body: json.encode(achievement.toJsonBeforeRank()), // Encode achievement object to JSON
+      body: json.encode(
+          achievement.toJsonBeforeRank()), // Encode achievement object to JSON
     );
 
     // Check if the request was successful (status code 200)
-    if (response.statusCode == 200 || response.statusCode ==201 ) {
+    if (response.statusCode == 200 || response.statusCode == 201) {
       print("post successful!");
       final jsonData = json.decode(response.body);
       return Achievement.fromJson(jsonData);
@@ -63,20 +73,20 @@ Future<Achievement?> postTodayAchievement(Achievement achievement) async {
   }
 }
 
-Future<bool?> isEmailNotPreviouslyUsed(String email) async{
+Future<bool?> isEmailNotPreviouslyUsed(String email) async {
   final uri = Uri.parse("$endpoint/user/verifyEmail");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({"email":email}),
+      body: json.encode({"email": email}),
     );
 
-    if (response.statusCode == 401){
+    if (response.statusCode == 401) {
       print("post successful!");
       print(response.body);
       return true;
-    } else if (response.statusCode==400) {
+    } else if (response.statusCode == 400) {
       print(response.body);
       return false;
     }
@@ -86,25 +96,22 @@ Future<bool?> isEmailNotPreviouslyUsed(String email) async{
   return null;
 }
 
-Future<String?> sendOTPCodeForSignUp(String email, String fName,String lName) async{
+Future<String?> sendOTPCodeForSignUp(
+    String email, String fName, String lName) async {
   final uri = Uri.parse("$endpoint/user/otp/send/signUp");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        "email":email,
-        "fName": fName,
-        "lName": lName
-      }),
+      body: json.encode({"email": email, "fName": fName, "lName": lName}),
     );
 
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       print("post successful!");
       print(response.body);
       final res = json.decode(response.body);
       return res['data'];
-    } else if (response.statusCode==400) {
+    } else if (response.statusCode == 400) {
       print(response.body);
       return "Error";
     }
@@ -114,26 +121,26 @@ Future<String?> sendOTPCodeForSignUp(String email, String fName,String lName) as
   return null;
 }
 
-Future<String?> sendOTPCodeForForgotPassword(String email) async{
+Future<String?> sendOTPCodeForForgotPassword(String email) async {
   final uri = Uri.parse("$endpoint/user/otp/send/forgotPassword");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        "email":email,
+        "email": email,
       }),
     );
 
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       print("post successful!");
       print(response.body);
       final res = json.decode(response.body);
       return res['data'];
-    } else if (response.statusCode==400) {
+    } else if (response.statusCode == 400) {
       print(response.body);
       return "Error";
-    } else if (response.statusCode == 401){
+    } else if (response.statusCode == 401) {
       print(response.body);
       return "Email doesn't exists";
     }
@@ -143,24 +150,20 @@ Future<String?> sendOTPCodeForForgotPassword(String email) async{
   return null;
 }
 
-Future<bool?> verifyOTPCode(String email, String hash,String otp) async{
+Future<bool?> verifyOTPCode(String email, String hash, String otp) async {
   final uri = Uri.parse("$endpoint/user/otp/verify");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        "email":email,
-        "hash": hash,
-        "otp": otp
-      }),
+      body: json.encode({"email": email, "hash": hash, "otp": otp}),
     );
 
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       print("post successful!");
       print(response.body);
       return true;
-    } else if (response.statusCode==400) {
+    } else if (response.statusCode == 400) {
       print(response.body);
       return false;
     }
@@ -170,24 +173,26 @@ Future<bool?> verifyOTPCode(String email, String hash,String otp) async{
   return null;
 }
 
-Future<User?> postNewUser(String email, String fName, String lName, String password) async{
+Future<User?> postNewUser(
+    String email, String fName, String lName, String password) async {
   final uri = Uri.parse("$endpoint/user/create");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        "email":email,
-        "fName":fName,
-        "lName":lName,
-        "password":password
+        "email": email,
+        "fName": fName,
+        "lName": lName,
+        "password": password
       }),
     );
-    if (response.statusCode == 201){
+    if (response.statusCode == 201) {
       print("added user successfully");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
-    } else if (response.statusCode==400) {
+      return User(jsonData['id'], jsonData['firstname'], jsonData['lastname'],
+          jsonData['email'], jsonData['ispublic']);
+    } else if (response.statusCode == 400) {
       print(response.body);
       return null;
     }
@@ -197,22 +202,20 @@ Future<User?> postNewUser(String email, String fName, String lName, String passw
   return null;
 }
 
-Future<User?> changeUserPassword(String email,String password) async{
+Future<User?> changeUserPassword(String email, String password) async {
   final uri = Uri.parse("$endpoint/user/changePassword");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        "email":email,
-        "password":password
-      }),
+      body: json.encode({"email": email, "password": password}),
     );
-    if (response.statusCode == 201){
+    if (response.statusCode == 201) {
       print("password changed successfully");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
-    } else if (response.statusCode==400) {
+      return User(jsonData['id'], jsonData['firstname'], jsonData['lastname'],
+          jsonData['email'], jsonData['ispublic']);
+    } else if (response.statusCode == 400) {
       print(response.body);
       return null;
     }
@@ -222,26 +225,24 @@ Future<User?> changeUserPassword(String email,String password) async{
   return null;
 }
 
-Future<User?> loginWithEmailAndPassword(String email, String password) async{
+Future<User?> loginWithEmailAndPassword(String email, String password) async {
   final uri = Uri.parse("$endpoint/user/login");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
-      body: json.encode({
-        "email": email,
-        "password": password
-      }),
+      body: json.encode({"email": email, "password": password}),
     );
 
-    if (response.statusCode == 200){
+    if (response.statusCode == 200) {
       print("login successful");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
-    } else if (response.statusCode == 401){
+      return User(jsonData['id'], jsonData['firstname'], jsonData['lastname'],
+          jsonData['email'], jsonData['ispublic']);
+    } else if (response.statusCode == 401) {
       print(response.body);
-      return User(-1,"","","", true);
-    }else{
+      return User(-1, "", "", "", true);
+    } else {
       return null;
     }
   } catch (error) {
@@ -250,22 +251,24 @@ Future<User?> loginWithEmailAndPassword(String email, String password) async{
   return null;
 }
 
-Future<User?> loginOrSignUpWithGoogle(String email, String fName, String lName) async{
+Future<User?> loginOrSignUpWithGoogle(
+    String email, String fName, String lName) async {
   final uri = Uri.parse("$endpoint/user/create/google");
   try {
     final response = await http.post(
       uri,
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
-        "email":email,
-        "fName":fName,
-        "lName":lName,
+        "email": email,
+        "fName": fName,
+        "lName": lName,
       }),
     );
-    if (response.statusCode == 200 || response.statusCode == 201){
+    if (response.statusCode == 200 || response.statusCode == 201) {
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
-    }else if (response.statusCode==400) {
+      return User(jsonData['id'], jsonData['firstname'], jsonData['lastname'],
+          jsonData['email'], jsonData['ispublic']);
+    } else if (response.statusCode == 400) {
       return User(-1, "", "", "", true);
     }
   } catch (error) {
@@ -274,7 +277,8 @@ Future<User?> loginOrSignUpWithGoogle(String email, String fName, String lName) 
   return null;
 }
 
-Future<User?> changeUserPersonalDetails(int id, String fName,String lName, bool isVisible) async{
+Future<User?> changeUserPersonalDetails(
+    int id, String fName, String lName, bool isVisible) async {
   print("entered function change details");
   final uri = Uri.parse("$endpoint/user/changePersonalDetails");
   try {
@@ -283,16 +287,17 @@ Future<User?> changeUserPersonalDetails(int id, String fName,String lName, bool 
       headers: {'Content-Type': 'application/json'},
       body: json.encode({
         "id": id,
-        "firstname":fName,
-        "lastname":lName,
+        "firstname": fName,
+        "lastname": lName,
         "ispublic": isVisible
       }),
     );
-    if (response.statusCode == 201){
+    if (response.statusCode == 201) {
       print("details changed successfully");
       final jsonData = json.decode(response.body);
-      return User(jsonData['id'],jsonData['firstname'],jsonData['lastname'],jsonData['email'], jsonData['ispublic']);
-    } else if (response.statusCode==400) {
+      return User(jsonData['id'], jsonData['firstname'], jsonData['lastname'],
+          jsonData['email'], jsonData['ispublic']);
+    } else if (response.statusCode == 400) {
       print(response.body);
       return null;
     }

@@ -44,7 +44,7 @@ final Goal placeholderGoal = Goal(
     date:
         DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day),
     goalAmount: 100);
-final User placeholderUser = User(-1,"","","", true);
+final User placeholderUser = User(-1, "", "", "", true);
 const String endpoint = "https://jyghodbane.alwaysdata.net";
 
 const int notificationID = 0;

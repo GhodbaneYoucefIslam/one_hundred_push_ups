@@ -1,4 +1,3 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class ThemeProvider extends ChangeNotifier {
@@ -7,7 +6,9 @@ class ThemeProvider extends ChangeNotifier {
   ThemeMode get getCurrentThemeMode => _themeMode;
 
   void toggleTheme(Brightness currentBrightness) {
-    _themeMode = currentBrightness == Brightness.light ? ThemeMode.dark : ThemeMode.light;
+    _themeMode = currentBrightness == Brightness.light
+        ? ThemeMode.dark
+        : ThemeMode.light;
     notifyListeners();
   }
 }

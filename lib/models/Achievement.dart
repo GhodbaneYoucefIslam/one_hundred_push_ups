@@ -11,35 +11,34 @@ class Achievement extends Mappable {
   int reps;
   int rankChange;
   String date;
-  Achievement(this.type,this.rank, this.user, this.reps, this.rankChange, this.date);
-  factory Achievement.fromJson(Map<String, dynamic> json) => Achievement(
-      defaultGoalType,//todo: modify server later to include type in response
-      json['dailyRank'],
-      User(json['user']['id'], json['user']['firstname'].toString(), json['user']['lastname'].toString(), json['user']['email'].toString(), json['user']['ispublic']),
-      json['score'],
-      json['rankChange']??0,
-      json['day']);
+  Achievement(
+      this.type, this.rank, this.user, this.reps, this.rankChange, this.date);
+  factory Achievement.fromJson(Map<String, dynamic> json) {
+    return Achievement(
+        defaultGoalType, //todo: modify server later to include type in response
+        json['dailyRank'],
+        User(
+            json['user']['id'],
+            json['user']['firstname'].toString(),
+            json['user']['lastname'].toString(),
+            json['user']['email'].toString(),
+            json['user']['ispublic']),
+        json['score'],
+        json['rankChange'] ?? 0,
+        json['day']);
+  }
   @override
   String toString() {
     return "Achievement($rank,${user.initials()},$reps,$rankChange,$date)";
   }
-  Map<String,dynamic> toJsonBeforeRank(){
-    return {
-      'type':type,
-      'score': reps,
-      'day': date,
-      'userId': user.id
-    };
+
+  Map<String, dynamic> toJsonBeforeRank() {
+    return {'type': type, 'score': reps, 'day': date, 'userId': user.id};
   }
-  factory Achievement.fromGoalAndSets(Goal goal,int sets, User user) {
+
+  factory Achievement.fromGoalAndSets(Goal goal, int sets, User user) {
     final String day = toPrismaCompatibleIsoStringForDate(goal.date);
-    return Achievement(
-      goal.type,
-      0,
-      user,
-      sets,
-      0,
-      day);
+    return Achievement(goal.type, 0, user, sets, 0, day);
   }
 
   @override
@@ -53,13 +52,8 @@ class Achievement extends Mappable {
     };
   }
 
-  static Achievement fromMap(Map<String,dynamic> map){
-    return Achievement(
-        map["type"],
-        int.parse(map["dailyRank"]),
-        placeholderUser,
-        map["score"],
-        map["rankChange"]??0,
-        map["day"]);
+  static Achievement fromMap(Map<String, dynamic> map) {
+    return Achievement(map["type"], int.parse(map["dailyRank"]),
+        placeholderUser, map["score"], map["rankChange"] ?? 0, map["day"]);
   }
 }

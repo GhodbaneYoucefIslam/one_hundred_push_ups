@@ -12,7 +12,18 @@ class CustomDropDownMenu extends StatelessWidget {
   final Color? hintTextColor;
   final Color? valueTextColor;
   final Color? menuBackgroundColor;
-  const CustomDropDownMenu({super.key, required this.menuEntries,this.value, required this.borderColor, this.onChanged, required this.horizontalOffset, required this.verticalOffset, required this.hintText, this.hintTextColor, this.valueTextColor, this.menuBackgroundColor});
+  const CustomDropDownMenu(
+      {super.key,
+      required this.menuEntries,
+      this.value,
+      required this.borderColor,
+      this.onChanged,
+      required this.horizontalOffset,
+      required this.verticalOffset,
+      required this.hintText,
+      this.hintTextColor,
+      this.valueTextColor,
+      this.menuBackgroundColor});
 
   @override
   Widget build(BuildContext context) {
@@ -20,29 +31,26 @@ class CustomDropDownMenu extends StatelessWidget {
       child: DropdownButton2(
         hint: Text(
           hintText,
-          style: TextStyle(
-            fontSize: 15,
-            color: hintTextColor
-          ),
+          style: TextStyle(fontSize: 15, color: hintTextColor),
           overflow: TextOverflow.ellipsis,
         ),
         items: menuEntries
             .map((item) => DropdownMenuItem<String>(
-          value: item,
-          child: Text(
-            item,
-            style: TextStyle(
-              fontSize: 13,
-              color: valueTextColor,
-            ),
-          ),
-        ))
+                  value: item,
+                  child: Text(
+                    item,
+                    style: TextStyle(
+                      fontSize: 13,
+                      color: valueTextColor,
+                    ),
+                  ),
+                ))
             .toList(),
         value: value,
         onChanged: onChanged,
-        buttonStyleData:ButtonStyleData(
+        buttonStyleData: ButtonStyleData(
           height: 50,
-          width: MediaQuery.of(context).size.width*0.35,
+          width: MediaQuery.of(context).size.width * 0.35,
           padding: EdgeInsets.only(left: 14, right: 14),
         ),
         dropdownStyleData: DropdownStyleData(
@@ -52,8 +60,7 @@ class CustomDropDownMenu extends StatelessWidget {
           decoration: BoxDecoration(
             color: menuBackgroundColor,
             borderRadius: BorderRadius.circular(10),
-            border: Border.all(
-                color: borderColor),
+            border: Border.all(color: borderColor),
           ),
           elevation: 1,
           offset: Offset(horizontalOffset, verticalOffset),

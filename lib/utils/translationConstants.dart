@@ -76,7 +76,8 @@ const String or = "or";
 const String loggingIn = "loggingIn";
 const String authenticationOf = "authenticationOf";
 const String successfulWithId = "successfulWithId";
-const String notConnectedWithGoogleErrorMessage = "notConnectedWithGoogleErrorMessage";
+const String notConnectedWithGoogleErrorMessage =
+    "notConnectedWithGoogleErrorMessage";
 const String googleFailed = "googleFailed";
 const String continueWithGoogle = "continueWithGoogle";
 const String dontHaveAccount = "dontHaveAccount";
@@ -86,7 +87,8 @@ const String verifyingEmail = "verifyingEmail";
 const String noAccountForEmailErrorMessage = "noAccountForEmailErrorMessage";
 const String pleaseProvideEmail = "pleaseProvideEmail";
 const String confirm = "confirm";
-const String proceedWithoutAccountWarningMessage = "proceedWithoutAccountWarningMessage";
+const String proceedWithoutAccountWarningMessage =
+    "proceedWithoutAccountWarningMessage";
 
 // SignUpPage.dart
 const String createAccount = "createAccount";
@@ -98,13 +100,15 @@ const String emailField = "email";
 const String passwordField = "password";
 const String minCharactersErrorMessage = "minCharactersErrorMessage";
 const String confirmPassword = "confirmPassword";
-const String confirmedPasswordEmptyErrorMessage = "confirmedPasswordEmptyErrorMessage";
+const String confirmedPasswordEmptyErrorMessage =
+    "confirmedPasswordEmptyErrorMessage";
 const String iAccept = "iAccept";
 const String terms = "terms";
 const String and = "and";
 const String conditions = "conditions";
 const String pleaseConfirmPassword = "pleaseConfirmPassword";
-const String termsMustBeAcceptedErrorMessage = "termsMustBeAcceptedErrorMessage";
+const String termsMustBeAcceptedErrorMessage =
+    "termsMustBeAcceptedErrorMessage";
 const String alreadyHaveAccount = "alreadyHaveAccount";
 const String emailUsedErrorMessage = "emailUsedErrorMessage";
 
@@ -124,7 +128,8 @@ const String verifyPasswordReset = "verifyPasswordReset";
 const String changePasswordFor = "changePasswordFor";
 const String changingPassword = "changingPassword";
 const String changedPasswordFor = "changedPasswordFor";
-const String errorChangingPasswordErrorMessage = "errorChangingPasswordErrorMessage";
+const String errorChangingPasswordErrorMessage =
+    "errorChangingPasswordErrorMessage";
 const String changePassword = "changePassword";
 
 // OnboardingScreen.dart
@@ -165,7 +170,8 @@ const String fileNameKey = "fileName";
 const String exportDataFrom = "exportDataFrom";
 const String to = "to";
 const String pleaseVerifyExportOptions = "pleaseVerifyExportOptions";
-const String extensionAndFormatDontMatchErrorMessage = "extensionAndFormatDontMatchErrorMessage";
+const String extensionAndFormatDontMatchErrorMessage =
+    "extensionAndFormatDontMatchErrorMessage";
 const String pleaseProvideBothFiles = "pleaseProvideBothFiles";
 const String goalFile = "goalFile";
 const String chooseFile = "chooseFile";

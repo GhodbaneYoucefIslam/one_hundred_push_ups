@@ -38,12 +38,12 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
       isDataLoaded = true;
     });
   }
+
   @override
   void initState() {
     super.initState();
     loadUserCredentials();
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -58,7 +58,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
   }
 
   Widget buildSettingsForm(BuildContext context) {
-    return Container(
+    return SizedBox(
       width: MediaQuery.of(context).size.width,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -66,7 +66,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
         children: [
           Text(
             yourAccount.tr,
-            style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            style: const TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 10),
@@ -85,7 +85,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                   children: [
                     Text(
                       basicInfo.tr,
-                      style: TextStyle(
+                      style: const TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -146,7 +146,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         ),
                         Text(
                           accountVisible.tr,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 15,
                             color: Colors.black,
                           ),
@@ -172,10 +172,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                                     .id!
                                 : 1;
                             User? updatedUser = await changeUserPersonalDetails(
-                                currentId,
-                                fName,
-                                lName,
-                                visible);
+                                currentId, fName, lName, visible);
 
                             final myPrefs =
                                 await SharedPreferences.getInstance();
@@ -207,7 +204,8 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
                         ),
                         child: Text(
                           saveChanges.tr,
-                          style: TextStyle(fontSize: 16, color: Colors.black),
+                          style: const TextStyle(
+                              fontSize: 16, color: Colors.black),
                         ),
                       ),
                     ),
@@ -225,7 +223,7 @@ class _PersonalSettingsPageState extends State<PersonalSettingsPage> {
     return Center(
       child: Text(
         notLoggedIn.tr,
-        style: TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
+        style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 25),
       ),
     );
   }

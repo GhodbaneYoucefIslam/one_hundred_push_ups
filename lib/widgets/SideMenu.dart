@@ -1,4 +1,5 @@
 import "package:flutter/material.dart";
+
 class SideMenu extends StatelessWidget {
   String accountName;
   String accountEmail;
@@ -6,7 +7,13 @@ class SideMenu extends StatelessWidget {
   List<Widget> menuEntries;
   List<Widget>? optionWidgets;
 
-  SideMenu({super.key,required this.accountEmail,required this.accountName,required this.avatar,required this.menuEntries,this.optionWidgets});
+  SideMenu(
+      {super.key,
+      required this.accountEmail,
+      required this.accountName,
+      required this.avatar,
+      required this.menuEntries,
+      this.optionWidgets});
 
   @override
   Widget build(BuildContext context) {
@@ -15,7 +22,7 @@ class SideMenu extends StatelessWidget {
       child: Column(
         children: [
           UserAccountsDrawerHeader(
-            accountName:  Text(
+            accountName: Text(
               accountName,
               style: const TextStyle(
                   color: Colors.black,
@@ -37,7 +44,7 @@ class SideMenu extends StatelessWidget {
                   decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.black)),
-                  child:  Center(
+                  child: Center(
                     child: avatar,
                   ),
                 ),
@@ -50,11 +57,10 @@ class SideMenu extends StatelessWidget {
             ),
           ),
           Column(
-            children: (optionWidgets != null)? optionWidgets! : [],
+            children: (optionWidgets != null) ? optionWidgets! : [],
           )
         ],
       ),
     );
   }
 }
-

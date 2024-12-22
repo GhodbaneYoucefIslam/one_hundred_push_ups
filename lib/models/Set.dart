@@ -1,18 +1,13 @@
 import 'package:one_hundred_push_ups/models/Mappable.dart';
 
-class Set extends Mappable{
+class Set extends Mappable {
   int? id;
   int reps;
   DateTime time;
   int? goalId;
-  Set({
-    this.id,
-    required this.reps,
-    required this.time,
-    this.goalId
-});
+  Set({this.id, required this.reps, required this.time, this.goalId});
 
-  static Set fromMap(Map<String,dynamic> map){
+  static Set fromMap(Map<String, dynamic> map) {
     return Set(
       id: map['id'],
       reps: map['reps'],
@@ -22,7 +17,7 @@ class Set extends Mappable{
   }
 
   @override
-  Map<String, dynamic> toMap(){
+  Map<String, dynamic> toMap() {
     return {
       "id": id,
       "reps": reps,
