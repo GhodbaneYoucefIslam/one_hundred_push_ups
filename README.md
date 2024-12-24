@@ -1,16 +1,34 @@
-# one_hundred_push_ups
+# 100PushUPs
 
-A Mobile app project
+A Mobile app project to help you achieve the 100 push ups a day challenge
 
-## Getting Started
+## Functionalities
 
-This project is a starting point for a Flutter application.
+- Side menu to navigate between the app's sections (displays current user, login button, and light/dark mode toggle)
+- Set and modify a daily push up goal (100 by default)
+- Add the number of reps that are performed with each set
+- The app automatically keeps track of your progress
+- The app sends periodic notifications to remind you to complete your daily goal
+- You can visualise stats about:
+  - the number of push ups performed per day
+  - the achieved % of daily goal
+  - the reps per set (indicating the progress in endurance and overall strength)
+  - The daily rank among all users (available only when logged in)
+- You can Create an account by filling a short registration form or by using google login 
+- You can also reset your password in case you forgot it
+- You can compare your score to other users in the leaderboard
+- You can control the app through the settings section:
+  - Personal settings: Modify name and your profile's visibility in the global leaderboard
+  - Preferences: Activate or deactivate reminder notifications and change the app's display language
+  - DataCenter: Export your workout data to your phone's local storage as CSV or JSON files and import data from CSV or JSON files
+  - About app: about app, terms & conditions, privacy policy
+    This project is a starting point for a Flutter application.
+  
+## Repo breakdown
 
-A few resources to get you started if this is your first Flutter project:
+- Mobile app code: Flutter code in the main branch
+- Server (Backend) code: backend branch, deployed on alwaysdata
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+## UI/UX design 
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+- Designed by me using figma, you can view the design here: [https://www.behance.net/YoucefIslamGhodbane]

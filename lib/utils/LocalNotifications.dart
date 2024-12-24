@@ -54,7 +54,7 @@ class LocalNotifications {
       bool success = await FlutterBackground.enableBackgroundExecution();
       if (success) {
         isRunning = true;
-        timer = Timer.periodic(const Duration(seconds: 10), (timer) {
+        timer = Timer.periodic(const Duration(seconds: 3600), (timer) {
           showSimpleNotification(
               notificationTitle.tr, notificationMessage.tr, "");
         });
