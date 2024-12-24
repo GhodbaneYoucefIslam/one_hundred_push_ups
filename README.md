@@ -2,6 +2,10 @@
 
 A Mobile app project to help you achieve the 100 push ups a day challenge
 
+## Demo video
+
+Here [https://drive.google.com/file/d/1WJtuSshJifwJosL_xtjzK2xAhSndGb62/view?usp=sharing]
+
 ## Functionalities
 
 - Side menu to navigate between the app's sections (displays current user, login button, and light/dark mode toggle)
